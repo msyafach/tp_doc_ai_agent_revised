@@ -33,116 +33,12 @@ Key pain points we solve:
 
 ### System Design Diagram (PlantUML)
 
-```plantuml
-@startuml TP_LocalFile_Architecture
+![TP_LocalFile_Architecture](docs/images/TP_LocalFile_Architecture.png)
 
-skinparam backgroundColor #FAFAFA
-skinparam componentStyle rectangle
-skinparam ArrowColor #444444
-skinparam defaultFontName Arial
-
-actor "Tax Consultant" as user
-
-package "Browser" {
-  component "React + TypeScript\nFrontend :3000" as frontend
-}
-
-package "Docker Compose" {
-
-  package "Backend :8000" {
-    component "Django REST API\n(Gunicorn)" as django
-    component "Celery Worker\n(async tasks)" as celery
-  }
-
-  database "PostgreSQL :5432\n(project state as JSONB)" as db
-  database "Redis :6379\n(task queue + results)" as redis
-
-  package "tp_app/  (volume-mounted)" {
-    component "LangGraph Orchestrator\n(Parallel AI pipeline)" as langgraph
-    component "DOCX Export\n(python-docx + docxtpl)" as docx
-    component "Document Parser\n(pdfplumber)" as parser
-  }
-}
-
-package "External APIs" {
-  component "Groq / OpenAI  (LLM)" as llm
-  component "Tavily  (Web Search)" as tavily
-}
-
-user        --> frontend   : browser
-frontend    --> django     : REST API (Axios/JSON)
-django      --> db         : read/write project state
-django      --> redis      : enqueue Celery tasks
-redis       --> celery     : dequeue tasks
-celery      --> langgraph  : run_agents(state)
-celery      --> parser     : extract_documents(files)
-django      --> docx       : export_docx(state)
-langgraph   --> llm        : LLM inference
-langgraph   --> tavily     : web research
-django      --> frontend   : state + task status
-
-@enduml
-```
-
-> Paste the block above into [plantuml.com/plantuml](https://www.plantuml.com/plantuml/uml/) or use the PlantUML VS Code extension to render the diagram.
 
 ### AI Agent Pipeline (LangGraph parallel graph)
 
-```plantuml
-@startuml TP_AgentPipeline
-
-skinparam backgroundColor #FAFAFA
-skinparam ArrowColor #555555
-skinparam defaultFontName Arial
-skinparam componentBackgroundColor #EEF6EE
-skinparam componentBorderColor #5A9E5A
-skinparam noteFontSize 11
-
-[START] --> [Describe Business\nActivities]
-[Describe Business\nActivities] --> [Write Supply\nChain Overview]
-
-[Write Supply\nChain Overview] --> [Research Global\nIndustry Trends] : Branch A\n(Web Research)
-[Write Supply\nChain Overview] --> [Write Functional\nAnalysis] : Branch B\n(Analysis)
-
-note right of [Research Global\nIndustry Trends]
-  Tavily searches for
-  global market data,
-  CAGR, major players
-end note
-
-[Research Global\nIndustry Trends] --> [Research Indonesian\nIndustry Conditions]
-[Research Indonesian\nIndustry Conditions] --> [Analyze Company\nLocation & Market]
-[Analyze Company\nLocation & Market] --> [Research Applicable\nGovernment Regulations]
-[Research Applicable\nGovernment Regulations] --> [Assess Macro\nBusiness Environment]
-[Assess Macro\nBusiness Environment] --> [JOIN: Research &\nAnalysis Complete]
-
-[Write Functional\nAnalysis] --> [Determine Business\nCharacterization\n(Distributor / Manufacturer / etc.)]
-[Determine Business\nCharacterization\n(Distributor / Manufacturer / etc.)] --> [JOIN: Research &\nAnalysis Complete]
-
-[JOIN: Research &\nAnalysis Complete] --> [Write Background of\nAffiliated Transactions]
-[Write Background of\nAffiliated Transactions] --> [Write Comparability\nAnalysis]
-[Write Comparability\nAnalysis] --> [Select & Justify\nTransfer Pricing Method\n(e.g. TNMM)]
-[Select & Justify\nTransfer Pricing Method\n(e.g. TNMM)] --> [Select & Justify\nProfit Level Indicator\n(e.g. ROS)]
-
-[Select & Justify\nProfit Level Indicator\n(e.g. ROS)] --> [Write TP\nConclusion] : Branch C
-[Select & Justify\nProfit Level Indicator\n(e.g. ROS)] --> [Write Profit/Loss\nOverview & Commentary] : Branch D
-[Select & Justify\nProfit Level Indicator\n(e.g. ROS)] --> [Research &\nDescribe Comparable\nCompanies] : Branch E
-
-note right of [Research &\nDescribe Comparable\nCompanies]
-  Tavily searches each
-  comparable company
-  for business description
-end note
-
-[Write TP\nConclusion] --> [JOIN: All Sections\nComplete]
-[Write Profit/Loss\nOverview & Commentary] --> [JOIN: All Sections\nComplete]
-[Research &\nDescribe Comparable\nCompanies] --> [JOIN: All Sections\nComplete]
-
-[JOIN: All Sections\nComplete] --> [Write Executive\nSummary]
-[Write Executive\nSummary] --> [END]
-
-@enduml
-```
+![TP_AgentPipeline](docs/images/TP_AgentPipeline.png)
 
 ---
 

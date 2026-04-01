@@ -5,35 +5,30 @@
 """
 generate_diagrams.py
 ====================
-Converts all ```plantuml ... ``` fenced code blocks in README.md to PNG images
-by calling the public PlantUML rendering server, then replaces the code blocks
-with Markdown image references.
+Converts all PlantUML source files in docs/diagrams/*.puml to PNG images by
+calling the public PlantUML rendering server, saving results to docs/images/.
 
 Usage:
     uv run python generate_diagrams.py
 
-Output:
-    docs/images/<DiagramName>.png  — one PNG per diagram
-    README.md                      — updated in-place
+Source files:   docs/diagrams/<DiagramName>.puml
+Output images:  docs/images/<DiagramName>.png
+
+Edit .puml files directly in any text editor or VS Code (PlantUML extension),
+then re-run this script to regenerate the PNGs.
 """
-import re
-import zlib
-import struct
 import sys
+import zlib
 from pathlib import Path
 
 import requests
 
 # ─── PlantUML URL encoding ─────────────────────────────────────────────────────
-# PlantUML server uses a custom base64 alphabet + zlib deflate (no headers).
+# PlantUML server requires: zlib deflate (no headers) + custom base64 alphabet.
 
 _PLANTUML_ALPHABET = (
     "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_"
 )
-
-
-def _encode6bit(b: int) -> str:
-    return _PLANTUML_ALPHABET[b & 0x3F]
 
 
 def _append3bytes(b1: int, b2: int, b3: int) -> str:
@@ -42,30 +37,27 @@ def _append3bytes(b1: int, b2: int, b3: int) -> str:
     c3 = ((b2 & 0xF) << 2) | (b3 >> 6)
     c4 = b3 & 0x3F
     return (
-        _encode6bit(c1)
-        + _encode6bit(c2)
-        + _encode6bit(c3)
-        + _encode6bit(c4)
+        _PLANTUML_ALPHABET[c1]
+        + _PLANTUML_ALPHABET[c2]
+        + _PLANTUML_ALPHABET[c3]
+        + _PLANTUML_ALPHABET[c4]
     )
 
 
 def _plantuml_base64(data: bytes) -> str:
     result = []
-    i = 0
-    while i < len(data):
+    for i in range(0, len(data), 3):
         b1 = data[i]
         b2 = data[i + 1] if i + 1 < len(data) else 0
         b3 = data[i + 2] if i + 2 < len(data) else 0
         result.append(_append3bytes(b1, b2, b3))
-        i += 3
     return "".join(result)
 
 
 def encode_plantuml(uml_text: str) -> str:
     """Encode a PlantUML diagram string to its URL-safe token."""
     compressed = zlib.compress(uml_text.encode("utf-8"))
-    # Strip zlib header (2 bytes) and checksum (4 bytes) → raw deflate
-    deflated = compressed[2:-4]
+    deflated = compressed[2:-4]  # strip zlib header (2 bytes) + checksum (4 bytes)
     return _plantuml_base64(deflated)
 
 
@@ -79,77 +71,60 @@ def fetch_png(uml_text: str) -> bytes:
     url = f"{PLANTUML_SERVER}/{token}"
     response = requests.get(url, timeout=30)
     response.raise_for_status()
-    if response.headers.get("Content-Type", "").startswith("text"):
-        # Server returned an error page instead of a PNG
+    content_type = response.headers.get("Content-Type", "")
+    if not content_type.startswith("image/"):
         raise RuntimeError(
-            f"PlantUML server returned text instead of PNG.\n"
-            f"URL: {url}\nResponse: {response.text[:500]}"
+            f"PlantUML server returned non-image response ({content_type}).\n"
+            f"URL: {url}\nBody (first 300 chars): {response.text[:300]}"
         )
     return response.content
 
 
 # ─── Main ─────────────────────────────────────────────────────────────────────
 
-README_PATH = Path(__file__).parent / "README.md"
-IMAGES_DIR = Path(__file__).parent / "docs" / "images"
-
-# Matches a ```plantuml ... ``` block, capturing the diagram name from @startuml
-BLOCK_PATTERN = re.compile(
-    r"```plantuml\n(@startuml\s+(\S+).*?@enduml)\n```",
-    re.DOTALL,
-)
-
-# The "Paste the block above..." hint line that follows some diagrams
-PASTE_HINT_PATTERN = re.compile(
-    r"\n\n> Paste the block above into \[.*?\]\(.*?\)[^\n]*\n"
-)
+ROOT = Path(__file__).parent
+DIAGRAMS_DIR = ROOT / "docs" / "diagrams"
+IMAGES_DIR = ROOT / "docs" / "images"
 
 
 def main():
-    if not README_PATH.exists():
-        print(f"ERROR: {README_PATH} not found.", file=sys.stderr)
+    if not DIAGRAMS_DIR.exists():
+        print(f"ERROR: {DIAGRAMS_DIR} not found.", file=sys.stderr)
         sys.exit(1)
+
+    puml_files = sorted(DIAGRAMS_DIR.glob("*.puml"))
+    if not puml_files:
+        print(f"No .puml files found in {DIAGRAMS_DIR}.")
+        return
 
     IMAGES_DIR.mkdir(parents=True, exist_ok=True)
 
-    readme = README_PATH.read_text(encoding="utf-8")
-    matches = list(BLOCK_PATTERN.finditer(readme))
+    print(f"Found {len(puml_files)} diagram(s) in {DIAGRAMS_DIR.relative_to(ROOT)}/\n")
+    errors = []
 
-    if not matches:
-        print("No ```plantuml blocks found in README.md.")
-        return
+    for puml_file in puml_files:
+        name = puml_file.stem
+        png_path = IMAGES_DIR / f"{name}.png"
+        rel_png = png_path.relative_to(ROOT).as_posix()
 
-    print(f"Found {len(matches)} PlantUML diagram(s).")
-    replacements: list[tuple[str, str]] = []  # (original_block, markdown_image)
-
-    for match in matches:
-        uml_text = match.group(1)
-        diagram_name = match.group(2)
-        png_path = IMAGES_DIR / f"{diagram_name}.png"
-        rel_path = png_path.relative_to(README_PATH.parent).as_posix()
-
-        print(f"  Rendering '{diagram_name}' ... ", end="", flush=True)
+        print(f"  Rendering '{name}' ...", end=" ", flush=True)
         try:
+            uml_text = puml_file.read_text(encoding="utf-8")
             png_data = fetch_png(uml_text)
             png_path.write_bytes(png_data)
-            print(f"saved to {rel_path} ({len(png_data):,} bytes)")
+            print(f"saved ({len(png_data):,} bytes)  ->  {rel_png}")
         except Exception as exc:
-            print(f"FAILED: {exc}", file=sys.stderr)
-            sys.exit(1)
+            print(f"FAILED")
+            errors.append((name, exc))
 
-        md_image = f"![{diagram_name}]({rel_path})"
-        replacements.append((match.group(0), md_image))
-
-    # Apply replacements
-    updated = readme
-    for original_block, md_image in replacements:
-        updated = updated.replace(original_block, md_image, 1)
-
-    # Remove "Paste the block above..." hint lines (no longer needed)
-    updated = PASTE_HINT_PATTERN.sub("\n\n", updated)
-
-    README_PATH.write_text(updated, encoding="utf-8")
-    print(f"\nREADME.md updated — {len(matches)} diagram(s) replaced with PNG references.")
+    print()
+    if errors:
+        for name, exc in errors:
+            print(f"ERROR [{name}]: {exc}", file=sys.stderr)
+        sys.exit(1)
+    else:
+        print(f"All {len(puml_files)} diagram(s) rendered successfully.")
+        print(f"Images saved to: {IMAGES_DIR.relative_to(ROOT)}/")
 
 
 if __name__ == "__main__":

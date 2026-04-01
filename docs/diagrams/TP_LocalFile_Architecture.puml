@@ -1,0 +1,48 @@
+@startuml TP_LocalFile_Architecture
+
+skinparam backgroundColor #FAFAFA
+skinparam componentStyle rectangle
+skinparam ArrowColor #444444
+skinparam defaultFontName Arial
+
+actor "Tax Consultant" as user
+
+package "Browser" {
+  component "React + TypeScript\nFrontend :3000" as frontend
+}
+
+package "Docker Compose" {
+
+  package "Backend :8000" {
+    component "Django REST API\n(Gunicorn)" as django
+    component "Celery Worker\n(async tasks)" as celery
+  }
+
+  database "PostgreSQL :5432\n(project state as JSONB)" as db
+  database "Redis :6379\n(task queue + results)" as redis
+
+  package "tp_app/  (volume-mounted)" {
+    component "LangGraph Orchestrator\n(Parallel AI pipeline)" as langgraph
+    component "DOCX Export\n(python-docx + docxtpl)" as docx
+    component "Document Parser\n(pdfplumber)" as parser
+  }
+}
+
+package "External APIs" {
+  component "Groq / OpenAI  (LLM)" as llm
+  component "Tavily  (Web Search)" as tavily
+}
+
+user        --> frontend   : browser
+frontend    --> django     : REST API (Axios/JSON)
+django      --> db         : read/write project state
+django      --> redis      : enqueue Celery tasks
+redis       --> celery     : dequeue tasks
+celery      --> langgraph  : run_agents(state)
+celery      --> parser     : extract_documents(files)
+django      --> docx       : export_docx(state)
+langgraph   --> llm        : LLM inference
+langgraph   --> tavily     : web research
+django      --> frontend   : state + task status
+
+@enduml

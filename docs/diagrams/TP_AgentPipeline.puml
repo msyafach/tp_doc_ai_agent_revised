@@ -1,55 +1,46 @@
 @startuml TP_AgentPipeline
 left to right direction
-scale 1800 width
 
 skinparam backgroundColor #FAFAFA
 skinparam ArrowColor #555555
 skinparam defaultFontName Arial
 skinparam componentBackgroundColor #EEF6EE
 skinparam componentBorderColor #5A9E5A
-skinparam componentFontSize 11
-skinparam noteFontSize 10
-skinparam noteBackgroundColor #FFFDE7
-skinparam noteBorderColor #F9A825
+skinparam componentFontSize 10
+skinparam nodesep 12
+skinparam ranksep 12
+skinparam padding 5
 
-[START] --> [Describe\nBusiness\nActivities]
-[Describe\nBusiness\nActivities] --> [Write Supply\nChain Overview]
+' ── Phase 1: Setup ──────────────────────────────────────────────────────────
+[START] --> [Describe Business\nActivities]
+[Describe Business\nActivities] --> [Write Supply\nChain Overview]
 
-[Write Supply\nChain Overview] --> [Research Global\nIndustry Trends] : Branch A
+' ── Phase 2: Parallel research + analysis ───────────────────────────────────
+[Write Supply\nChain Overview] --> [Industry Research\n(Global & Indonesia)] : Branch A
 [Write Supply\nChain Overview] --> [Write Functional\nAnalysis] : Branch B
 
-note bottom of [Research Global\nIndustry Trends]
-  Tavily: global market,
-  CAGR, major players
-end note
-
-[Research Global\nIndustry Trends] --> [Research Indonesian\nIndustry]
-[Research Indonesian\nIndustry] --> [Analyze Company\nLocation & Market]
-[Analyze Company\nLocation & Market] --> [Research\nRegulations]
-[Research\nRegulations] --> [Assess Business\nEnvironment]
-[Assess Business\nEnvironment] --> [JOIN 1]
+[Industry Research\n(Global & Indonesia)] --> [Location, Regulations\n& Macro Environment]
+[Location, Regulations\n& Macro Environment] --> [JOIN 1]
 
 [Write Functional\nAnalysis] --> [Determine Business\nCharacterization]
 [Determine Business\nCharacterization] --> [JOIN 1]
 
-[JOIN 1] --> [Write Background\nof Transactions]
-[Write Background\nof Transactions] --> [Write Comparability\nAnalysis]
-[Write Comparability\nAnalysis] --> [Select TP\nMethod (TNMM)]
-[Select TP\nMethod (TNMM)] --> [Select Profit\nLevel Indicator]
+' ── Phase 3: Transaction analysis ───────────────────────────────────────────
+[JOIN 1] --> [Write Transaction\nBackground]
+[Write Transaction\nBackground] --> [Comparability\nAnalysis]
+[Comparability\nAnalysis] --> [Select TP\nMethod (TNMM)]
+[Select TP\nMethod (TNMM)] --> [Select\nPLI]
 
-[Select Profit\nLevel Indicator] --> [Write TP\nConclusion] : Branch C
-[Select Profit\nLevel Indicator] --> [Write P/L\nOverview] : Branch D
-[Select Profit\nLevel Indicator] --> [Research\nComparable Companies] : Branch E
-
-note bottom of [Research\nComparable Companies]
-  Tavily search
-  per company
-end note
+' ── Phase 4: Parallel output ────────────────────────────────────────────────
+[Select\nPLI] --> [Write TP\nConclusion] : Branch C
+[Select\nPLI] --> [Write P/L\nOverview] : Branch D
+[Select\nPLI] --> [Research Comparable\nCompanies] : Branch E
 
 [Write TP\nConclusion] --> [JOIN 2]
 [Write P/L\nOverview] --> [JOIN 2]
-[Research\nComparable Companies] --> [JOIN 2]
+[Research Comparable\nCompanies] --> [JOIN 2]
 
+' ── Phase 5: Summary ────────────────────────────────────────────────────────
 [JOIN 2] --> [Write Executive\nSummary]
 [Write Executive\nSummary] --> [END]
 

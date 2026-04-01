@@ -1,0 +1,130 @@
+version: "3.9"
+
+services:
+  # ── PostgreSQL database ─────────────────────────────────────────────────────
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-tp_db}
+      POSTGRES_USER: ${POSTGRES_USER:-tp_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-tp_pass}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-tp_user}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - tp_net
+
+  # ── Redis (Celery broker & result backend) ──────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - tp_net
+
+  # ── Django backend ──────────────────────────────────────────────────────────
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    restart: unless-stopped
+    working_dir: /app/backend
+    command: >
+      sh -c "python manage.py makemigrations --noinput &&
+             python manage.py migrate --noinput &&
+             python manage.py collectstatic --noinput &&
+             gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 2 --timeout 180"
+    environment:
+      DJANGO_SETTINGS_MODULE: config.settings
+      SECRET_KEY: ${SECRET_KEY:-django-insecure-dev-key-change-me}
+      DEBUG: ${DEBUG:-True}
+      ALLOWED_HOSTS: ${ALLOWED_HOSTS:-*}
+      POSTGRES_DB: ${POSTGRES_DB:-tp_db}
+      POSTGRES_USER: ${POSTGRES_USER:-tp_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-tp_pass}
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+      REDIS_URL: redis://redis:6379/0
+    volumes:
+      - ./backend:/app/backend
+      - ./tp_app:/app/tp_app        # mount tp_app so agents/export are importable
+      - backend_static:/app/backend/staticfiles
+      - backend_media:/app/backend/media
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - tp_net
+
+  # ── Celery worker ───────────────────────────────────────────────────────────
+  worker:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    restart: unless-stopped
+    working_dir: /app/backend
+    command: celery -A config worker --loglevel=info --concurrency=2
+    environment:
+      DJANGO_SETTINGS_MODULE: config.settings
+      SECRET_KEY: ${SECRET_KEY:-django-insecure-dev-key-change-me}
+      DEBUG: ${DEBUG:-True}
+      POSTGRES_DB: ${POSTGRES_DB:-tp_db}
+      POSTGRES_USER: ${POSTGRES_USER:-tp_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-tp_pass}
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+      REDIS_URL: redis://redis:6379/0
+    volumes:
+      - ./backend:/app/backend
+      - ./tp_app:/app/tp_app
+      - backend_media:/app/backend/media
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      backend:
+        condition: service_started
+    networks:
+      - tp_net
+
+  # ── React frontend (dev) ────────────────────────────────────────────────────
+  frontend:
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+      target: dev
+    restart: unless-stopped
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules          # anonymous volume so host node_modules won't shadow
+    ports:
+      - "3000:3000"
+    environment:
+      VITE_API_BASE_URL: http://backend:8000
+    depends_on:
+      - backend
+    networks:
+      - tp_net
+
+volumes:
+  postgres_data:
+  backend_static:
+  backend_media:
+
+networks:
+  tp_net:
+    driver: bridge

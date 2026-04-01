@@ -1,0 +1,27 @@
+django==5.0.6
+djangorestframework==3.15.2
+django-cors-headers==4.4.0
+django-environ==0.11.2
+psycopg2-binary==2.9.9
+celery==5.4.0
+redis==5.0.8
+kombu==5.3.4
+
+# Document processing (reuse tp_app libs)
+python-docx==1.1.2
+docxtpl==0.18.0
+pypdf==4.3.1
+openpyxl==3.1.5
+faiss-cpu==1.8.0
+langchain==0.3.1
+langchain-community==0.3.1
+langchain-groq==0.2.1
+langchain-openai==0.2.1
+langgraph==0.2.27
+tavily-python==0.4.0
+python-dotenv==1.0.1
+pillow==10.4.0
+
+# Utilities
+gunicorn==22.0.0
+whitenoise==6.7.0

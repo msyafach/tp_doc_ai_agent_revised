@@ -63,7 +63,7 @@ def init_state():
         "transaction_details_text": "",
         "pricing_policy": "",
         "affiliated_transactions": [{"name": "", "country": "", "affiliation_type": "", "transaction_type": "", "type_of_product": "", "amount_idr": "", "quantity": "", "price_per_unit": ""}],
-        "independent_transactions": [{"name": "", "country": "", "transaction_type": "", "value": ""}],
+        "independent_transactions": [{"name": "", "country": "", "transaction_type": "", "type_of_product": "", "amount_idr": "", "quantity": "", "avg_price_per_unit": ""}],
         "financial_data": {},
         "financial_data_prior": {},
         "comparable_companies": [{"name": "", "country": "", "description": "", "ros_data": ""}],
@@ -879,13 +879,42 @@ elif current_step == 5:
         st.rerun()
 
     st.divider()
-    st.subheader("Table 4.2 — Independent Transactions")
-    st.caption("Independent Party | Location | Transaction Type | Amount (in IDR)")
-    add_dynamic_rows(
-        "independent_transactions",
-        {"name": "", "country": "", "transaction_type": "", "value": ""},
-        "Add Independent Transaction"
-    )
+    st.subheader("Table 4.2 & Appendix 8 — Independent Transactions")
+    st.caption("Independent Party | Location | Transaction Type | Type of Product | Amount (IDR) | Quantity | Avg Price Per Unit (IDR)")
+
+    _it_list = st.session_state.independent_transactions
+    _IT_COLS = [
+        ("name",               "Independent Party"),
+        ("country",            "Location"),
+        ("transaction_type",   "Transaction Type"),
+        ("type_of_product",    "Type of Product"),
+        ("amount_idr",         "Amount (IDR)"),
+        ("quantity",           "Quantity"),
+        ("avg_price_per_unit", "Avg Price Per Unit (IDR)"),
+    ]
+
+    # Header
+    _it_header_cols = st.columns([3, 2, 2, 3, 2, 2, 2, 1])
+    _it_labels = [lbl for _, lbl in _IT_COLS] + [""]
+    for _col, _lbl in zip(_it_header_cols, _it_labels):
+        _col.markdown(f"**{_lbl}**")
+
+    for _i, _row in enumerate(_it_list):
+        _cols = st.columns([3, 2, 2, 3, 2, 2, 2, 1])
+        for _col, (_key, _lbl) in zip(_cols[:7], _IT_COLS):
+            _row[_key] = _col.text_input(
+                _lbl, value=_row.get(_key, ""),
+                key=f"it_{_i}_{_key}", label_visibility="collapsed"
+            )
+        if _cols[7].button("🗑", key=f"it_del_{_i}") and len(_it_list) > 1:
+            _it_list.pop(_i)
+            st.rerun()
+
+    st.session_state.independent_transactions = _it_list
+    if st.button("➕ Add Independent Transaction"):
+        _it_list.append({"name": "", "country": "", "transaction_type": "",
+                         "type_of_product": "", "amount_idr": "", "quantity": "", "avg_price_per_unit": ""})
+        st.rerun()
 
 
 # ─── Step 6: Financial Data ──────────────────────────────────────────────────

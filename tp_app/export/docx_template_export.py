@@ -227,6 +227,26 @@ def build_context(state: dict, tpl: DocxTemplate) -> dict:
     independent_transactions = state.get("independent_transactions", [])
     for i, t in enumerate(independent_transactions):
         t.setdefault("no", str(i + 1))
+        t.setdefault("type_of_product",    t.pop("value", ""))
+        t.setdefault("amount_idr",         "")
+        t.setdefault("quantity",           "")
+        t.setdefault("avg_price_per_unit", "")
+
+    # Compute totals for Appendix 8 Total row
+    def _parse_num(s):
+        try:
+            return float(str(s).replace(",", "").replace(".", "").strip() or "0")
+        except ValueError:
+            return 0.0
+
+    _total_amount = sum(_parse_num(t.get("amount_idr", "")) for t in independent_transactions)
+    _total_qty    = sum(_parse_num(t.get("quantity",   "")) for t in independent_transactions)
+    _total_avg    = (_total_amount / _total_qty) if _total_qty else 0.0
+    it_total = {
+        "amount_idr":         f"{_total_amount:,.0f}" if _total_amount else "",
+        "quantity":           f"{_total_qty:,.0f}"    if _total_qty    else "",
+        "avg_price_per_unit": f"{_total_avg:,.0f}"    if _total_avg    else "",
+    }
 
     # ── search criteria ───────────────────────────────────────────────────────
     search_criteria_results = [
@@ -382,6 +402,7 @@ def build_context(state: dict, tpl: DocxTemplate) -> dict:
         "affiliated_parties":          affiliated_parties,
         "affiliated_transactions":     affiliated_transactions,
         "independent_transactions":    independent_transactions,
+        "it_total":                    it_total,
         "transaction_details_text":    _strip_md(_safe(state.get("transaction_details_text"))),
         "pricing_policy":              _strip_md(_safe(state.get("pricing_policy"))),
         # Sec 4.1.2.4 — static template text

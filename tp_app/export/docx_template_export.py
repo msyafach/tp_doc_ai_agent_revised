@@ -201,7 +201,7 @@ def build_context(state: dict, tpl: DocxTemplate) -> dict:
     # We also allow a dedicated list if present.
     affiliated_transactions = state.get("affiliated_transactions", [])
     if not affiliated_transactions:
-        # Build from affiliated_parties
+        # Build from affiliated_parties (fallback)
         affiliated_transactions = [
             {
                 "no":               str(i + 1),
@@ -209,15 +209,20 @@ def build_context(state: dict, tpl: DocxTemplate) -> dict:
                 "country":          _safe(a.get("country")),
                 "affiliation_type": _safe(a.get("relationship")),
                 "transaction_type": _safe(a.get("transaction_type")),
-                "value":            "",
-                "note":             "",
+                "type_of_product":  "",
+                "amount_idr":       "",
+                "quantity":         "",
+                "price_per_unit":   "",
             }
             for i, a in enumerate(a for a in state.get("affiliated_parties", []) if a.get("name"))
         ]
     else:
-        # Ensure no field exists
         for i, a in enumerate(affiliated_transactions):
             a.setdefault("no", str(i + 1))
+            a.setdefault("type_of_product", a.pop("value", ""))
+            a.setdefault("amount_idr",      a.pop("note", ""))
+            a.setdefault("quantity",        "")
+            a.setdefault("price_per_unit",  "")
 
     independent_transactions = state.get("independent_transactions", [])
     for i, t in enumerate(independent_transactions):

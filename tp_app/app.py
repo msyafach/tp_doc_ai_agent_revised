@@ -62,7 +62,7 @@ def init_state():
         "transaction_counterparties": [],
         "transaction_details_text": "",
         "pricing_policy": "",
-        "affiliated_transactions": [{"name": "", "country": "", "affiliation_type": "", "transaction_type": "", "value": "", "note": ""}],
+        "affiliated_transactions": [{"name": "", "country": "", "affiliation_type": "", "transaction_type": "", "type_of_product": "", "amount_idr": "", "quantity": "", "price_per_unit": ""}],
         "independent_transactions": [{"name": "", "country": "", "transaction_type": "", "value": ""}],
         "financial_data": {},
         "financial_data_prior": {},
@@ -840,13 +840,43 @@ elif current_step == 5:
     )
 
     st.divider()
-    st.subheader("Table 4.1 — Affiliated Transactions")
-    st.caption("Affiliated Party | Jurisdiction | Form of Affiliation | Type of Transaction | Type of Product | Amount (in IDR)")
-    add_dynamic_rows(
-        "affiliated_transactions",
-        {"name": "", "country": "", "affiliation_type": "", "transaction_type": "", "value": "", "note": ""},
-        "Add Affiliated Transaction"
-    )
+    st.subheader("Table 4.1 & Appendix 7 — Affiliated Transactions")
+    st.caption("Affiliated Party | Jurisdiction | Form of Affiliation | Type of Transaction | Type of Product | Amount (IDR) | Quantity | Price Per Unit (IDR)")
+
+    _at_list = st.session_state.affiliated_transactions
+    _AT_COLS = [
+        ("name",             "Affiliated Party"),
+        ("country",          "Jurisdiction"),
+        ("affiliation_type", "Form of Affiliation"),
+        ("transaction_type", "Type of Transaction"),
+        ("type_of_product",  "Type of Product"),
+        ("amount_idr",       "Amount (IDR)"),
+        ("quantity",         "Quantity"),
+        ("price_per_unit",   "Price Per Unit (IDR)"),
+    ]
+
+    # Header
+    _at_header_cols = st.columns([3, 2, 3, 3, 3, 2, 2, 2, 1])
+    _at_labels = [lbl for _, lbl in _AT_COLS] + [""]
+    for _col, _lbl in zip(_at_header_cols, _at_labels):
+        _col.markdown(f"**{_lbl}**")
+
+    for _i, _row in enumerate(_at_list):
+        _cols = st.columns([3, 2, 3, 3, 3, 2, 2, 2, 1])
+        for _col, (_key, _lbl) in zip(_cols[:8], _AT_COLS):
+            _row[_key] = _col.text_input(
+                _lbl, value=_row.get(_key, ""),
+                key=f"at_{_i}_{_key}", label_visibility="collapsed"
+            )
+        if _cols[8].button("🗑", key=f"at_del_{_i}") and len(_at_list) > 1:
+            _at_list.pop(_i)
+            st.rerun()
+
+    st.session_state.affiliated_transactions = _at_list
+    if st.button("➕ Add Affiliated Transaction"):
+        _at_list.append({"name": "", "country": "", "affiliation_type": "", "transaction_type": "",
+                         "type_of_product": "", "amount_idr": "", "quantity": "", "price_per_unit": ""})
+        st.rerun()
 
     st.divider()
     st.subheader("Table 4.2 — Independent Transactions")

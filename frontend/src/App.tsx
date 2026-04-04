@@ -16,6 +16,7 @@ import { Step10AIAgents } from "./pages/Step10AIAgents";
 import { Step11ReviewExport } from "./pages/Step11ReviewExport";
 import { useProjectStore } from "./store/projectStore";
 import { saveProject, getProject } from "./api/projects";
+import { Component as LumaSpin } from "@/components/ui/luma-spin";
 
 const queryClient = new QueryClient();
 
@@ -39,7 +40,17 @@ const TOTAL_STEPS = STEP_COMPONENTS.length;
 type View = "loading" | "dashboard" | "wizard";
 
 function AppInner() {
-  const { projectId, state, isDirty, setProjectId, setFullState, setState, setStep, markClean, reset } = useProjectStore();
+  const {
+    projectId,
+    state,
+    isDirty,
+    setProjectId,
+    setFullState,
+    setState,
+    setStep,
+    markClean,
+    reset,
+  } = useProjectStore();
   const [view, setView] = useState<View>("loading");
   const [saving, setSaving] = useState(false);
   const [stepErrors, setStepErrors] = useState<string[]>([]);
@@ -72,7 +83,9 @@ function AppInner() {
       try {
         await saveProject(projectId, { state });
         markClean();
-      } catch { /* ignore */ }
+      } catch {
+        /* ignore */
+      }
       setSaving(false);
     }, 1500);
     return () => clearTimeout(t);
@@ -91,13 +104,16 @@ function AppInner() {
   const validateStep = (step: number): string[] => {
     if (step === 1) {
       const errs: string[] = [];
-      if (!state.company_name.trim()) errs.push("Full Company Name is required");
-      if (!state.company_short_name.trim()) errs.push("Short Name / Abbreviation is required");
+      if (!state.company_name.trim())
+        errs.push("Full Company Name is required");
+      if (!state.company_short_name.trim())
+        errs.push("Short Name / Abbreviation is required");
       if (!state.fiscal_year.trim()) errs.push("Fiscal Year is required");
       return errs;
     }
     if (step === 5) {
-      if (!state.transaction_details_text.trim()) return ["Transaction Details are required"];
+      if (!state.transaction_details_text.trim())
+        return ["Transaction Details are required"];
     }
     return [];
   };
@@ -126,7 +142,7 @@ function AppInner() {
     return (
       <div className="flex h-screen items-center justify-center bg-gray-50">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-10 h-10 border-4 border-brand-green/30 border-t-brand-green rounded-full animate-spin" />
+          <LumaSpin />
           <p className="text-sm text-gray-500">Loading…</p>
         </div>
       </div>
@@ -143,7 +159,10 @@ function AppInner() {
 
   return (
     <div className="flex min-h-screen bg-gray-50">
-      <Sidebar onLoadDummy={loadDummy} onBackToDashboard={handleBackToDashboard} />
+      <Sidebar
+        onLoadDummy={loadDummy}
+        onBackToDashboard={handleBackToDashboard}
+      />
 
       {/* Main content */}
       <div className="flex-1 flex flex-col min-h-screen">
@@ -151,7 +170,9 @@ function AppInner() {
         <div className="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between sticky top-0 z-10">
           <div className="text-sm text-gray-500">
             {state.company_short_name && (
-              <span className="font-medium text-gray-700">{state.company_short_name}</span>
+              <span className="font-medium text-gray-700">
+                {state.company_short_name}
+              </span>
             )}
             {state.company_short_name && state.fiscal_year && " · "}
             {state.fiscal_year && `FY ${state.fiscal_year}`}
@@ -177,7 +198,9 @@ function AppInner() {
           {stepErrors.length > 0 && (
             <div className="mb-4 rounded-lg bg-red-50 border border-red-200 px-4 py-3 space-y-1">
               {stepErrors.map((e) => (
-                <p key={e} className="text-sm text-red-700">{e}</p>
+                <p key={e} className="text-sm text-red-700">
+                  {e}
+                </p>
               ))}
             </div>
           )}

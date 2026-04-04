@@ -6,3 +6,4 @@
 6. Always give pull request message each time you commit the code
 7. Always check the terminal kind, is it powershell or cmd or linux terminal and adjust your command accordingly
 8. Always tell your plan to the user and ask for their confirmation
+9. Do not touch .git directory

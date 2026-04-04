@@ -1,23 +1,37 @@
 import React, { useRef, useState } from "react";
 import { ChevronLeft, Settings } from "lucide-react";
-import clsx from "clsx";
 import { useProjectStore } from "../store/projectStore";
 import { exportProjectJson, loadProjectJson } from "../api/projects";
 import { SettingsModal } from "./SettingsModal";
+import {
+  Sidebar as SidebarRoot,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuBadge,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+  SidebarSeparator,
+} from "@/components/ui/sidebar";
 
 const STEPS = [
-  { label: "Upload Documents"      },
-  { label: "Company Identity"       },
-  { label: "Ownership & Mgmt"       },
-  { label: "Affiliated Parties"     },
-  { label: "Business Activities"    },
-  { label: "Transactions"           },
-  { label: "Financial Data"         },
-  { label: "Comparable Companies"   },
-  { label: "TP Analysis"            },
-  { label: "Non-Financial Events"   },
-  { label: "Run AI Agents"          },
-  { label: "Review & Export"        },
+  { label: "Upload Documents" },
+  { label: "Company Identity" },
+  { label: "Ownership & Mgmt" },
+  { label: "Affiliated Parties" },
+  { label: "Business Activities" },
+  { label: "Transactions" },
+  { label: "Financial Data" },
+  { label: "Comparable Companies" },
+  { label: "TP Analysis" },
+  { label: "Non-Financial Events" },
+  { label: "Run AI Agents" },
+  { label: "Review & Export" },
 ];
 
 interface Props {
@@ -51,7 +65,7 @@ export function Sidebar({ onLoadDummy, onBackToDashboard }: Props) {
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `tp_project.json`;
+      a.download = "tp_project.json";
       a.click();
       URL.revokeObjectURL(url);
     }
@@ -71,105 +85,107 @@ export function Sidebar({ onLoadDummy, onBackToDashboard }: Props) {
 
   return (
     <>
-      <aside className="w-64 min-h-screen bg-brand-grey flex flex-col text-white overflow-y-auto">
-        {/* Header */}
-        <div className="px-4 pt-5 pb-4 border-b border-white/10">
-          <div className="flex items-center gap-2 mb-2 p-2 bg-white rounded-lg inline-block">
-            <img src="/rsm-logo.png" alt="RSM" className="h-8 w-auto" />
+      <SidebarProvider defaultOpen>
+        <SidebarRoot collapsible="none" className="w-64 min-h-screen border-r border-white/10 bg-brand-grey text-white">
+          <SidebarHeader className="px-4 pb-4 pt-5">
+            <div className="mb-2 inline-block rounded-lg bg-white p-2">
+              <img src="/rsm-logo.png" alt="RSM" className="h-8 w-auto" />
+            </div>
+            <span className="block text-sm font-bold leading-tight">TP Local File Generator</span>
+            <p className="mt-0.5 text-xs text-white/70">PMK-172 · 2023 Compliant</p>
+            <button
+              onClick={onBackToDashboard}
+              className="mt-3 flex items-center gap-1.5 text-xs text-white/60 transition-colors hover:text-white"
+            >
+              <ChevronLeft className="h-3.5 w-3.5" />
+              Back to Projects
+            </button>
+          </SidebarHeader>
+
+          <SidebarSeparator className="mx-0 bg-white/10" />
+
+          <div className="px-4 py-3">
+            <div className="mb-1.5 flex justify-between text-xs text-white/80">
+              <span>
+                Step {currentStep + 1} of {STEPS.length}
+              </span>
+              <span>{Math.round(progress * 100)}%</span>
+            </div>
+            <div className="h-1.5 overflow-hidden rounded-full bg-white/20">
+              <div className="h-full rounded-full bg-brand-blue transition-all duration-300" style={{ width: `${progress * 100}%` }} />
+            </div>
           </div>
-          <span className="font-bold text-sm leading-tight block">TP Local File Generator</span>
-          <p className="text-xs text-white/70 mt-0.5">PMK-172 · 2023 Compliant</p>
-          <button
-            onClick={onBackToDashboard}
-            className="mt-3 flex items-center gap-1.5 text-xs text-white/60 hover:text-white transition-colors"
-          >
-            <ChevronLeft className="w-3.5 h-3.5" />
-            Back to Projects
-          </button>
-        </div>
 
-        {/* Progress */}
-        <div className="px-4 py-3 border-b border-white/10">
-          <div className="flex justify-between text-xs text-white/80 mb-1.5">
-            <span>Step {currentStep + 1} of {STEPS.length}</span>
-            <span>{Math.round(progress * 100)}%</span>
-          </div>
-          <div className="h-1.5 bg-white/20 rounded-full overflow-hidden">
-            <div
-              className="h-full bg-brand-blue rounded-full transition-all duration-300"
-              style={{ width: `${progress * 100}%` }}
-            />
-          </div>
-        </div>
+          <SidebarSeparator className="mx-0 bg-white/10" />
 
-        {/* Navigation */}
-        <nav className="px-2 py-3 flex-1 space-y-0.5">
-          {STEPS.map((step, idx) => {
-            const isActive = idx === currentStep;
-            const isDone = idx < currentStep;
+          <SidebarContent className="px-2 py-3">
+            <SidebarGroup className="p-0">
+              <SidebarGroupLabel className="sr-only">Steps</SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu className="gap-0.5">
+                  {STEPS.map((step, idx) => {
+                    const isActive = idx === currentStep;
+                    const isDone = idx < currentStep;
 
-            return (
-              <button
-                key={idx}
-                onClick={() => setStep(idx)}
-                className={clsx(
-                  "w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-left text-sm transition-all",
-                  isActive
-                    ? "bg-white text-brand-grey font-semibold shadow-sm"
-                    : isDone
-                    ? "text-white/90 hover:bg-white/10"
-                    : "text-white/60 hover:bg-white/10 hover:text-white",
-                )}
-              >
-                <span className="flex-1 leading-tight">{step.label}</span>
-                {isDone && !isActive && (
-                  <span className="w-2 h-2 rounded-full bg-brand-blue flex-shrink-0" />
-                )}
-              </button>
-            );
-          })}
-        </nav>
+                    return (
+                      <SidebarMenuItem key={idx}>
+                        <SidebarMenuButton
+                          onClick={() => setStep(idx)}
+                          isActive={isActive}
+                          className={
+                            isActive
+                              ? "bg-white font-semibold text-brand-grey shadow-sm hover:bg-white"
+                              : isDone
+                                ? "text-white/90 hover:bg-white/10"
+                                : "text-white/60 hover:bg-white/10 hover:text-white"
+                          }
+                        >
+                          <span className="flex-1 leading-tight">{step.label}</span>
+                          {isDone && !isActive && <SidebarMenuBadge className="bg-brand-blue text-transparent">•</SidebarMenuBadge>}
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    );
+                  })}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          </SidebarContent>
 
-        {/* Footer actions */}
-        <div className="px-4 py-4 border-t border-white/10 space-y-2">
-          {/* Settings button */}
-          <button
-            onClick={() => setShowSettings(true)}
-            className="w-full flex items-center justify-center gap-2 text-xs bg-white/10 hover:bg-white/20 border border-white/20 rounded-lg py-2 transition-colors"
-          >
-            <Settings className="w-3.5 h-3.5" />
-            API Settings
-          </button>
+          <SidebarSeparator className="mx-0 bg-white/10" />
 
-          <button
-            onClick={handleSaveJson}
-            className="w-full flex items-center justify-center text-xs bg-white/10 hover:bg-white/20 border border-white/20 rounded-lg py-2 transition-colors"
-          >
-            Save Project JSON
-          </button>
+          <SidebarFooter className="space-y-2 px-4 py-4">
+            <button
+              onClick={() => setShowSettings(true)}
+              className="flex w-full items-center justify-center gap-2 rounded-lg border border-white/20 bg-white/10 py-2 text-xs transition-colors hover:bg-white/20"
+            >
+              <Settings className="h-3.5 w-3.5" />
+              API Settings
+            </button>
 
-          <input
-            ref={fileRef}
-            type="file"
-            accept=".json"
-            className="hidden"
-            onChange={handleLoadJson}
-          />
-          <button
-            onClick={() => fileRef.current?.click()}
-            className="w-full flex items-center justify-center text-xs bg-white/10 hover:bg-white/20 border border-white/20 rounded-lg py-2 transition-colors"
-          >
-            Load Project JSON
-          </button>
+            <button
+              onClick={handleSaveJson}
+              className="w-full rounded-lg border border-white/20 bg-white/10 py-2 text-xs transition-colors hover:bg-white/20"
+            >
+              Save Project JSON
+            </button>
 
-          <button
-            onClick={onLoadDummy}
-            className="w-full flex items-center justify-center text-xs bg-brand-blue/30 hover:bg-brand-blue/40 border border-brand-blue/50 text-white rounded-lg py-2 transition-colors"
-          >
-            Fill Dummy Data
-          </button>
-        </div>
-      </aside>
+            <input ref={fileRef} type="file" accept=".json" className="hidden" onChange={handleLoadJson} />
+            <button
+              onClick={() => fileRef.current?.click()}
+              className="w-full rounded-lg border border-white/20 bg-white/10 py-2 text-xs transition-colors hover:bg-white/20"
+            >
+              Load Project JSON
+            </button>
+
+            <button
+              onClick={onLoadDummy}
+              className="w-full rounded-lg border border-brand-blue/50 bg-brand-blue/30 py-2 text-xs text-white transition-colors hover:bg-brand-blue/40"
+            >
+              Fill Dummy Data
+            </button>
+          </SidebarFooter>
+        </SidebarRoot>
+      </SidebarProvider>
 
       {showSettings && <SettingsModal onClose={() => setShowSettings(false)} />}
     </>

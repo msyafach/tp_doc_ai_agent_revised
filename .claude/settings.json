@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "word-document-server": {
+      "command": "uvx",
+      "args": ["--from", "office-word-mcp-server", "word_mcp_server"]
+    }
+  },
+  "autoMemoryEnabled": true
+}

@@ -10,7 +10,7 @@ interface Column<T> {
   width?: string;
 }
 
-interface Props<T extends Record<string, string | number>> {
+interface Props<T extends Record<string, unknown>> {
   rows: T[];
   columns: Column<T>[];
   onChange: (rows: T[]) => void;
@@ -19,7 +19,7 @@ interface Props<T extends Record<string, string | number>> {
   className?: string;
 }
 
-export function DynamicTable<T extends Record<string, string | number>>({
+export function DynamicTable<T extends Record<string, unknown>>({
   rows,
   columns,
   onChange,

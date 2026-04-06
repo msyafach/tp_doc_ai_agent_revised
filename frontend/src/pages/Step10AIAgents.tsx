@@ -45,7 +45,7 @@ const REVIEWABLE_SECTIONS: { key: string; label: string }[] = [
 ];
 
 export function Step10AIAgents() {
-  const { projectId, state, apiSettings, setState } = useProjectStore();
+  const { projectId, state, apiSettings, setState, setFullState } = useProjectStore();
   const [taskId, setTaskId] = useState<number | null>(null);
   const [task, setTask] = useState<AgentTask | null>(null);
   const [polling, setPolling] = useState(false);
@@ -111,7 +111,7 @@ export function Step10AIAgents() {
             if (t.status === "success" && t.result && projectId) {
               // Refresh project state from server
               const proj = await getProject(projectId);
-              setState(proj.state);
+              setFullState(proj.state);
             }
             return;
           }
@@ -148,7 +148,7 @@ export function Step10AIAgents() {
     setRegenLoading(null);
   };
 
-  const completedNodes = task?.progress_log.map((p) => p.node) ?? [];
+  const completedNodes = (task?.progress_log ?? []).map((p) => p.node);
   const allNodes = Object.keys(NODE_LABELS);
 
   return (

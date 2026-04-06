@@ -38,6 +38,7 @@ jobs:
     name: Deploy to Vercel (Production)
     needs: test
     runs-on: ubuntu-latest
+    environment: tp-secrets
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 
     steps:

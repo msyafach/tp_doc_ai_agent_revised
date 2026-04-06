@@ -130,10 +130,18 @@ export const useProjectStore = create<ProjectStore>((set) => ({
   setProjectId: (id) => set({ projectId: id }),
 
   setState: (updates) =>
-    set((s) => ({
-      state: { ...s.state, ...updates },
-      isDirty: true,
-    })),
+    set((s) => {
+      const next = { ...s.state, ...updates };
+      // Prevent null/non-array values from overriding existing valid arrays
+      (Object.keys(DEFAULT_STATE) as (keyof ProjectState)[]).forEach((key) => {
+        if (Array.isArray(DEFAULT_STATE[key]) && !Array.isArray((next as Record<string, unknown>)[key])) {
+          (next as Record<string, unknown>)[key] = Array.isArray((s.state as Record<string, unknown>)[key])
+            ? (s.state as Record<string, unknown>)[key]
+            : DEFAULT_STATE[key];
+        }
+      });
+      return { state: next as ProjectState, isDirty: true };
+    }),
 
   setFullState: (newState) =>
     set({ state: sanitizeState(newState), isDirty: false }),

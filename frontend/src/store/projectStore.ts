@@ -89,13 +89,14 @@ const DEFAULT_API_SETTINGS: ApiSettings = {
 
 function sanitizeState(raw: Partial<ProjectState>): ProjectState {
   const merged = { ...DEFAULT_STATE, ...raw };
-  // If a field that should be an array arrived as null/non-array, fall back to the default
+  const m = merged as unknown as Record<string, unknown>;
+  const d = DEFAULT_STATE as unknown as Record<string, unknown>;
   (Object.keys(DEFAULT_STATE) as (keyof ProjectState)[]).forEach((key) => {
-    if (Array.isArray(DEFAULT_STATE[key]) && !Array.isArray((merged as Record<string, unknown>)[key])) {
-      (merged as Record<string, unknown>)[key] = DEFAULT_STATE[key];
+    if (Array.isArray(d[key as string]) && !Array.isArray(m[key as string])) {
+      m[key as string] = d[key as string];
     }
   });
-  return merged as ProjectState;
+  return merged as unknown as ProjectState;
 }
 
 function loadSavedApiSettings(): ApiSettings {
@@ -132,15 +133,16 @@ export const useProjectStore = create<ProjectStore>((set) => ({
   setState: (updates) =>
     set((s) => {
       const next = { ...s.state, ...updates };
+      const n = next as unknown as Record<string, unknown>;
+      const cur = s.state as unknown as Record<string, unknown>;
+      const d = DEFAULT_STATE as unknown as Record<string, unknown>;
       // Prevent null/non-array values from overriding existing valid arrays
       (Object.keys(DEFAULT_STATE) as (keyof ProjectState)[]).forEach((key) => {
-        if (Array.isArray(DEFAULT_STATE[key]) && !Array.isArray((next as Record<string, unknown>)[key])) {
-          (next as Record<string, unknown>)[key] = Array.isArray((s.state as Record<string, unknown>)[key])
-            ? (s.state as Record<string, unknown>)[key]
-            : DEFAULT_STATE[key];
+        if (Array.isArray(d[key as string]) && !Array.isArray(n[key as string])) {
+          n[key as string] = Array.isArray(cur[key as string]) ? cur[key as string] : d[key as string];
         }
       });
-      return { state: next as ProjectState, isDirty: true };
+      return { state: next as unknown as ProjectState, isDirty: true };
     }),
 
   setFullState: (newState) =>

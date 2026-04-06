@@ -246,7 +246,7 @@ export function Step10AIAgents() {
           <div className="space-y-2">
             {REVIEWABLE_SECTIONS.map(({ key, label }) => {
               const isOpen = openSections.has(key);
-              const value = (state as Record<string,unknown>)[key] as string ?? "";
+              const value = (state as unknown as Record<string, string>)[key] ?? "";
               return (
                 <div key={key} className="border border-gray-200 rounded-lg overflow-hidden">
                   <button

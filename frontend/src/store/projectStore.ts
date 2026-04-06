@@ -87,6 +87,17 @@ const DEFAULT_API_SETTINGS: ApiSettings = {
   tavily_key: "",
 };
 
+function sanitizeState(raw: Partial<ProjectState>): ProjectState {
+  const merged = { ...DEFAULT_STATE, ...raw };
+  // If a field that should be an array arrived as null/non-array, fall back to the default
+  (Object.keys(DEFAULT_STATE) as (keyof ProjectState)[]).forEach((key) => {
+    if (Array.isArray(DEFAULT_STATE[key]) && !Array.isArray((merged as Record<string, unknown>)[key])) {
+      (merged as Record<string, unknown>)[key] = DEFAULT_STATE[key];
+    }
+  });
+  return merged as ProjectState;
+}
+
 function loadSavedApiSettings(): ApiSettings {
   try {
     const raw = localStorage.getItem("tp_api_settings");
@@ -125,7 +136,7 @@ export const useProjectStore = create<ProjectStore>((set) => ({
     })),
 
   setFullState: (newState) =>
-    set({ state: { ...DEFAULT_STATE, ...newState }, isDirty: false }),
+    set({ state: sanitizeState(newState), isDirty: false }),
 
   setApiSettings: (updates) =>
     set((s) => ({

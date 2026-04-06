@@ -124,8 +124,8 @@ export const useProjectStore = create<ProjectStore>((set) => ({
       isDirty: true,
     })),
 
-  setFullState: (state) =>
-    set({ state, isDirty: false }),
+  setFullState: (newState) =>
+    set({ state: { ...DEFAULT_STATE, ...newState }, isDirty: false }),
 
   setApiSettings: (updates) =>
     set((s) => ({

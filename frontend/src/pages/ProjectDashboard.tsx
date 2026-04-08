@@ -10,9 +10,10 @@ interface Props {
   isAdmin: boolean;
   username: string;
   onAdminClick: () => void;
+  onBackToLanding: () => void;
 }
 
-export function ProjectDashboard({ onProjectSelected, onLogout, isAdmin, username, onAdminClick }: Props) {
+export function ProjectDashboard({ onProjectSelected, onLogout, isAdmin, username, onAdminClick, onBackToLanding }: Props) {
   const { setProjectId, setFullState } = useProjectStore();
   const [projects, setProjects] = useState<ProjectListItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -109,9 +110,13 @@ export function ProjectDashboard({ onProjectSelected, onLogout, isAdmin, usernam
           </button>
         </div>
 
-        <div className="mb-6 transform hover:scale-105 transition-transform duration-300">
+        <button 
+          onClick={onBackToLanding}
+          className="mb-6 transform hover:scale-105 transition-transform duration-300"
+          title="Go to Home"
+        >
           <img src="/rsm-logo.png" alt="RSM Logo" className="h-16 w-auto object-contain" />
-        </div>
+        </button>
         <div className="max-w-2xl">
           <h1 className="font-extrabold text-3xl text-gray-900 tracking-tight leading-tight mb-2">
             RSM AI <span className="text-brand-green font-black">Tax Platform</span>

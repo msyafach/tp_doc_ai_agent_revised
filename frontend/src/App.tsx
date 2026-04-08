@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Sidebar } from './components/Sidebar';
 import { LoginPage } from './pages/LoginPage';
 import { ProjectDashboard } from './pages/ProjectDashboard';
+import { LandingPage } from './pages/LandingPage';
 import { AdminUsersPage } from './pages/AdminUsersPage';
 import { Step0Upload } from './pages/Step0Upload';
 import { Step1CompanyIdentity } from './pages/Step1CompanyIdentity';
@@ -35,7 +36,7 @@ const STEP_COMPONENTS = [
 const TOTAL_STEPS = STEP_COMPONENTS.length;
 const INACTIVITY_MS = 15 * 60 * 1000;
 
-type View = "loading" | "login" | "dashboard" | "wizard" | "admin";
+type View = "loading" | "login" | "landing" | "dashboard" | "wizard" | "admin";
 
 function AppInner() {
   const {
@@ -65,57 +66,105 @@ function AppInner() {
     };
   }, [isAuthenticated]);
 
-  // ── Init: check auth then restore last project ────────────────────────────
+  // ── Init: try to restore last project from localStorage, else show landing ──
   useEffect(() => {
-    if (!isAuthenticated) { setView("login"); return; }
     const stored = localStorage.getItem("tp_project_id");
     const init = async () => {
-      if (stored) {
+      if (stored && isAuthenticated) {
         try {
           const proj = await getProject(stored);
-          setProjectId(proj.id); setFullState(proj.state); setView("wizard"); return;
-        } catch { localStorage.removeItem("tp_project_id"); }
+          setProjectId(proj.id);
+          setFullState(proj.state);
+          setView("wizard");
+          return;
+        } catch {
+          localStorage.removeItem("tp_project_id");
+        }
       }
-      setView("dashboard");
+      
+      // If we are authenticated but no project is active, go to dashboard.
+      // Otherwise, show the public landing page.
+      if (isAuthenticated) {
+        setView("dashboard");
+      } else {
+        setView("landing");
+      }
     };
     init();
-  }, [isAuthenticated]);
+  }, [isAuthenticated, setProjectId, setFullState]);
+
+  const handleLogin = () => {
+    setView("dashboard");
+  };
+
+  const handleLogout = async () => {
+    try {
+      if (refreshToken) await logoutApi(refreshToken);
+    } catch {
+      /* ignore */
+    }
+    authLogout();
+    reset();
+    localStorage.removeItem("tp_project_id");
+    setView("landing");
+  };
 
   // ── Auto-save when dirty ──────────────────────────────────────────────────
   useEffect(() => {
     if (!isDirty || !projectId || view !== "wizard") return;
     const t = setTimeout(async () => {
       setSaving(true);
-      try { await saveProject(projectId, { state }); markClean(); } catch { /* ignore */ }
+      try {
+        await saveProject(projectId, { state });
+        markClean();
+      } catch {
+        /* ignore */
+      }
       setSaving(false);
     }, 1500);
     return () => clearTimeout(t);
-  }, [isDirty, state]);
+  }, [isDirty, state, view, projectId, markClean]);
 
-  const handleLogout = async () => {
-    try { if (refreshToken) await logoutApi(refreshToken); } catch { /* ignore */ }
-    authLogout();
+  const handleProjectSelected = () => {
+    setView("wizard");
+  };
+
+  const handleBackToDashboard = () => {
     reset();
     localStorage.removeItem("tp_project_id");
-    setView("login");
+    setView("dashboard");
+  };
+
+  const handleLandingAction = () => {
+    if (isAuthenticated) {
+      setView("dashboard");
+    } else {
+      setView("login");
+    }
   };
 
   const validateStep = (step: number): string[] => {
     if (step === 1) {
       const errs: string[] = [];
       if (!state.company_name.trim()) errs.push("Full Company Name is required");
-      if (!state.company_short_name.trim()) errs.push("Short Name / Abbreviation is required");
+      if (!state.company_short_name.trim())
+        errs.push("Short Name / Abbreviation is required");
       if (!state.fiscal_year.trim()) errs.push("Fiscal Year is required");
       return errs;
     }
-    if (step === 5 && !state.transaction_details_text.trim())
-      return ["Transaction Details are required"];
+    if (step === 5) {
+      if (!state.transaction_details_text.trim())
+        return ["Transaction Details are required"];
+    }
     return [];
   };
 
   const goTo = (step: number) => {
     const errs = validateStep(state.step);
-    if (step > state.step && errs.length) { setStepErrors(errs); return; }
+    if (step > state.step && errs.length) {
+      setStepErrors(errs);
+      return;
+    }
     setStepErrors([]);
     setStep(step);
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -125,7 +174,9 @@ function AppInner() {
     try {
       const { DUMMY_DATA } = await import("./dummyData");
       setState(DUMMY_DATA as Parameters<typeof setState>[0]);
-    } catch { alert("Dummy data not available."); }
+    } catch {
+      alert("Dummy data not available.");
+    }
   };
 
   // ── Render ────────────────────────────────────────────────────────────────
@@ -141,16 +192,30 @@ function AppInner() {
     );
   }
 
-  if (view === "login") return <LoginPage onLogin={() => setView("dashboard")} />;
+  if (view === "landing") {
+    return (
+      <LandingPage
+        onStart={handleLandingAction}
+        onNewProject={handleLandingAction}
+        companyName={state.company_short_name}
+        isAuthenticated={isAuthenticated}
+      />
+    );
+  }
+
+  if (view === "login") {
+    return <LoginPage onLogin={handleLogin} />;
+  }
 
   if (view === "dashboard") {
     return (
       <ProjectDashboard
-        onProjectSelected={() => setView("wizard")}
+        onProjectSelected={handleProjectSelected}
         onLogout={handleLogout}
         isAdmin={user?.is_staff ?? false}
         username={user?.username ?? ""}
         onAdminClick={() => setView("admin")}
+        onBackToLanding={() => setView("landing")}
       />
     );
   }
@@ -167,6 +232,7 @@ function AppInner() {
         onBackToDashboard={() => {
           reset(); localStorage.removeItem("tp_project_id"); setView("dashboard");
         }}
+        onBackToLanding={() => setView("landing")}
         onLogout={handleLogout}
         onAdminClick={() => setView("admin")}
         onWizardClick={() => setView("wizard")}

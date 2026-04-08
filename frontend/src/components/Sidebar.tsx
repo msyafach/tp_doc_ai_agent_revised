@@ -22,6 +22,7 @@ const STEPS = [
 interface Props {
   onLoadDummy: () => void;
   onBackToDashboard: () => void;
+  onBackToLanding: () => void;
   onLogout: () => void;
   onAdminClick?: () => void;
   onWizardClick?: () => void;
@@ -29,7 +30,7 @@ interface Props {
   currentView?: "wizard" | "admin";
 }
 
-export function Sidebar({ onLoadDummy, onBackToDashboard, onLogout, onAdminClick, onWizardClick, isAdmin, currentView = "wizard" }: Props) {
+export function Sidebar({ onLoadDummy, onBackToDashboard, onBackToLanding, onLogout, onAdminClick, onWizardClick, isAdmin, currentView = "wizard" }: Props) {
   const { projectId, state, setStep } = useProjectStore();
   const fileRef = useRef<HTMLInputElement>(null);
   const [showSettings, setShowSettings] = useState(false);
@@ -75,12 +76,16 @@ export function Sidebar({ onLoadDummy, onBackToDashboard, onLogout, onAdminClick
 
   return (
     <>
-      <aside className="flex w-72 flex-shrink-0 flex-col h-screen border-r border-gray-200 bg-white text-gray-700">
+      <aside className="flex w-72 flex-shrink-0 flex-col min-h-screen border-r border-gray-200 bg-white text-gray-700">
         {/* Header */}
         <div className="px-6 pb-6 pt-8 bg-gray-50/50">
-          <div className="mb-6">
+          <button 
+            onClick={onBackToLanding}
+            className="mb-6 transform hover:scale-105 transition-transform duration-300"
+            title="Go to Home"
+          >
             <img src="/rsm-logo.png" alt="RSM Logo" className="h-10 w-auto object-contain" />
-          </div>
+          </button>
           <h1 className="text-lg font-bold text-gray-900 leading-tight">RSM AI Tax Platform</h1>
           <p className="mt-1 text-xs font-medium text-brand-green uppercase tracking-wider">PMK-172 · 2023 Compliant</p>
           <button

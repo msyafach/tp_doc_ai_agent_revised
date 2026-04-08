@@ -5,14 +5,20 @@ from __future__ import annotations
 import json
 import logging
 
+from django.contrib.auth import authenticate, get_user_model
 from django.http import HttpResponse, StreamingHttpResponse
 from rest_framework import status
-from rest_framework.decorators import api_view, parser_classes
+from rest_framework.decorators import api_view, parser_classes, permission_classes
 from rest_framework.parsers import MultiPartParser, JSONParser
+from rest_framework.permissions import AllowAny, IsAdminUser
 from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.exceptions import TokenError
 
 from .models import Project, AgentTask
 from .serializers import ProjectSerializer, ProjectListSerializer, AgentTaskSerializer
+
+User = get_user_model()
 
 logger = logging.getLogger(__name__)
 
@@ -368,3 +374,102 @@ def export_docx(request, pk):
     )
     response["Content-Disposition"] = f'attachment; filename="{filename}"'
     return response
+
+
+# ─── Authentication ───────────────────────────────────────────────────────────
+
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def login_view(request):
+    username = request.data.get("username", "").strip()
+    password = request.data.get("password", "").strip()
+    if not username or not password:
+        return Response({"detail": "Username and password are required."}, status=400)
+
+    user = authenticate(username=username, password=password)
+    if not user:
+        return Response({"detail": "Invalid credentials."}, status=status.HTTP_401_UNAUTHORIZED)
+    if not user.is_active:
+        return Response({"detail": "Account is disabled."}, status=status.HTTP_401_UNAUTHORIZED)
+
+    refresh = RefreshToken.for_user(user)
+    return Response({
+        "access": str(refresh.access_token),
+        "refresh": str(refresh),
+        "user": {
+            "id": user.id,
+            "username": user.username,
+            "email": user.email,
+            "is_staff": user.is_staff,
+        },
+    })
+
+
+@api_view(["POST"])
+def logout_view(request):
+    refresh_token = request.data.get("refresh", "")
+    if refresh_token:
+        try:
+            RefreshToken(refresh_token).blacklist()
+        except TokenError:
+            pass
+    return Response({"detail": "Logged out."})
+
+
+@api_view(["GET"])
+def me_view(request):
+    u = request.user
+    return Response({
+        "id": u.id,
+        "username": u.username,
+        "email": u.email,
+        "is_staff": u.is_staff,
+    })
+
+
+# ─── Admin — User Management ──────────────────────────────────────────────────
+
+@api_view(["GET", "POST"])
+@permission_classes([IsAdminUser])
+def admin_users_list(request):
+    if request.method == "GET":
+        users = list(
+            User.objects.all().order_by("date_joined").values(
+                "id", "username", "email", "is_staff", "date_joined", "last_login"
+            )
+        )
+        return Response(users)
+
+    # POST — create new user
+    username = request.data.get("username", "").strip()
+    password = request.data.get("password", "").strip()
+    email = request.data.get("email", "").strip()
+    is_staff = bool(request.data.get("is_staff", False))
+
+    if not username or not password:
+        return Response({"detail": "Username and password are required."}, status=400)
+    if len(password) < 6:
+        return Response({"detail": "Password must be at least 6 characters."}, status=400)
+    if User.objects.filter(username=username).exists():
+        return Response({"detail": "Username already exists."}, status=400)
+
+    user = User.objects.create_user(
+        username=username, password=password, email=email, is_staff=is_staff
+    )
+    return Response(
+        {"id": user.id, "username": user.username, "email": user.email, "is_staff": user.is_staff},
+        status=status.HTTP_201_CREATED,
+    )
+
+
+@api_view(["DELETE"])
+@permission_classes([IsAdminUser])
+def admin_user_detail(request, pk):
+    if request.user.pk == pk:
+        return Response({"detail": "Cannot delete your own account."}, status=400)
+    try:
+        user = User.objects.get(pk=pk)
+    except User.DoesNotExist:
+        return Response({"detail": "User not found."}, status=404)
+    user.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)

@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { PlusCircle, FolderOpen, Trash2, Clock } from "lucide-react";
+import { PlusCircle, FolderOpen, Trash2, Clock, LogOut, Shield } from "lucide-react";
 import { listProjects, createProject, getProject, deleteProject } from "../api/projects";
 import { useProjectStore } from "../store/projectStore";
 import type { ProjectListItem } from "../types";
 
 interface Props {
   onProjectSelected: () => void;
+  onLogout: () => void;
+  isAdmin: boolean;
+  username: string;
+  onAdminClick: () => void;
 }
 
-export function ProjectDashboard({ onProjectSelected }: Props) {
+export function ProjectDashboard({ onProjectSelected, onLogout, isAdmin, username, onAdminClick }: Props) {
   const { setProjectId, setFullState } = useProjectStore();
   const [projects, setProjects] = useState<ProjectListItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -81,13 +85,36 @@ export function ProjectDashboard({ onProjectSelected }: Props) {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 px-12 py-10 flex flex-col items-center text-center shadow-sm">
+      <header className="bg-white border-b border-gray-200 px-12 py-10 flex flex-col items-center text-center shadow-sm relative">
+        {/* Top-right actions */}
+        <div className="absolute top-4 right-6 flex items-center gap-2">
+          {username && (
+            <span className="text-xs font-semibold text-gray-400 px-3 py-1.5 bg-gray-50 rounded-full border border-gray-100">
+              {username}
+            </span>
+          )}
+          {isAdmin && (
+            <button
+              onClick={onAdminClick}
+              className="flex items-center gap-1.5 text-xs font-semibold text-brand-blue bg-brand-blue/10 px-3 py-1.5 rounded-full border border-brand-blue/20 hover:bg-brand-blue/20 transition-all"
+            >
+              <Shield className="w-3.5 h-3.5" /> Admin
+            </button>
+          )}
+          <button
+            onClick={onLogout}
+            className="flex items-center gap-1.5 text-xs font-semibold text-red-500 bg-red-50 px-3 py-1.5 rounded-full border border-red-100 hover:bg-red-100 transition-all"
+          >
+            <LogOut className="w-3.5 h-3.5" /> Sign Out
+          </button>
+        </div>
+
         <div className="mb-6 transform hover:scale-105 transition-transform duration-300">
           <img src="/rsm-logo.png" alt="RSM Logo" className="h-16 w-auto object-contain" />
         </div>
         <div className="max-w-2xl">
           <h1 className="font-extrabold text-3xl text-gray-900 tracking-tight leading-tight mb-2">
-            Transfer Pricing <span className="text-brand-green font-black">Local File Generator</span>
+            RSM AI <span className="text-brand-green font-black">Tax Platform</span>
           </h1>
           <div className="flex items-center justify-center gap-3">
             <span className="h-px w-8 bg-gray-300"></span>

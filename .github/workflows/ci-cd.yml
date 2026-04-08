@@ -7,6 +7,7 @@ on:
     branches: [main]
 
 jobs:
+  # ── Tests run on GitHub-hosted runner (free) ────────────────────────────────
   test:
     name: Run Tests
     runs-on: ubuntu-latest
@@ -14,11 +15,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Set up Python 3.11
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
 
       - name: Install uv
         uses: astral-sh/setup-uv@v4
@@ -34,27 +30,49 @@ jobs:
       - name: Run tests
         run: uv run pytest tests/ -v --tb=short
 
+  # ── Deploy runs directly on EC2 via self-hosted runner ─────────────────────
   deploy:
-    name: Deploy to Vercel (Production)
+    name: Deploy to EC2
     needs: test
-    runs-on: ubuntu-latest
-    environment: tp-secrets
+    runs-on: self-hosted
+    environment: production
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Node.js 20
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
+      - name: Write .env file
+        run: |
+          cat > .env << 'EOF'
+          SECRET_KEY=${{ secrets.SECRET_KEY }}
+          DEBUG=False
+          ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }}
+          POSTGRES_DB=${{ secrets.POSTGRES_DB }}
+          POSTGRES_USER=${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
+          REDIS_URL=redis://redis:6379/0
+          EOF
 
-      - name: Install Vercel CLI
-        run: npm install -g vercel
+      - name: Build and start containers
+        run: docker compose up -d --build
 
-      - name: Deploy to Vercel
-        run: vercel --prod --token=${{ secrets.VERCEL_TOKEN }} --yes
-        env:
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      - name: Wait for backend to be ready
+        run: |
+          echo "Waiting for backend..."
+          for i in $(seq 1 30); do
+            if docker compose exec -T backend python manage.py check --deploy 2>/dev/null; then
+              echo "Backend is ready."
+              break
+            fi
+            echo "Attempt $i/30 — retrying in 5s..."
+            sleep 5
+          done
+
+      - name: Verify all containers are running
+        run: |
+          docker compose ps
+          docker compose ps | grep -E "(Exit|unhealthy)" && echo "One or more containers failed!" && exit 1 || echo "All containers healthy."
+
+      - name: Clean up old Docker images
+        run: docker image prune -f

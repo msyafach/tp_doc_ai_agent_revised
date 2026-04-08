@@ -1,8 +1,11 @@
 """
 Celery tasks for async operations (document processing, AI agents).
 """
+
 from __future__ import annotations
+
 import logging
+
 from celery import shared_task
 
 logger = logging.getLogger(__name__)
@@ -10,6 +13,7 @@ logger = logging.getLogger(__name__)
 
 def _get_task_record(task_db_id: int):
     from .models import AgentTask
+
     return AgentTask.objects.get(pk=task_db_id)
 
 
@@ -34,6 +38,7 @@ def process_documents_task(
 
     try:
         from .services.document_service import process_documents
+
         result = process_documents(files, provider, api_key, model, tavily_key)
 
         task_record.status = "success" if result.get("success") else "error"
@@ -87,6 +92,7 @@ def run_agents_task(
 
     try:
         from .services.agent_service import run_all_agents
+
         updates = run_all_agents(
             state=project.state,
             provider=provider,
@@ -142,6 +148,7 @@ def run_single_agent_task(
 
     try:
         from .services.agent_service import run_single_agent
+
         updates = run_single_agent(
             agent_key=agent_key,
             state=project.state,
@@ -163,6 +170,7 @@ def run_single_agent_task(
 
         return updates
 
+    # exception
     except Exception as exc:
         logger.exception("run_single_agent_task failed")
         task_record.status = "error"

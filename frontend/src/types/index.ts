@@ -37,7 +37,10 @@ export interface IndependentTransaction {
   name: string;
   country: string;
   transaction_type: string;
-  value: string;
+  type_of_product: string;
+  amount_idr: string;
+  quantity: string;
+  avg_price_per_unit: string;
 }
 
 export interface FinancialData {
@@ -228,4 +231,6 @@ export interface ApiSettings {
   api_key: string;
   model: string;
   tavily_key: string;
+  langsmith_api_key: string;
+  langsmith_project: string;
 }

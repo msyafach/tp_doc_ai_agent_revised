@@ -42,8 +42,8 @@ export const DUMMY_DATA: Partial<ProjectState> = {
     { name: "Sakura Manufacturing Holdings Pte. Ltd.", country: "Singapore", affiliation_type: "Parent Company", transaction_type: "Royalty/License fees", value: "8,700,000,000", note: "" },
   ],
   independent_transactions: [
-    { name: "PT Logam Utama",    country: "Indonesia", transaction_type: "Purchase of raw materials", value: "12,000,000,000" },
-    { name: "PT Jasa Kirim Cepat", country: "Indonesia", transaction_type: "Logistics services",       value: "3,500,000,000" },
+    { name: "PT Logam Utama",     country: "Indonesia", transaction_type: "Purchase of raw materials", type_of_product: "Steel billets",      amount_idr: "12,000,000,000", quantity: "2,400", avg_price_per_unit: "5,000,000" },
+    { name: "PT Jasa Kirim Cepat", country: "Indonesia", transaction_type: "Logistics services",        type_of_product: "Freight & handling", amount_idr: "3,500,000,000",  quantity: "",      avg_price_per_unit: "" },
   ],
 
   financial_data: {
@@ -82,6 +82,21 @@ export const DUMMY_DATA: Partial<ProjectState> = {
     { name: "PT Denso Indonesia",            country: "Indonesia", description: "Manufacturer of automotive components and systems",        ros_data: "6.34" },
     { name: "PT Yorozu Automotive Indonesia",country: "Indonesia", description: "Suspension parts and pressed components manufacturer",     ros_data: "3.45" },
     { name: "PT Aisin Indonesia",            country: "Indonesia", description: "Transmission and body parts manufacturer",                ros_data: "4.89" },
+  ],
+
+  rejection_matrix: [
+    { name: "PT Astra Komponen Indonesia",    limited_financial_statement: false, negative_margin: false, consolidated_financial_statement: false, different_main_activity: false, non_comparable_line_of_business: false, limited_information_website: false, accepted: true },
+    { name: "PT Showa Indonesia Mfg",         limited_financial_statement: false, negative_margin: false, consolidated_financial_statement: false, different_main_activity: false, non_comparable_line_of_business: false, limited_information_website: false, accepted: true },
+    { name: "PT Inti Ganda Perdana",          limited_financial_statement: false, negative_margin: false, consolidated_financial_statement: false, different_main_activity: false, non_comparable_line_of_business: false, limited_information_website: false, accepted: true },
+    { name: "PT Denso Indonesia",             limited_financial_statement: false, negative_margin: false, consolidated_financial_statement: false, different_main_activity: false, non_comparable_line_of_business: false, limited_information_website: false, accepted: true },
+    { name: "PT Yorozu Automotive Indonesia", limited_financial_statement: false, negative_margin: false, consolidated_financial_statement: false, different_main_activity: false, non_comparable_line_of_business: false, limited_information_website: false, accepted: true },
+    { name: "PT Aisin Indonesia",             limited_financial_statement: false, negative_margin: false, consolidated_financial_statement: false, different_main_activity: false, non_comparable_line_of_business: false, limited_information_website: false, accepted: true },
+    { name: "PT Akebono Brake Astra Indonesia", limited_financial_statement: false, negative_margin: false, consolidated_financial_statement: true,  different_main_activity: false, non_comparable_line_of_business: false, limited_information_website: false, accepted: false },
+    { name: "PT Mekar Armada Jaya",           limited_financial_statement: true,  negative_margin: false, consolidated_financial_statement: false, different_main_activity: false, non_comparable_line_of_business: false, limited_information_website: false, accepted: false },
+    { name: "PT Trimitra Chitrahasta",        limited_financial_statement: false, negative_margin: true,  consolidated_financial_statement: false, different_main_activity: false, non_comparable_line_of_business: false, limited_information_website: false, accepted: false },
+    { name: "PT Enkei Indonesia",             limited_financial_statement: false, negative_margin: false, consolidated_financial_statement: false, different_main_activity: true,  non_comparable_line_of_business: false, limited_information_website: false, accepted: false },
+    { name: "PT Selamat Sempurna Tbk",        limited_financial_statement: false, negative_margin: false, consolidated_financial_statement: false, different_main_activity: false, non_comparable_line_of_business: true,  limited_information_website: false, accepted: false },
+    { name: "PT Gajah Tunggal Tbk",          limited_financial_statement: false, negative_margin: false, consolidated_financial_statement: false, different_main_activity: true,  non_comparable_line_of_business: true,  limited_information_website: false, accepted: false },
   ],
 
   selected_method: "TNMM",

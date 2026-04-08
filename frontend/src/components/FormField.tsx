@@ -30,22 +30,22 @@ interface TextareaProps extends BaseProps {
 type Props = InputProps | TextareaProps;
 
 const inputClass =
-  "w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition";
+  "w-full border-2 border-gray-100 rounded-xl px-4 py-3 text-sm font-medium focus:outline-none focus:border-brand-green/40 focus:ring-4 focus:ring-brand-green/5 transition-all bg-gray-50/30 hover:bg-white hover:border-gray-200";
 
 export function FormField(props: Props) {
   const { label, required, hint, error, className } = props;
 
   return (
-    <div className={clsx("flex flex-col gap-1", className)}>
-      <label className="text-sm font-medium text-gray-700">
+    <div className={clsx("flex flex-col gap-1.5", className)}>
+      <label className="text-xs font-bold text-gray-500 uppercase tracking-widest ml-1">
         {label}
-        {required && <span className="text-red-500 ml-0.5">*</span>}
+        {required && <span className="text-red-500 ml-1">*</span>}
       </label>
 
       {props.multiline ? (
         <textarea
           rows={props.rows ?? 4}
-          className={clsx(inputClass, "resize-y", error && "border-red-400")}
+          className={clsx(inputClass, "resize-y", error && "border-red-200 focus:border-red-300 focus:ring-red-50")}
           value={props.value}
           placeholder={props.placeholder}
           onChange={(e) => props.onChange(e.target.value)}
@@ -53,15 +53,15 @@ export function FormField(props: Props) {
       ) : (
         <input
           type={props.type ?? "text"}
-          className={clsx(inputClass, error && "border-red-400")}
+          className={clsx(inputClass, error && "border-red-200 focus:border-red-300 focus:ring-red-50")}
           value={props.value}
           placeholder={props.placeholder}
           onChange={(e) => props.onChange(e.target.value)}
         />
       )}
 
-      {hint && <p className="text-xs text-gray-400">{hint}</p>}
-      {error && <p className="text-xs text-red-500">{error}</p>}
+      {hint && <p className="text-[11px] text-gray-400 font-medium ml-1">{hint}</p>}
+      {error && <p className="text-[11px] text-red-500 font-bold ml-1">{error}</p>}
     </div>
   );
 }
@@ -76,13 +76,13 @@ interface SelectProps extends BaseProps {
 
 export function SelectField({ label, required, hint, error, className, value, onChange, options }: SelectProps) {
   return (
-    <div className={clsx("flex flex-col gap-1", className)}>
-      <label className="text-sm font-medium text-gray-700">
+    <div className={clsx("flex flex-col gap-1.5", className)}>
+      <label className="text-xs font-bold text-gray-500 uppercase tracking-widest ml-1">
         {label}
-        {required && <span className="text-red-500 ml-0.5">*</span>}
+        {required && <span className="text-red-500 ml-1">*</span>}
       </label>
       <select
-        className={clsx(inputClass, "bg-white", error && "border-red-400")}
+        className={clsx(inputClass, "bg-white", error && "border-red-200 focus:border-red-300 focus:ring-red-50")}
         value={value}
         onChange={(e) => onChange(e.target.value)}
       >
@@ -90,8 +90,8 @@ export function SelectField({ label, required, hint, error, className, value, on
           <option key={o.value} value={o.value}>{o.label}</option>
         ))}
       </select>
-      {hint && <p className="text-xs text-gray-400">{hint}</p>}
-      {error && <p className="text-xs text-red-500">{error}</p>}
+      {hint && <p className="text-[11px] text-gray-400 font-medium ml-1">{hint}</p>}
+      {error && <p className="text-[11px] text-red-500 font-bold ml-1">{error}</p>}
     </div>
   );
 }

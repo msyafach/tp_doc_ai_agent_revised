@@ -227,7 +227,10 @@ def build_context(state: dict, tpl: DocxTemplate) -> dict:
     independent_transactions = state.get("independent_transactions", [])
     for i, t in enumerate(independent_transactions):
         t.setdefault("no", str(i + 1))
-        t.setdefault("type_of_product",    t.pop("value", ""))
+        # Support legacy "value" field (old data) — map to amount_idr
+        if "value" in t and "amount_idr" not in t:
+            t["amount_idr"] = t.pop("value")
+        t.setdefault("type_of_product",    "")
         t.setdefault("amount_idr",         "")
         t.setdefault("quantity",           "")
         t.setdefault("avg_price_per_unit", "")
@@ -1064,56 +1067,66 @@ def _overwrite_section_bodies(doc, context: dict) -> None:
             if p.text.strip() and lv == 0:
                 body_idxs.append(i)
 
-        if not body_idxs:
-            continue
-
         # Parse the AI content into sub-paragraphs
         sub_paras = _split_content(new_text)
         if not sub_paras:
             sub_paras = [(new_text, 'normal')]
 
-        # Overwrite existing body paragraphs
-        for j, idx in enumerate(body_idxs):
-            if j < len(sub_paras):
-                content, style_hint = sub_paras[j]
-                _set_para_text(para_list[idx], content, reset_heading=True)
-                # Apply bullet style if needed
-                if style_hint == 'bullet':
-                    try:
-                        para_list[idx].style = doc.styles['List Paragraph']
-                    except KeyError:
-                        pass  # style not available in template
-            else:
-                _set_para_text(para_list[idx], "", reset_heading=True)  # clear extras
+        def _add_md_runs(para, text: str):
+            """Add runs to para, parsing **bold** markers into real Word bold."""
+            import re as _re
+            tokens = _re.split(r'(\*\*.*?\*\*)', text)
+            for token in tokens:
+                if token.startswith('**') and token.endswith('**'):
+                    run = para.add_run(token[2:-2])
+                    run.bold = True
+                else:
+                    if token:
+                        para.add_run(token)
 
-        # If AI generated MORE sub-paragraphs than body slots, insert new ones
-        if len(sub_paras) > len(body_idxs):
-            # Insert after the last body paragraph
-            last_body_el = para_list[body_idxs[-1]]._element
-            insert_after = last_body_el
-
-            for extra_content, extra_style in sub_paras[len(body_idxs):]:
-                # Create a new paragraph element
+        def _insert_paras_after(anchor_el, paras_to_insert):
+            """Insert new paragraphs into the doc XML after anchor_el."""
+            from docx.text.paragraph import Paragraph as DocxParagraph
+            insert_after = anchor_el
+            for content, style_hint in paras_to_insert:
                 new_p = OxmlElement('w:p')
-
-                # Insert new_p right after insert_after in the XML tree
                 insert_after.addnext(new_p)
-
-                # Create a proper docx Paragraph wrapper
-                from docx.text.paragraph import Paragraph
-                new_para = Paragraph(new_p, doc)
-
-                # Set style
-                if extra_style == 'bullet':
+                new_para = DocxParagraph(new_p, doc)
+                if style_hint == 'bullet':
                     try:
                         new_para.style = doc.styles['List Paragraph']
                     except KeyError:
                         new_para.style = doc.styles['Normal']
                 else:
                     new_para.style = doc.styles['Normal']
-
-                # Add text
-                run = new_para.add_run(extra_content)
-
+                _add_md_runs(new_para, content)
                 insert_after = new_p
+
+        if not body_idxs:
+            # No body paragraphs found (Jinja2 rendered empty placeholder or
+            # placeholder was in a table cell) — insert all content after heading
+            _insert_paras_after(para_list[h_idx]._element, sub_paras)
+            continue
+
+        # Overwrite existing body paragraphs
+        for j, idx in enumerate(body_idxs):
+            if j < len(sub_paras):
+                content, style_hint = sub_paras[j]
+                # Clear paragraph then re-add runs with markdown bold support
+                _set_para_text(para_list[idx], "", reset_heading=True)
+                _add_md_runs(para_list[idx], content)
+                if style_hint == 'bullet':
+                    try:
+                        para_list[idx].style = doc.styles['List Paragraph']
+                    except KeyError:
+                        pass
+            else:
+                _set_para_text(para_list[idx], "", reset_heading=True)  # clear extras
+
+        # If AI generated MORE sub-paragraphs than body slots, insert new ones
+        if len(sub_paras) > len(body_idxs):
+            _insert_paras_after(
+                para_list[body_idxs[-1]]._element,
+                sub_paras[len(body_idxs):]
+            )
 

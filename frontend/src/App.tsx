@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { ChevronLeft } from "lucide-react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Sidebar } from "./components/Sidebar";
 import { ProjectDashboard } from "./pages/ProjectDashboard";
@@ -158,76 +159,109 @@ function AppInner() {
   const canGoNext = state.step < TOTAL_STEPS - 1;
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex h-screen overflow-hidden bg-gray-50">
       <Sidebar
         onLoadDummy={loadDummy}
         onBackToDashboard={handleBackToDashboard}
       />
 
       {/* Main content */}
-      <div className="flex-1 flex flex-col min-h-screen">
+      <div className="flex-1 flex flex-col h-screen overflow-hidden">
         {/* Top bar */}
-        <div className="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between sticky top-0 z-10">
-          <div className="text-sm text-gray-500">
-            {state.company_short_name && (
-              <span className="font-medium text-gray-700">
-                {state.company_short_name}
-              </span>
-            )}
-            {state.company_short_name && state.fiscal_year && " · "}
-            {state.fiscal_year && `FY ${state.fiscal_year}`}
-          </div>
-          <div className="flex items-center gap-2 text-xs text-gray-400">
-            {saving && (
-              <span className="flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
-                Saving…
-              </span>
-            )}
-            {!saving && !isDirty && projectId && (
-              <span className="flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-brand-green" />
-                Saved
-              </span>
-            )}
-          </div>
-        </div>
-
-        {/* Step content */}
-        <div className="flex-1 px-8 py-6 max-w-5xl w-full mx-auto">
-          {stepErrors.length > 0 && (
-            <div className="mb-4 rounded-lg bg-red-50 border border-red-200 px-4 py-3 space-y-1">
-              {stepErrors.map((e) => (
-                <p key={e} className="text-sm text-red-700">
-                  {e}
-                </p>
-              ))}
+        <div className="shrink-0 bg-white/80 backdrop-blur-md border-b border-gray-100 px-8 py-3 flex items-center justify-between z-10 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+          {/* Project identity */}
+          {(state.company_short_name || state.fiscal_year) && (
+            <div className="flex items-center gap-2.5">
+              {state.company_short_name && (
+                <span className="text-sm font-semibold text-gray-800 tracking-tight">
+                  {state.company_short_name}
+                </span>
+              )}
+              {state.company_short_name && state.fiscal_year && (
+                <span className="text-gray-300 font-light">·</span>
+              )}
+              {state.fiscal_year && (
+                <span className="text-sm text-gray-400 font-medium">
+                  FY {state.fiscal_year}
+                </span>
+              )}
             </div>
           )}
 
-          <StepComponent />
+          {/* Save status */}
+          <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest ml-auto">
+            {saving && (
+              <span className="flex items-center gap-2 text-amber-500 bg-amber-50 px-3 py-1.5 rounded-full border border-amber-100">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+                Auto-saving
+              </span>
+            )}
+            {!saving && !isDirty && projectId && (
+              <span className="flex items-center gap-2 text-brand-green bg-green-50 px-3 py-1.5 rounded-full border border-green-100">
+                <span className="w-1.5 h-1.5 rounded-full bg-brand-green" />
+                Synced
+              </span>
+            )}
+          </div>
         </div>
 
-        {/* Navigation footer */}
-        <div className="bg-white border-t border-gray-200 px-8 py-4 flex items-center justify-between sticky bottom-0">
+        {/* Step content — scrollable area */}
+        <div className="flex-1 overflow-y-auto px-8 py-10 max-w-5xl w-full mx-auto">
+          {stepErrors.length > 0 && (
+            <div className="mb-8 rounded-xl bg-red-50 border border-red-100 p-5 shadow-sm animate-in slide-in-from-top-2">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-red-500" />
+                <h4 className="text-sm font-bold text-red-800 uppercase tracking-wider">Validation Errors</h4>
+              </div>
+              <ul className="space-y-1 list-disc list-inside">
+                {stepErrors.map((e) => (
+                  <li key={e} className="text-sm text-red-700 font-medium">
+                    {e}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-xl shadow-gray-200/50 p-8 sm:p-10 min-h-[600px]">
+            <StepComponent />
+          </div>
+        </div>
+
+        {/* Navigation footer — fixed at bottom */}
+        <div className="bg-white border-t border-gray-200 px-8 py-6 flex items-center justify-between shrink-0 z-10 shadow-[0_-4px_12px_rgba(0,0,0,0.03)]">
           <button
             onClick={() => goTo(state.step - 1)}
             disabled={!canGoBack}
-            className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-brand-grey border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            className="flex items-center gap-2 px-6 py-3 text-sm font-bold text-gray-600 border-2 border-gray-100 rounded-xl hover:bg-gray-50 hover:border-gray-200 disabled:opacity-30 disabled:cursor-not-allowed transition-all active:scale-95"
           >
-            Previous
+            <ChevronLeft className="w-4 h-4" />
+            PREVIOUS
           </button>
 
-          <span className="text-xs text-gray-400">
-            Step {state.step + 1} of {TOTAL_STEPS}
-          </span>
+          <div className="flex flex-col items-center gap-1">
+            <span className="text-[10px] font-black text-gray-300 uppercase tracking-[0.2em]">
+              Progress
+            </span>
+            <div className="flex items-center gap-2">
+              {[...Array(TOTAL_STEPS)].map((_, i) => (
+                <div 
+                  key={i} 
+                  className={[
+                    "w-1.5 h-1.5 rounded-full transition-all duration-300",
+                    i === state.step ? "bg-brand-blue w-4" : i < state.step ? "bg-brand-green" : "bg-gray-200"
+                  ].join(" ")}
+                />
+              ))}
+            </div>
+          </div>
 
           <button
             onClick={() => goTo(state.step + 1)}
             disabled={!canGoNext}
-            className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium bg-brand-green text-white rounded-lg hover:bg-brand-dark disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            className="flex items-center gap-2 px-8 py-3 text-sm font-bold bg-brand-green text-white rounded-xl hover:bg-brand-dark shadow-lg shadow-brand-green/20 disabled:opacity-30 disabled:cursor-not-allowed transition-all active:scale-95"
           >
-            Next
+            {state.step === TOTAL_STEPS - 1 ? "FINISH" : "NEXT STEP"}
           </button>
         </div>
       </div>

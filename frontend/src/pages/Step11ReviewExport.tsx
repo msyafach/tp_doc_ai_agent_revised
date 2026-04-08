@@ -127,8 +127,8 @@ export function Step11ReviewExport() {
 
       {/* Export buttons */}
       <SectionCard title="Export Document">
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
+        <div className="grid grid-cols-2 gap-4 items-end">
+          <div className="flex flex-col justify-end gap-2">
             <p className="text-xs text-gray-500">Recommended — builds full document from scratch using python-docx</p>
             <button
               onClick={() => handleExport("builder")}
@@ -143,7 +143,7 @@ export function Step11ReviewExport() {
             </button>
           </div>
 
-          <div className="space-y-2">
+          <div className="flex flex-col justify-end gap-2">
             <p className="text-xs text-gray-500">Uses the master Word template with Jinja2 placeholders</p>
             <button
               onClick={() => handleExport("template")}

@@ -44,7 +44,7 @@ DEFAULT_STATE = {
     "transaction_details_text": "",
     "pricing_policy": "",
     "affiliated_transactions": [{"name": "", "country": "", "affiliation_type": "", "transaction_type": "", "value": "", "note": ""}],
-    "independent_transactions": [{"name": "", "country": "", "transaction_type": "", "value": ""}],
+    "independent_transactions": [{"name": "", "country": "", "transaction_type": "", "type_of_product": "", "amount_idr": "", "quantity": "", "avg_price_per_unit": ""}],
     "financial_data": {},
     "financial_data_prior": {},
     "comparable_companies": [{"name": "", "country": "", "description": "", "ros_data": ""}],
@@ -263,6 +263,8 @@ def run_agents(request, pk):
     api_key = request.data.get("api_key", "")
     model = request.data.get("model", "llama-3.3-70b-versatile")
     tavily_key = request.data.get("tavily_key", "")
+    langsmith_api_key = request.data.get("langsmith_api_key", "")
+    langsmith_project = request.data.get("langsmith_project", "")
 
     task_record = AgentTask.objects.create(
         project=project,
@@ -278,6 +280,8 @@ def run_agents(request, pk):
         api_key=api_key,
         model=model,
         tavily_key=tavily_key,
+        langsmith_api_key=langsmith_api_key,
+        langsmith_project=langsmith_project,
     )
 
     return Response({"task_id": task_record.pk}, status=status.HTTP_202_ACCEPTED)
@@ -295,6 +299,8 @@ def run_single_agent(request, pk):
     api_key = request.data.get("api_key", "")
     model = request.data.get("model", "llama-3.3-70b-versatile")
     tavily_key = request.data.get("tavily_key", "")
+    langsmith_api_key = request.data.get("langsmith_api_key", "")
+    langsmith_project = request.data.get("langsmith_project", "")
 
     if not agent_key:
         return Response({"detail": "agent_key is required."}, status=400)
@@ -314,6 +320,8 @@ def run_single_agent(request, pk):
         api_key=api_key,
         model=model,
         tavily_key=tavily_key,
+        langsmith_api_key=langsmith_api_key,
+        langsmith_project=langsmith_project,
     )
 
     return Response({"task_id": task_record.pk}, status=status.HTTP_202_ACCEPTED)

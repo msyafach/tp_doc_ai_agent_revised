@@ -9,9 +9,12 @@ interface Props {
 
 export function SectionCard({ title, children, className }: Props) {
   return (
-    <div className={clsx("bg-white rounded-xl border border-gray-200 p-6", className)}>
+    <div className={clsx("bg-white rounded-2xl border border-gray-100 p-8 shadow-sm", className)}>
       {title && (
-        <h3 className="text-base font-semibold text-gray-800 mb-4">{title}</h3>
+        <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
+          <div className="w-1 h-5 bg-brand-green rounded-full" />
+          {title}
+        </h3>
       )}
       {children}
     </div>

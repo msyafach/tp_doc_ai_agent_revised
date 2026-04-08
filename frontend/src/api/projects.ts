@@ -85,6 +85,8 @@ export async function runAgents(
       api_key: settings.api_key,
       model: settings.model,
       tavily_key: settings.tavily_key,
+      langsmith_api_key: settings.langsmith_api_key,
+      langsmith_project: settings.langsmith_project,
     },
   );
   return data;
@@ -103,6 +105,8 @@ export async function runSingleAgent(
       api_key: settings.api_key,
       model: settings.model,
       tavily_key: settings.tavily_key,
+      langsmith_api_key: settings.langsmith_api_key,
+      langsmith_project: settings.langsmith_project,
     },
   );
   return data;

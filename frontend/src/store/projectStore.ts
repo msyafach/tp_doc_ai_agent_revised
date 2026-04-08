@@ -30,7 +30,7 @@ const DEFAULT_STATE: ProjectState = {
   transaction_details_text: "",
   pricing_policy: "",
   affiliated_transactions: [{ name: "", country: "", affiliation_type: "", transaction_type: "", value: "", note: "" }],
-  independent_transactions: [{ name: "", country: "", transaction_type: "", value: "" }],
+  independent_transactions: [{ name: "", country: "", transaction_type: "", type_of_product: "", amount_idr: "", quantity: "", avg_price_per_unit: "" }],
   financial_data: {},
   financial_data_prior: {},
   comparability_factors: [
@@ -85,6 +85,8 @@ const DEFAULT_API_SETTINGS: ApiSettings = {
   api_key: "",
   model: "llama-3.3-70b-versatile",
   tavily_key: "",
+  langsmith_api_key: "",
+  langsmith_project: "tp-local-file-generator",
 };
 
 function sanitizeState(raw: Partial<ProjectState>): ProjectState {

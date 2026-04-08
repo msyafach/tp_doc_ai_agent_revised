@@ -81,10 +81,13 @@ export function Step5Transactions() {
           onChange={(rows) => setState({ independent_transactions: rows })}
           addLabel="Add Independent Transaction"
           columns={[
-            { key: "name",             label: "Party Name",   placeholder: "e.g., PT Vendor" },
-            { key: "country",          label: "Country",      placeholder: "Indonesia", width: "120px" },
-            { key: "transaction_type", label: "Trans. Type",  placeholder: "e.g., Service fee" },
-            { key: "value",            label: "Amount (IDR)", placeholder: "e.g., 5,000,000,000", width: "180px" },
+            { key: "name",               label: "Party Name",              placeholder: "e.g., PT Vendor" },
+            { key: "country",            label: "Country",                 placeholder: "Indonesia",         width: "110px" },
+            { key: "transaction_type",   label: "Trans. Type",             placeholder: "e.g., Service fee" },
+            { key: "type_of_product",    label: "Type of Product",         placeholder: "e.g., Raw materials" },
+            { key: "amount_idr",         label: "Amount (IDR)",            placeholder: "e.g., 5,000,000,000", width: "160px" },
+            { key: "quantity",           label: "Quantity",                placeholder: "e.g., 1,000",          width: "100px" },
+            { key: "avg_price_per_unit", label: "Avg Price/Unit (IDR)",    placeholder: "e.g., 5,000,000",      width: "160px" },
           ]}
         />
       </SectionCard>

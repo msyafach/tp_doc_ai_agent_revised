@@ -103,6 +103,8 @@ class AgentState(TypedDict, total=False):
     # Document upload / extraction
     uploaded_docs_processed: bool
     doc_extraction_result: dict
+    # Cache control — list of node step_names to skip (inputs unchanged)
+    _skip_nodes: list
     # Use Annotated reducers so parallel branches can safely write to these keys
     # without causing INVALID_CONCURRENT_GRAPH_UPDATE errors.
     errors: Annotated[list, operator.add]
@@ -112,11 +114,13 @@ class AgentState(TypedDict, total=False):
 # Each wrapper catches exceptions and returns a safe fallback + error entry.
 
 def _node(fn, output_key: str, step_name: str):
-    """Factory: wrap a subagent function with error handling.
+    """Factory: wrap a subagent function with error handling and cache skip support.
     NOTE: do NOT write 'current_step' — parallel nodes writing the same
     non-annotated key simultaneously causes INVALID_CONCURRENT_GRAPH_UPDATE.
     """
     def wrapped(state: AgentState) -> dict:
+        if step_name in (state.get("_skip_nodes") or []):
+            return {}  # cached — keep existing state values unchanged
         try:
             return fn(state)
         except Exception as e:
@@ -129,6 +133,8 @@ def _node(fn, output_key: str, step_name: str):
 
 
 def node_business_activities(state: AgentState) -> dict:
+    if "business_activities" in (state.get("_skip_nodes") or []):
+        return {}
     try:
         return generate_business_activities(state)
     except Exception as e:

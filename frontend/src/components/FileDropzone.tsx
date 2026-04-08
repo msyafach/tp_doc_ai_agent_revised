@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
-import { X } from "lucide-react";
+import { X, ChevronDown, PlusCircle } from "lucide-react";
 import clsx from "clsx";
 
 interface FileItem {
@@ -62,62 +62,77 @@ export function FileDropzone({
   });
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       <div
         {...getRootProps()}
         className={clsx(
-          "border-2 border-dashed rounded-xl px-6 py-10 text-center cursor-pointer transition-colors",
+          "border-2 border-dashed rounded-2xl px-8 py-14 text-center cursor-pointer transition-all duration-300",
           isDragActive
-            ? "border-brand-green bg-green-50"
-            : "border-gray-300 hover:border-brand-green hover:bg-gray-50",
+            ? "border-brand-green bg-green-50/50 shadow-inner scale-[0.99]"
+            : "border-gray-200 hover:border-brand-blue/40 hover:bg-brand-blue/5 hover:shadow-sm",
         )}
       >
         <input {...getInputProps()} />
         {isDragActive ? (
-          <p className="text-brand-green font-medium">Drop files here…</p>
+          <div className="flex flex-col items-center gap-2 animate-in zoom-in-95">
+            <div className="w-12 h-12 bg-brand-green text-white rounded-full flex items-center justify-center shadow-lg shadow-brand-green/20">
+              <ChevronDown className="w-6 h-6" />
+            </div>
+            <p className="text-brand-green font-black uppercase tracking-widest text-xs mt-2">Release to upload</p>
+          </div>
         ) : (
-          <>
-            <p className="text-gray-600 font-medium">Drag & drop files here</p>
-            <p className="text-sm text-gray-400 mt-1">
-              PDF, DOCX, XLSX, TXT — max {maxSizeMB} MB each
+          <div className="flex flex-col items-center gap-2">
+            <div className="w-12 h-12 bg-gray-50 text-gray-400 rounded-full flex items-center justify-center mb-2 group-hover:bg-brand-blue/10 group-hover:text-brand-blue transition-colors">
+              <PlusCircle className="w-6 h-6" />
+            </div>
+            <p className="text-gray-900 font-bold text-base">Drag & drop source files here</p>
+            <p className="text-sm text-gray-400 font-medium mt-1">
+              PDF, DOCX, XLSX, TXT up to {maxSizeMB} MB
             </p>
             <button
               type="button"
-              className="mt-3 px-4 py-1.5 bg-white border border-gray-300 text-sm rounded-lg hover:bg-gray-50 transition-colors"
+              className="mt-6 px-8 py-2.5 bg-white border border-gray-200 text-xs font-black uppercase tracking-widest text-gray-600 rounded-xl hover:bg-gray-50 hover:border-gray-300 hover:shadow-sm transition-all active:scale-95"
             >
-              Browse Files
+              Browse Local Files
             </button>
-          </>
+          </div>
         )}
       </div>
 
       {files.length > 0 && (
-        <ul className="space-y-1.5">
+        <div className="grid gap-2 sm:grid-cols-2">
           {files.map((item, idx) => (
-            <li
+            <div
               key={idx}
               className={clsx(
-                "flex items-center gap-3 px-3 py-2 rounded-lg border text-sm",
-                item.valid
-                  ? "border-green-200 bg-green-50"
-                  : "border-red-200 bg-red-50",
+                "flex items-center gap-4 px-4 py-3 rounded-xl border transition-all animate-in slide-in-from-left-2",
+                item.valid ? "bg-white border-gray-100 shadow-sm" : "bg-red-50 border-red-100 text-red-700"
               )}
             >
-              <span className="flex-1 truncate font-medium">{item.file.name}</span>
-              <span className="text-gray-500 text-xs">{item.sizeLabel}</span>
-              {item.error && (
-                <span className="text-red-500 text-xs">{item.error}</span>
-              )}
+              <div className={clsx(
+                "w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 font-black text-[10px] uppercase",
+                item.valid ? "bg-gray-50 text-gray-400" : "bg-red-100 text-red-500"
+              )}>
+                {item.file.name.split(".").pop()}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-bold text-gray-900 truncate">{item.file.name}</p>
+                <p className={clsx(
+                  "text-[10px] font-black uppercase tracking-widest",
+                  item.valid ? "text-gray-400" : "text-red-500"
+                )}>
+                  {item.sizeLabel} {item.error && `· ${item.error}`}
+                </p>
+              </div>
               <button
-                type="button"
-                onClick={() => remove(idx)}
-                className="p-0.5 hover:text-red-500 text-gray-400 transition-colors"
+                onClick={(e) => { e.stopPropagation(); remove(idx); }}
+                className="p-2 hover:bg-gray-100 rounded-lg text-gray-300 hover:text-red-500 transition-all"
               >
-                <X className="w-3.5 h-3.5" />
+                <X className="w-4 h-4" />
               </button>
-            </li>
+            </div>
           ))}
-        </ul>
+        </div>
       )}
     </div>
   );

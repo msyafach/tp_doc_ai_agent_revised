@@ -105,93 +105,125 @@ export function Step0Upload() {
   };
 
   return (
-    <div className="space-y-5">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">Upload Documents</h1>
-        <InfoBadge
-          variant="optional"
-          description="Upload company documents and let AI pre-fill the form. All uploads are processed locally."
-        />
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div className="flex flex-col gap-2">
+        <h1 className="text-3xl font-black text-gray-900 tracking-tight">Upload Documents</h1>
+        <p className="text-gray-500 text-sm font-medium max-w-2xl leading-relaxed">
+          Upload company legal documents, financial statements, and contracts. Our AI agent will automatically extract relevant transfer pricing information to pre-fill your local file.
+        </p>
       </div>
 
-      <SectionCard>
-        <FileDropzone files={files} onChange={setFiles} />
+      <SectionCard title="Source Documentation">
+        <div className="mb-6">
+          <FileDropzone files={files} onChange={setFiles} />
+        </div>
 
-        <div className="mt-4 flex items-center gap-3">
-          <button
-            onClick={handleProcess}
-            disabled={validFiles.length === 0 || processing}
-            className="px-5 py-2.5 bg-brand-green text-white rounded-lg font-medium text-sm hover:bg-brand-dark disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
-          >
-            {processing ? (
-              <>
-                <span className="animate-spin inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full" />
-                Processing…
-              </>
-            ) : (
-              "Process & Extract"
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-gray-50">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={handleProcess}
+              disabled={validFiles.length === 0 || processing}
+              className="px-8 py-3.5 bg-brand-green text-white rounded-xl font-bold text-sm hover:bg-brand-dark disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-lg shadow-brand-green/20 flex items-center gap-3 active:scale-95"
+            >
+              {processing ? (
+                <>
+                  <span className="animate-spin inline-block w-5 h-5 border-3 border-white/30 border-t-white rounded-full" />
+                  ANALYZING DOCUMENTS...
+                </>
+              ) : (
+                "PROCESS & EXTRACT DATA"
+              )}
+            </button>
+            {task?.status === "success" && (
+              <div className="flex items-center gap-2 text-sm font-bold text-brand-green bg-green-50 px-4 py-2 rounded-full border border-green-100 animate-in zoom-in-95">
+                <span className="w-2 h-2 rounded-full bg-brand-green animate-pulse" />
+                EXTRACTION COMPLETE
+              </div>
             )}
-          </button>
-          {task?.status === "success" && (
-            <span className="text-sm text-brand-green">Extraction complete</span>
-          )}
+          </div>
+          
+          <div className="text-[10px] font-black text-gray-300 uppercase tracking-widest text-right">
+            SECURE LOCAL PROCESSING · GDPR COMPLIANT
+          </div>
         </div>
 
         {log.length > 0 && (
-          <div className="mt-3 bg-gray-50 rounded-lg p-3 text-sm font-mono text-gray-600 space-y-0.5">
-            {log.map((l, i) => <div key={i}>{l}</div>)}
+          <div className="mt-6 bg-gray-900 rounded-xl p-5 shadow-inner border border-gray-800">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-1.5 h-1.5 rounded-full bg-brand-blue animate-pulse" />
+              <span className="text-[10px] font-black text-brand-blue uppercase tracking-widest">AI Agent Activity Log</span>
+            </div>
+            <div className="space-y-1 font-mono text-xs text-gray-400">
+              {log.map((l, i) => (
+                <div key={i} className="flex gap-3">
+                  <span className="text-gray-600">[{new Date().toLocaleTimeString([], {hour12:false})}]</span>
+                  <span className={i === log.length - 1 ? "text-white font-bold" : ""}>{l}</span>
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </SectionCard>
 
       {extraction && (
         <SectionCard title="Extraction Results — Review & Accept">
-          <p className="text-sm text-gray-500 mb-4">
-            Accept individual sections or click Accept All to pre-fill all form fields at once.
-          </p>
+          <div className="flex items-center justify-between mb-8">
+            <p className="text-sm text-gray-500 font-medium leading-relaxed max-w-md">
+              The AI has extracted the following data. Review each section carefully and accept them to populate your project fields.
+            </p>
+            <button
+              onClick={acceptAll}
+              className="px-6 py-3 bg-gray-900 text-white rounded-xl font-bold text-xs hover:bg-black transition-all shadow-xl shadow-gray-200 active:scale-95"
+            >
+              ACCEPT ALL EXTRACTED DATA
+            </button>
+          </div>
 
-          <div className="space-y-2">
+          <div className="grid gap-3">
             {SECTIONS.map((sec) => {
               const isOpen = openSections.has(sec.key);
               return (
-                <div key={sec.key} className="border border-gray-200 rounded-lg overflow-hidden">
+                <div key={sec.key} className="group border-2 border-gray-50 rounded-2xl overflow-hidden transition-all hover:border-brand-blue/20">
                   <button
                     onClick={() => toggleSection(sec.key)}
-                    className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 hover:bg-gray-100 transition-colors text-sm font-medium text-gray-700"
+                    className={clsx(
+                      "w-full flex items-center justify-between px-6 py-4 transition-all text-sm font-bold uppercase tracking-wider",
+                      isOpen ? "bg-brand-blue/5 text-brand-blue" : "bg-white text-gray-600 hover:bg-gray-50"
+                    )}
                   >
-                    <span>{sec.label}</span>
+                    <span className="flex items-center gap-3">
+                      <div className={clsx(
+                        "w-2 h-2 rounded-full transition-colors",
+                        isOpen ? "bg-brand-blue" : "bg-gray-200 group-hover:bg-brand-blue/40"
+                      )} />
+                      {sec.label}
+                    </span>
                     {isOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                   </button>
 
                   {isOpen && (
-                    <div className="px-4 py-3 space-y-2">
-                      {sec.stateKeys.map((k) => (
-                        <div key={k}>
-                          <span className="text-xs font-medium text-gray-500 uppercase">{k.replace(/_/g," ")}: </span>
-                          <span className="text-sm text-gray-700">{previewValue(extraction[k])}</span>
-                        </div>
-                      ))}
-                      <button
-                        onClick={() => acceptSection(sec.stateKeys)}
-                        className="mt-2 px-3 py-1.5 bg-brand-green text-white text-xs rounded-md hover:bg-brand-dark transition-colors"
-                      >
-                        Accept Section
-                      </button>
+                    <div className="px-6 py-6 bg-white space-y-4 animate-in slide-in-from-top-2 duration-200">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+                        {sec.stateKeys.map((k) => (
+                          <div key={k} className="flex flex-col gap-1 pb-3 border-b border-gray-50 last:border-0">
+                            <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{k.replace(/_/g," ")}</span>
+                            <span className="text-sm text-gray-800 font-medium leading-relaxed">{previewValue(extraction[k])}</span>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="pt-4 flex justify-end">
+                        <button
+                          onClick={() => acceptSection(sec.stateKeys)}
+                          className="px-5 py-2.5 bg-brand-green/10 text-brand-green text-[11px] font-black uppercase tracking-widest rounded-lg hover:bg-brand-green hover:text-white transition-all"
+                        >
+                          Accept Section
+                        </button>
+                      </div>
                     </div>
                   )}
                 </div>
               );
             })}
-          </div>
-
-          <div className="mt-4 pt-4 border-t border-gray-100 flex items-center gap-3">
-            <button
-              onClick={acceptAll}
-              className="px-5 py-2 bg-brand-green text-white rounded-lg font-medium text-sm hover:bg-brand-dark transition-colors"
-            >
-              Accept All Extracted Data
-            </button>
-            <span className="text-xs text-gray-400">Accepting pre-fills corresponding form fields. You can still edit them in each step.</span>
           </div>
         </SectionCard>
       )}

@@ -9,7 +9,7 @@ const GROQ_MODELS = [
   "llama-3.1-8b-instant",
   "mixtral-8x7b-32768",
 ];
-const OPENAI_MODELS = ["gpt-4o-mini", "gpt-4o", "gpt-4.1-mini", "gpt-4.1-nano"];
+const OPENAI_MODEL = "gpt-5.4-nano";
 
 const LS_KEY = "tp_api_settings";
 
@@ -24,12 +24,11 @@ export function SettingsModal({ onClose }: Props) {
   const [draft, setDraft] = useState<ApiSettings>({ ...apiSettings });
   const [showKey, setShowKey] = useState(false);
   const [showTavily, setShowTavily] = useState(false);
+  const [showLangsmith, setShowLangsmith] = useState(false);
   const [saved, setSaved] = useState(false);
 
-  const models = draft.llm_provider === "groq" ? GROQ_MODELS : OPENAI_MODELS;
-
   const handleProviderChange = (provider: "groq" | "openai") => {
-    const defaultModel = provider === "groq" ? GROQ_MODELS[0] : OPENAI_MODELS[0];
+    const defaultModel = provider === "groq" ? GROQ_MODELS[0] : OPENAI_MODEL;
     setDraft((d) => ({ ...d, llm_provider: provider, model: defaultModel }));
   };
 
@@ -86,15 +85,21 @@ export function SettingsModal({ onClose }: Props) {
             <label className="block text-sm font-medium text-gray-700 mb-1.5">
               Model
             </label>
-            <select
-              value={draft.model}
-              onChange={(e) => setDraft((d) => ({ ...d, model: e.target.value }))}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-brand-green/40 focus:border-brand-green"
-            >
-              {models.map((m) => (
-                <option key={m} value={m}>{m}</option>
-              ))}
-            </select>
+            {draft.llm_provider === "groq" ? (
+              <select
+                value={draft.model}
+                onChange={(e) => setDraft((d) => ({ ...d, model: e.target.value }))}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-brand-green/40 focus:border-brand-green"
+              >
+                {GROQ_MODELS.map((m) => (
+                  <option key={m} value={m}>{m}</option>
+                ))}
+              </select>
+            ) : (
+              <div className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-500 bg-gray-50">
+                {OPENAI_MODEL}
+              </div>
+            )}
           </div>
 
           {/* API Key */}
@@ -146,6 +151,52 @@ export function SettingsModal({ onClose }: Props) {
               Get a free key at{" "}
               <span className="text-brand-green font-medium">tavily.com</span>
             </p>
+          </div>
+
+          {/* LangSmith section */}
+          <div className="rounded-lg border border-purple-100 bg-purple-50/50 p-4 space-y-4">
+            <div>
+              <p className="text-xs font-semibold text-purple-700 uppercase tracking-wide">LangSmith Tracing</p>
+              <p className="text-xs text-gray-500 mt-0.5">Optional — logs all agent runs to LangSmith for observability</p>
+            </div>
+
+            {/* LangSmith API Key */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                LangSmith API Key
+                <span className="ml-1.5 text-xs font-normal text-gray-400">(optional)</span>
+              </label>
+              <div className="relative">
+                <input
+                  type={showLangsmith ? "text" : "password"}
+                  value={draft.langsmith_api_key}
+                  onChange={(e) => setDraft((d) => ({ ...d, langsmith_api_key: e.target.value }))}
+                  placeholder="lsv2_..."
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 pr-10 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-400/40 focus:border-purple-400"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowLangsmith((v) => !v)}
+                  className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600"
+                >
+                  {showLangsmith ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+            </div>
+
+            {/* LangSmith Project */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                LangSmith Project Name
+              </label>
+              <input
+                type="text"
+                value={draft.langsmith_project}
+                onChange={(e) => setDraft((d) => ({ ...d, langsmith_project: e.target.value }))}
+                placeholder="tp-local-file-generator"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-400/40 focus:border-purple-400"
+              />
+            </div>
           </div>
         </div>
 

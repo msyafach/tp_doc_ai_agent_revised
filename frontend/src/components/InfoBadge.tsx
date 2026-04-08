@@ -3,11 +3,11 @@ import clsx from "clsx";
 
 type Variant = "manual" | "template" | "ai" | "optional";
 
-const VARIANTS: Record<Variant, { bg: string; text: string; label: string }> = {
-  manual:   { bg: "bg-blue-50 border-[#0096C6]/30",   text: "text-[#006B8F]",  label: "Manual Input"     },
-  template: { bg: "bg-green-50 border-[#508C4F]/30",  text: "text-[#3D6B3C]", label: "Template"         },
-  ai:       { bg: "bg-blue-50/80 border-[#0096C6]/20",text: "text-[#006B8F]", label: "AI Agent"          },
-  optional: { bg: "bg-gray-50 border-gray-200",       text: "text-brand-grey", label: "Optional Step"    },
+const VARIANTS: Record<Variant, { bg: string; text: string; label: string; icon?: string }> = {
+  manual:   { bg: "bg-brand-blue/5 border-brand-blue/10",   text: "text-brand-blue",  label: "Manual Entry"     },
+  template: { bg: "bg-brand-green/5 border-brand-green/10",  text: "text-brand-green", label: "Template"         },
+  ai:       { bg: "bg-purple-50 border-purple-100",          text: "text-purple-700",  label: "AI Extraction"    },
+  optional: { bg: "bg-gray-50 border-gray-100",            text: "text-gray-500",    label: "Optional Step"    },
 };
 
 interface Props {
@@ -18,11 +18,15 @@ interface Props {
 export function InfoBadge({ variant, description }: Props) {
   const v = VARIANTS[variant];
   return (
-    <div className={clsx("border rounded-lg px-4 py-3 text-sm", v.bg, v.text)}>
-      <span>
-        <strong>{v.label}</strong>
-        {description && ` — ${description}`}
+    <div className={clsx("border-l-4 rounded-r-xl px-5 py-4 text-sm shadow-sm flex flex-col gap-1", v.bg, v.text, "border-current")}>
+      <span className="font-black uppercase tracking-[0.2em] text-[10px]">
+        {v.label}
       </span>
+      {description && (
+        <p className="font-medium leading-relaxed opacity-90">
+          {description}
+        </p>
+      )}
     </div>
   );
 }

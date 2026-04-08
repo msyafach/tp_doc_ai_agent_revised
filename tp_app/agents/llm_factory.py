@@ -5,23 +5,23 @@ Imported by all subagent modules.
 import os
 import re
 import warnings
-from functools import lru_cache
+
 from dotenv import load_dotenv
 
 load_dotenv()
 
 
-@lru_cache(maxsize=8)
 def get_llm(provider: str = None, model: str = None):
     """
-    Get a cached LLM instance based on provider preference.
+    Get an LLM instance based on provider preference.
 
     Priority:
       1. Explicit provider/model args
       2. LLM_PROVIDER env var ("groq" or "openai")
       3. Auto-detect based on available API keys (Groq first, then OpenAI)
 
-    Results are cached — env vars are read once at first call per (provider, model) pair.
+    Not cached — env vars are re-read on every call so switching providers
+    between agent runs takes effect immediately.
     """
     if provider is None:
         provider = os.environ.get("LLM_PROVIDER", "").lower() or None
@@ -50,7 +50,7 @@ def get_llm(provider: str = None, model: str = None):
         return ChatOpenAI(
             model=model or os.environ.get("OPENAI_MODEL", "gpt-4o-mini"),
             temperature=0.2,
-            max_tokens=4096,
+            max_completion_tokens=4096,
             api_key=os.getenv("OPENAI_API_KEY"),
         )
 
@@ -58,9 +58,8 @@ def get_llm(provider: str = None, model: str = None):
         raise ValueError(f"Unknown LLM provider: '{provider}'. Use 'groq' or 'openai'.")
 
 
-@lru_cache(maxsize=1)
 def get_tavily():
-    """Return a cached Tavily client. Warns if API key is missing."""
+    """Return a Tavily client. Warns if API key is missing."""
     from tavily import TavilyClient
     api_key = os.getenv("TAVILY_API_KEY", "")
     if not api_key:

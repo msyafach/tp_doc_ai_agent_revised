@@ -68,6 +68,8 @@ def run_agents_task(
     api_key: str,
     model: str,
     tavily_key: str,
+    langsmith_api_key: str = "",
+    langsmith_project: str = "",
 ):
     """Run the full LangGraph agent pipeline."""
     from .models import AgentTask, Project
@@ -91,6 +93,8 @@ def run_agents_task(
             api_key=api_key,
             model=model,
             tavily_key=tavily_key,
+            langsmith_api_key=langsmith_api_key,
+            langsmith_project=langsmith_project,
             progress_callback=on_node_complete,
         )
 
@@ -123,6 +127,8 @@ def run_single_agent_task(
     api_key: str,
     model: str,
     tavily_key: str,
+    langsmith_api_key: str = "",
+    langsmith_project: str = "",
 ):
     """Regenerate a single AI section."""
     from .models import AgentTask, Project
@@ -143,6 +149,8 @@ def run_single_agent_task(
             api_key=api_key,
             model=model,
             tavily_key=tavily_key,
+            langsmith_api_key=langsmith_api_key,
+            langsmith_project=langsmith_project,
         )
 
         project.refresh_from_db()

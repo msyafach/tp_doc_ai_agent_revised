@@ -123,7 +123,7 @@ export function Sidebar({ onLoadDummy, onBackToDashboard, onLogout, onAdminClick
               return (
                 <li key={idx}>
                   <button
-                    onClick={() => setStep(idx)}
+                    onClick={() => { setStep(idx); onWizardClick?.(); }}
                     className={[
                       "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm transition-all duration-200",
                       isActive

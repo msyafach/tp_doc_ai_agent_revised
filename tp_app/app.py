@@ -783,13 +783,27 @@ elif current_step == 4:
         "Business Strategy",
         value=st.session_state.business_strategy,
         height=150,
-        placeholder="Describe the company's business strategy..."
+        placeholder=(
+            "Example: The Company operates as an authorized distributor of heavy equipment, "
+            "focusing on the construction and mining sectors. Its business strategy centers on "
+            "expanding market penetration across key regions, strengthening after-sales service "
+            "and spare parts availability, and leveraging the parent group's global procurement "
+            "network to maintain competitive pricing. The Company does not engage in independent "
+            "product development and relies on its affiliated suppliers for product sourcing."
+        )
     )
-    
+
     st.session_state.business_restructuring = st.text_area(
         "Business Restructuring / Transfer of Intangible Assets",
         value=st.session_state.business_restructuring,
-        placeholder="Leave blank if no restructuring occurred in the fiscal year"
+        height=120,
+        placeholder=(
+            "Leave blank if no restructuring occurred in the fiscal year.\n\n"
+            "Example: During FY2024, no business restructuring or transfer of intangible assets "
+            "took place between the Company and its affiliated parties. The Company did not "
+            "acquire, transfer, or license any intangible assets (including trademarks, patents, "
+            "or know-how) to or from related parties during the period under review."
+        )
     )
 
     st.divider()

@@ -15,7 +15,7 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError
 
-from .models import Project, AgentTask
+from .models import Project, AgentTask, SystemSetting
 from .serializers import ProjectSerializer, ProjectListSerializer, AgentTaskSerializer
 
 User = get_user_model()
@@ -91,6 +91,47 @@ DEFAULT_STATE = {
         {"factor": "Economic Conditions",           "description": ""},
     ],
 }
+
+
+# ─── Settings helpers ─────────────────────────────────────────────────────────
+
+def _resolve_agent_settings(request_data: dict) -> dict:
+    """Return API settings, preferring DB values over request data."""
+    db = SystemSetting.as_api_settings()
+    return {
+        "provider":           db["llm_provider"]      or request_data.get("llm_provider", "groq"),
+        "api_key":            db["api_key"]            or request_data.get("api_key", ""),
+        "model":              db["model"]              or request_data.get("model", "llama-3.3-70b-versatile"),
+        "tavily_key":         db["tavily_key"]         or request_data.get("tavily_key", ""),
+        "langsmith_api_key":  db["langsmith_api_key"]  or request_data.get("langsmith_api_key", ""),
+        "langsmith_project":  db["langsmith_project"]  or request_data.get("langsmith_project", ""),
+    }
+
+
+# ─── Settings (admin write / all-user read) ───────────────────────────────────
+
+@api_view(["GET", "PUT"])
+@permission_classes([IsAdminUser])
+def admin_settings_view(request):
+    """Admin-only: read or overwrite all API settings."""
+    if request.method == "GET":
+        return Response(SystemSetting.as_api_settings())
+    SystemSetting.save_api_settings(request.data)
+    return Response(SystemSetting.as_api_settings())
+
+
+@api_view(["GET"])
+def settings_view(request):
+    """Authenticated users: read non-sensitive settings status."""
+    s = SystemSetting.as_api_settings()
+    return Response({
+        "llm_provider":        s["llm_provider"],
+        "model":               s["model"],
+        "langsmith_project":   s["langsmith_project"],
+        "has_api_key":         bool(s["api_key"]),
+        "has_tavily_key":      bool(s["tavily_key"]),
+        "has_langsmith_key":   bool(s["langsmith_api_key"]),
+    })
 
 
 # ─── Config ───────────────────────────────────────────────────────────────────
@@ -212,10 +253,11 @@ def upload_documents(request, pk):
     if not files:
         return Response({"detail": "No files uploaded."}, status=400)
 
-    provider = request.data.get("llm_provider", "groq")
-    api_key = request.data.get("api_key", "")
-    model = request.data.get("model", "llama-3.3-70b-versatile")
-    tavily_key = request.data.get("tavily_key", "")
+    cfg = _resolve_agent_settings(request.data)
+    provider  = cfg["provider"]
+    api_key   = cfg["api_key"]
+    model     = cfg["model"]
+    tavily_key = cfg["tavily_key"]
 
     MAX_MB = 20
     file_data = []
@@ -265,12 +307,13 @@ def run_agents(request, pk):
     except Project.DoesNotExist:
         return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
 
-    provider = request.data.get("llm_provider", "groq")
-    api_key = request.data.get("api_key", "")
-    model = request.data.get("model", "llama-3.3-70b-versatile")
-    tavily_key = request.data.get("tavily_key", "")
-    langsmith_api_key = request.data.get("langsmith_api_key", "")
-    langsmith_project = request.data.get("langsmith_project", "")
+    cfg = _resolve_agent_settings(request.data)
+    provider          = cfg["provider"]
+    api_key           = cfg["api_key"]
+    model             = cfg["model"]
+    tavily_key        = cfg["tavily_key"]
+    langsmith_api_key = cfg["langsmith_api_key"]
+    langsmith_project = cfg["langsmith_project"]
 
     task_record = AgentTask.objects.create(
         project=project,
@@ -301,12 +344,13 @@ def run_single_agent(request, pk):
         return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
 
     agent_key = request.data.get("agent_key", "")
-    provider = request.data.get("llm_provider", "groq")
-    api_key = request.data.get("api_key", "")
-    model = request.data.get("model", "llama-3.3-70b-versatile")
-    tavily_key = request.data.get("tavily_key", "")
-    langsmith_api_key = request.data.get("langsmith_api_key", "")
-    langsmith_project = request.data.get("langsmith_project", "")
+    cfg = _resolve_agent_settings(request.data)
+    provider          = cfg["provider"]
+    api_key           = cfg["api_key"]
+    model             = cfg["model"]
+    tavily_key        = cfg["tavily_key"]
+    langsmith_api_key = cfg["langsmith_api_key"]
+    langsmith_project = cfg["langsmith_project"]
 
     if not agent_key:
         return Response({"detail": "agent_key is required."}, status=400)

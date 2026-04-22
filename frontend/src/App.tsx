@@ -22,6 +22,7 @@ import { useProjectStore } from './store/projectStore';
 import { useAuthStore } from './store/authStore';
 import { saveProject, getProject } from './api/projects';
 import { logoutApi } from './api/auth';
+import { getSettingsStatusApi } from './api/settings';
 import { Component as LumaSpin } from '@/components/ui/luma-spin';
 
 const queryClient = new QueryClient();
@@ -66,25 +67,27 @@ function AppInner() {
     };
   }, [isAuthenticated]);
 
-  // ── Init: try to restore last project from localStorage, else show landing ──
+  // ── Init: restore project + load API settings from backend ──────────────────
   useEffect(() => {
     const stored = localStorage.getItem("tp_project_id");
     const init = async () => {
-      if (stored && isAuthenticated) {
-        try {
-          const proj = await getProject(stored);
-          setProjectId(proj.id);
-          setFullState(proj.state);
-          setView("wizard");
-          return;
-        } catch {
-          localStorage.removeItem("tp_project_id");
-        }
-      }
-      
-      // If we are authenticated but no project is active, go to dashboard.
-      // Otherwise, show the public landing page.
       if (isAuthenticated) {
+        // Load API settings from backend (non-sensitive status for all users)
+        getSettingsStatusApi()
+          .then((s) => setApiSettings({ llm_provider: s.llm_provider, model: s.model, langsmith_project: s.langsmith_project }))
+          .catch(() => { /* ignore — defaults remain */ });
+
+        if (stored) {
+          try {
+            const proj = await getProject(stored);
+            setProjectId(proj.id);
+            setFullState(proj.state);
+            setView("wizard");
+            return;
+          } catch {
+            localStorage.removeItem("tp_project_id");
+          }
+        }
         setView("dashboard");
       } else {
         setView("landing");

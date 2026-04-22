@@ -101,13 +101,8 @@ function sanitizeState(raw: Partial<ProjectState>): ProjectState {
   return merged as unknown as ProjectState;
 }
 
-function loadSavedApiSettings(): ApiSettings {
-  try {
-    const raw = localStorage.getItem("tp_api_settings");
-    if (raw) return { ...DEFAULT_API_SETTINGS, ...JSON.parse(raw) };
-  } catch { /* ignore */ }
-  return { ...DEFAULT_API_SETTINGS };
-}
+// API settings are loaded from the backend after login (see App.tsx).
+// localStorage fallback removed — admin configures keys server-side.
 
 interface ProjectStore {
   projectId: string | null;
@@ -127,7 +122,7 @@ interface ProjectStore {
 export const useProjectStore = create<ProjectStore>((set) => ({
   projectId: null,
   state: { ...DEFAULT_STATE },
-  apiSettings: loadSavedApiSettings(),
+  apiSettings: { ...DEFAULT_API_SETTINGS },
   isDirty: false,
 
   setProjectId: (id) => set({ projectId: id }),

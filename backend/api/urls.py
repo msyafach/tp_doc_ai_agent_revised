@@ -11,6 +11,10 @@ urlpatterns = [
     path("auth/refresh/", TokenRefreshView.as_view(), name="auth-refresh"),
     path("auth/me/", views.me_view, name="auth-me"),
 
+    # ── Settings ──────────────────────────────────────────────────────────────
+    path("settings/", views.settings_view, name="settings"),
+    path("admin/settings/", views.admin_settings_view, name="admin-settings"),
+
     # ── Admin user management ─────────────────────────────────────────────────
     path("admin/users/", views.admin_users_list, name="admin-users-list"),
     path("admin/users/<int:pk>/", views.admin_user_detail, name="admin-user-detail"),

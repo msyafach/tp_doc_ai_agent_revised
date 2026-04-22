@@ -160,13 +160,15 @@ export function Sidebar({ onLoadDummy, onBackToDashboard, onBackToLanding, onLog
 
         {/* Footer actions */}
         <div className="space-y-2 px-4 py-6 bg-gray-50/50">
-          <button
-            onClick={() => setShowSettings(true)}
-            className="flex w-full items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white py-2 text-xs font-semibold text-gray-600 transition-all hover:bg-gray-50 hover:border-gray-300 hover:shadow-sm"
-          >
-            <Settings className="h-3.5 w-3.5" />
-            API Settings
-          </button>
+          {isAdmin && (
+            <button
+              onClick={() => setShowSettings(true)}
+              className="flex w-full items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white py-2 text-xs font-semibold text-gray-600 transition-all hover:bg-gray-50 hover:border-gray-300 hover:shadow-sm"
+            >
+              <Settings className="h-3.5 w-3.5" />
+              API Settings
+            </button>
+          )}
 
           <div className="grid grid-cols-2 gap-2">
             <button

@@ -1,6 +1,7 @@
 from types import SimpleNamespace
 
 from agents import llm_factory, nodes, tools
+from agents.research_subagent import _strip_source_summary
 
 
 def test_agent_tools_registry_contains_expected_tools():
@@ -50,3 +51,12 @@ def test_invoke_prompt_with_tools_executes_requested_tool(monkeypatch):
     result = llm_factory.invoke_prompt_with_tools("Use tools if needed.")
 
     assert result == "final answer"
+
+
+def test_strip_source_summary_removes_trailing_source_block():
+    text = (
+        "Main analysis paragraph with citations [1][2].\n\n"
+        "Sources (footnotes): [1] Summary text. [2] Another summary."
+    )
+
+    assert _strip_source_summary(text) == "Main analysis paragraph with citations [1][2]."

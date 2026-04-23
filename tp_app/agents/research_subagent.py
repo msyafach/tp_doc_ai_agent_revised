@@ -9,8 +9,24 @@ Nodes:
   - research_industry_regulations → industry_regulations_text, industry_regulations_sources
 """
 import json
+import re
 from agents.llm_factory import invoke_prompt_with_tools
 from agents.tools import UNTRUSTED_DATA_NOTICE, sanitize_search_results, search_web
+
+
+def _strip_source_summary(text: str) -> str:
+    """
+    Remove model-added source summary blocks such as
+    "Sources (footnotes): [1] ... [2] ..." from section bodies.
+    Source URLs are rendered separately by the exporter.
+    """
+    cleaned = re.sub(
+        r"\n+\s*(sources?\s*(\([^)]*\))?\s*:|footnotes?\s*:).*$",
+        "",
+        text,
+        flags=re.IGNORECASE | re.DOTALL,
+    )
+    return cleaned.strip()
 
 
 # ─── Node: Industry Analysis (Global) ────────────────────────────────────────
@@ -66,8 +82,9 @@ IMPORTANT RULES:
 - Write in formal, professional English suitable for a tax compliance document.
 - Do NOT include section headers — just flowing paragraphs.
 - Include footnote markers like [1], [2] for source references.
+- Do NOT append a "Sources", "Footnotes", or reference-summary section at the end.
 """
-    response_text = invoke_prompt_with_tools(prompt)
+    response_text = _strip_source_summary(invoke_prompt_with_tools(prompt))
     sources = [r.get("url", "") for r in results1]
 
     return {
@@ -123,8 +140,9 @@ IMPORTANT RULES:
 - Write in formal professional English for a tax compliance document.
 - Do NOT include section headers.
 - Include footnote markers [1], [2] for source references.
+- Do NOT append a "Sources", "Footnotes", or reference-summary section at the end.
 """
-    response_text = invoke_prompt_with_tools(prompt)
+    response_text = _strip_source_summary(invoke_prompt_with_tools(prompt))
     sources = [r.get("url", "") for r in results1]
 
     return {
@@ -169,8 +187,9 @@ RULES:
 - Formal professional English
 - No section headers
 - Include footnote markers [1], [2] for source references.
+- Do NOT append a "Sources", "Footnotes", or reference-summary section at the end.
 """
-    response_text = invoke_prompt_with_tools(prompt)
+    response_text = _strip_source_summary(invoke_prompt_with_tools(prompt))
     sources = list(dict.fromkeys(r.get("url", "") for r in results if r.get("url")))
     return {
         "business_environment_overview": response_text,
@@ -264,9 +283,9 @@ IMPORTANT RULES:
 - Include source citations [N] inline where data is referenced.
 - Formal, professional English suitable for a tax compliance document.
 - Do NOT add any section heading — start directly with the intro sentence.
+- Do NOT append a "Sources", "Footnotes", or reference-summary section at the end.
 """
-
-    response_text = invoke_prompt_with_tools(prompt)
+    response_text = _strip_source_summary(invoke_prompt_with_tools(prompt))
     return {
         "company_location_analysis": response_text,
         "company_location_sources":  sources,
@@ -338,9 +357,9 @@ IMPORTANT RULES:
 - If a specific regulation number is not available from the research, describe the policy type generically.
 - Formal, professional English suitable for a tax compliance document.
 - Do NOT include a section heading — start directly with the first bullet.
+- Do NOT append a "Sources", "Footnotes", or reference-summary section at the end.
 """
-
-    response_text = invoke_prompt_with_tools(prompt)
+    response_text = _strip_source_summary(invoke_prompt_with_tools(prompt))
     return {
         "industry_regulations_text":    response_text,
         "industry_regulations_sources": sources,

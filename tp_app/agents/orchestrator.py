@@ -120,7 +120,9 @@ def _node(fn, output_key: str, step_name: str):
     """
     def wrapped(state: AgentState) -> dict:
         if step_name in (state.get("_skip_nodes") or []):
-            return {}  # cached — keep existing state values unchanged
+            # LangGraph nodes must write at least one declared state key.
+            # Use an explicit no-op write so cached nodes can be skipped safely.
+            return {"errors": []}  # cached — keep existing state values unchanged
         try:
             return fn(state)
         except Exception as e:
@@ -134,7 +136,8 @@ def _node(fn, output_key: str, step_name: str):
 
 def node_business_activities(state: AgentState) -> dict:
     if "business_activities" in (state.get("_skip_nodes") or []):
-        return {}
+        # Mirror _node() skip behavior: emit a valid no-op state write.
+        return {"errors": []}
     try:
         return generate_business_activities(state)
     except Exception as e:

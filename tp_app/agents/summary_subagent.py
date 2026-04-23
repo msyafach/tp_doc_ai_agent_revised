@@ -6,7 +6,7 @@ Nodes:
   - generate_pl_overview      → pl_overview_text
   - generate_executive_summary → executive_summary
 """
-from agents.llm_factory import get_llm
+from agents.llm_factory import invoke_prompt
 
 
 # ─── Node: Conclusion ────────────────────────────────────────────────────────
@@ -27,7 +27,6 @@ def generate_conclusion(state: dict) -> dict:
     median = quartile.get("median", 0)
     q3 = quartile.get("q3", 0)
 
-    llm = get_llm()
     prompt = f"""Write the Conclusion section for a Transfer Pricing Local File.
 
 Details:
@@ -51,8 +50,7 @@ Use EXACT numbers provided. Do NOT invent any figures.
 RESPOND IN ENGLISH ONLY. Do NOT switch to Indonesian or any other language.
 Professional formal English, suitable for regulatory documentation.
 """
-    response = llm.invoke(prompt)
-    return {"conclusion_text": response.content}
+    return {"conclusion_text": invoke_prompt(prompt)}
 
 
 # ─── Node: Profit/Loss Overview ───────────────────────────────────────────────
@@ -95,7 +93,6 @@ def generate_pl_overview(state: dict) -> dict:
 
     table_text = "\n".join(table_lines)
 
-    llm = get_llm()
     prompt = f"""You are a transfer pricing analyst writing the "Overview of Profit/Loss" section for {company_short}'s Transfer Pricing Local File.
 
 Below is the company's Profit/Loss data for FY {fiscal_year} and FY {prior_year}:
@@ -119,8 +116,7 @@ Guidelines:
   "The overview of {company_short}'s profit/loss statements for FY {fiscal_year} and FY {prior_year} is as follows:"
   Then list the bullet points.
 """
-    response = llm.invoke(prompt)
-    text = response.content.strip() if hasattr(response, "content") else str(response).strip()
+    text = invoke_prompt(prompt).strip()
     return {"pl_overview_text": text}
 
 
@@ -167,7 +163,6 @@ def generate_executive_summary(state: dict) -> dict:
             "transfer pricing adjustment may be required"
         )
 
-    llm = get_llm()
     prompt = f"""Write the Executive Summary for a Transfer Pricing Local File document.
 
 Details:
@@ -206,5 +201,4 @@ RULES:
 - Professional formal English
 - Clearly label each section
 """
-    response = llm.invoke(prompt)
-    return {"executive_summary": response.content}
+    return {"executive_summary": invoke_prompt(prompt)}

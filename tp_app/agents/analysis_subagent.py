@@ -5,7 +5,7 @@ Nodes:
   - generate_functional_analysis        → functional_analysis_narrative
   - determine_business_characterization → business_characterization_text
 """
-from agents.llm_factory import get_llm
+from agents.llm_factory import invoke_prompt
 
 
 # ─── Node: Functional Analysis Narrative ──────────────────────────────────────
@@ -19,7 +19,6 @@ def generate_functional_analysis(state: dict) -> dict:
     parent_group = state.get("parent_group", "the Group")
     transaction_type = state.get("transaction_type", "")
 
-    llm = get_llm()
     prompt = f"""You are a transfer pricing analyst writing the Functional Analysis narrative for a TP Local File.
 
 Company: {company_short}
@@ -60,8 +59,7 @@ RULES:
 - Write in formal professional English
 - Output the functional analysis table as a structured description
 """
-    response = llm.invoke(prompt)
-    return {"functional_analysis_narrative": response.content}
+    return {"functional_analysis_narrative": invoke_prompt(prompt)}
 
 
 # ─── Node: Business Characterization ─────────────────────────────────────────
@@ -72,7 +70,6 @@ def determine_business_characterization(state: dict) -> dict:
     func_analysis = state.get("functional_analysis_narrative", "")
     business_desc = state.get("business_activities_description", "")
 
-    llm = get_llm()
     prompt = f"""Based on the following functional analysis, determine the business characterization of {company_short}.
 
 Business description: {business_desc[:500]}
@@ -99,5 +96,4 @@ RULES:
 - Be specific and reference the functions/risks
 - Professional formal English
 """
-    response = llm.invoke(prompt)
-    return {"business_characterization_text": response.content}
+    return {"business_characterization_text": invoke_prompt(prompt)}

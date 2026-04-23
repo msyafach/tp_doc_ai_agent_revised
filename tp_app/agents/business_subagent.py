@@ -5,7 +5,7 @@ Nodes:
   - generate_business_activities → business_activities_description
   - generate_supply_chain        → supply_chain_management
 """
-from agents.llm_factory import get_llm
+from agents.llm_factory import invoke_prompt
 
 
 def generate_business_activities(state: dict) -> dict:
@@ -32,7 +32,6 @@ def generate_business_activities(state: dict) -> dict:
         for m in mgmt[:8] if m.get("name")
     ) or "not specified"
 
-    llm = get_llm()
     prompt = f"""You are a transfer pricing analyst writing the "Business Activities and Operational Aspects" section of a Transfer Pricing Local File for an Indonesian company.
 
 Company details:
@@ -53,8 +52,7 @@ Write 2–3 concise paragraphs (no headings, no bullet points) covering:
 Use formal transfer pricing documentation language. Refer to the company by its short name ({company_short or company_name}).
 Do NOT include markdown, headers, or bullet points — write plain flowing paragraphs only."""
 
-    response = llm.invoke(prompt)
-    text = response.content.strip() if hasattr(response, "content") else str(response).strip()
+    text = invoke_prompt(prompt).strip()
     return {"business_activities_description": text}
 
 
@@ -76,7 +74,6 @@ def generate_supply_chain(state: dict) -> dict:
     fiscal_year    = state.get("fiscal_year", "2024")
     biz_activities = state.get("business_activities_description", "")[:400]
 
-    llm = get_llm()
     prompt = f"""You are a transfer pricing analyst writing the "Supply Chain Management" section for a Transfer Pricing Local File of an Indonesian company.
 
 Company details:
@@ -102,6 +99,5 @@ Rules:
 - Do NOT invent figures or names not provided above
 - Keep each bullet concise (2–3 sentences)"""
 
-    response = llm.invoke(prompt)
-    text = response.content.strip() if hasattr(response, "content") else str(response).strip()
+    text = invoke_prompt(prompt).strip()
     return {"supply_chain_management": text}

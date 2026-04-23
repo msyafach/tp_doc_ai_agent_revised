@@ -7,7 +7,7 @@ Nodes:
   - generate_method_justification    → method_selection_justification
   - generate_pli_rationale           → pli_selection_rationale
 """
-from agents.llm_factory import get_llm
+from agents.llm_factory import invoke_prompt
 
 
 # ─── Node: Background of Transaction to Affiliated Party ──────────────────────
@@ -36,7 +36,6 @@ def generate_background_transaction(state: dict) -> dict:
             aff_lines.append(f"- {name}: {txn} of {val}" if txn or val else f"- {name}")
     aff_context = "\n".join(aff_lines) or "not specified"
 
-    llm = get_llm()
     prompt = f"""You are a transfer pricing analyst writing section 4.1.2.1 "Background of Transaction to Affiliated Party" for a Transfer Pricing Local File under Indonesian regulation PMK-172/2023.
 
 Company: {company_name} ({company_short})
@@ -62,8 +61,7 @@ STRICT RULES:
 - Use formal, professional English
 - Each paragraph should be a complete, coherent thought
 """
-    response = llm.invoke(prompt)
-    text = response.content.strip() if hasattr(response, "content") else str(response).strip()
+    text = invoke_prompt(prompt).strip()
     return {"background_transaction": text}
 
 
@@ -76,7 +74,6 @@ def generate_comparability_narrative(state: dict) -> dict:
     products = state.get("products", [])
     product_names = ", ".join([p.get("name", "") for p in products]) if products else ""
 
-    llm = get_llm()
     prompt = f"""Write the Comparability Analysis section for a Transfer Pricing Local File.
 
 Company: {company_short}
@@ -97,8 +94,7 @@ Write 3-4 paragraphs covering:
 Professional formal English, no headers within the text.
 RESPOND IN ENGLISH ONLY. Do NOT switch to Indonesian or any other language.
 """
-    response = llm.invoke(prompt)
-    return {"comparability_analysis_narrative": response.content}
+    return {"comparability_analysis_narrative": invoke_prompt(prompt)}
 
 
 # ─── Node: Method Selection Justification ─────────────────────────────────────
@@ -111,7 +107,6 @@ def generate_method_justification(state: dict) -> dict:
     business_char = state.get("business_characterization_text", "")
     selected_pli = state.get("selected_pli", "ROS")
 
-    llm = get_llm()
     prompt = f"""You are a transfer pricing analyst writing the Transfer Pricing Method Selection section.
 
 Company: {company_short}
@@ -137,8 +132,7 @@ RULES:
 - Follow PMK-172 and OECD TPG guidance
 - Professional formal English
 """
-    response = llm.invoke(prompt)
-    return {"method_selection_justification": response.content}
+    return {"method_selection_justification": invoke_prompt(prompt)}
 
 
 # ─── Node: PLI Selection Rationale ───────────────────────────────────────────
@@ -159,7 +153,6 @@ def generate_pli_rationale(state: dict) -> dict:
         "ROCE": "Return on Capital Employed (ROCE) measures operating profit relative to capital employed",
     }
 
-    llm = get_llm()
     prompt = f"""Write a 2-3 paragraph justification for selecting {selected_pli} ({pli_explanations.get(selected_pli, '')}) as the Profit Level Indicator for the transfer pricing analysis of {company_short}.
 
 Context:
@@ -174,5 +167,4 @@ Cover:
 Professional formal English, no headers.
 RESPOND IN ENGLISH ONLY. Do NOT switch to Indonesian or any other language.
 """
-    response = llm.invoke(prompt)
-    return {"pli_selection_rationale": response.content}
+    return {"pli_selection_rationale": invoke_prompt(prompt)}

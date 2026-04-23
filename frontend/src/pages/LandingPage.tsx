@@ -117,7 +117,7 @@ export function LandingPage({ onStart, onNewProject, companyName, isAuthenticate
             <FeatureCard 
               icon={<FileText className="w-6 h-6" />}
               title="Seamless Export"
-              description="Review your analysis and export to structured JSON or professional documentation formats with a single click."
+              description="Review your analysis and export professional documentation formats with a single click."
               color="bg-brand-blue/10 text-brand-blue"
             />
           </div>

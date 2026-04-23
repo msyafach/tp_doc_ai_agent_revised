@@ -22,9 +22,6 @@ urlpatterns = [
     # ── Projects CRUD ─────────────────────────────────────────────────────────
     path("projects/", views.projects_list, name="projects-list"),
     path("projects/<uuid:pk>/", views.project_detail, name="project-detail"),
-    path("projects/<uuid:pk>/export-json/", views.project_export_json, name="project-export-json"),
-    path("projects/<uuid:pk>/load-json/", views.project_load_json, name="project-load-json"),
-
     # ── Document upload ───────────────────────────────────────────────────────
     path("projects/<uuid:pk>/upload-documents/", views.upload_documents, name="upload-documents"),
 

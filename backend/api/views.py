@@ -2,14 +2,13 @@
 API views for the TP Local File Generator.
 """
 from __future__ import annotations
-import json
 import logging
 
 from django.contrib.auth import authenticate, get_user_model
 from django.http import HttpResponse, StreamingHttpResponse
 from rest_framework import status
 from rest_framework.decorators import api_view, parser_classes, permission_classes
-from rest_framework.parsers import MultiPartParser, JSONParser
+from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import AllowAny, IsAdminUser
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -196,47 +195,6 @@ def project_detail(request, pk):
     if request.method == "DELETE":
         project.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-@api_view(["GET"])
-def project_export_json(request, pk):
-    try:
-        project = Project.objects.get(pk=pk)
-    except Project.DoesNotExist:
-        return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
-
-    filename = (
-        f"tp_project_{project.state.get('company_short_name', 'project')}"
-        f"_{project.state.get('fiscal_year', '')}.json"
-    )
-    response = HttpResponse(
-        json.dumps(project.state, indent=2, default=str),
-        content_type="application/json",
-    )
-    response["Content-Disposition"] = f'attachment; filename="{filename}"'
-    return response
-
-
-@api_view(["POST"])
-def project_load_json(request, pk):
-    try:
-        project = Project.objects.get(pk=pk)
-    except Project.DoesNotExist:
-        return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
-
-    if "file" in request.FILES:
-        try:
-            data = json.loads(request.FILES["file"].read())
-        except Exception:
-            return Response({"detail": "Invalid JSON file."}, status=400)
-    elif "state" in request.data:
-        data = request.data["state"]
-    else:
-        return Response({"detail": "Provide a 'file' or 'state' in the request body."}, status=400)
-
-    project.state = data
-    project.save(update_fields=["state"])
-    return Response(ProjectSerializer(project).data)
 
 
 # ─── Document upload ──────────────────────────────────────────────────────────

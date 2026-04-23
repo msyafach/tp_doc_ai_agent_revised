@@ -1,7 +1,6 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { ChevronLeft, Settings, LogOut, Shield } from "lucide-react";
 import { useProjectStore } from "../store/projectStore";
-import { exportProjectJson, loadProjectJson } from "../api/projects";
 import { SettingsModal } from "./SettingsModal";
 
 const STEPS = [
@@ -31,48 +30,11 @@ interface Props {
 }
 
 export function Sidebar({ onLoadDummy, onBackToDashboard, onBackToLanding, onLogout, onAdminClick, onWizardClick, isAdmin, currentView = "wizard" }: Props) {
-  const { projectId, state, setStep } = useProjectStore();
-  const fileRef = useRef<HTMLInputElement>(null);
+  const { state, setStep } = useProjectStore();
   const [showSettings, setShowSettings] = useState(false);
 
   const currentStep = state.step;
   const progress = currentStep / (STEPS.length - 1);
-
-  const handleSaveJson = async () => {
-    if (!projectId) return;
-    try {
-      const blob = await exportProjectJson(projectId);
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      const co = state.company_short_name || "project";
-      const fy = state.fiscal_year || "";
-      a.download = `tp_project_${co}_${fy}.json`;
-      a.click();
-      URL.revokeObjectURL(url);
-    } catch {
-      const json = JSON.stringify(state, null, 2);
-      const blob = new Blob([json], { type: "application/json" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "tp_project.json";
-      a.click();
-      URL.revokeObjectURL(url);
-    }
-  };
-
-  const handleLoadJson = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file || !projectId) return;
-    try {
-      await loadProjectJson(projectId, file);
-      window.location.reload();
-    } catch {
-      alert("Failed to load JSON.");
-    }
-    e.target.value = "";
-  };
 
   return (
     <>
@@ -169,23 +131,6 @@ export function Sidebar({ onLoadDummy, onBackToDashboard, onBackToLanding, onLog
               API Settings
             </button>
           )}
-
-          <div className="grid grid-cols-2 gap-2">
-            <button
-              onClick={handleSaveJson}
-              className="rounded-lg border border-gray-200 bg-white py-2 text-[10px] font-bold text-gray-600 uppercase tracking-tight transition-all hover:bg-gray-50 hover:border-gray-300"
-            >
-              Export JSON
-            </button>
-
-            <button
-              onClick={() => fileRef.current?.click()}
-              className="rounded-lg border border-gray-200 bg-white py-2 text-[10px] font-bold text-gray-600 uppercase tracking-tight transition-all hover:bg-gray-50 hover:border-gray-300"
-            >
-              Import JSON
-            </button>
-            <input ref={fileRef} type="file" accept=".json" className="hidden" onChange={handleLoadJson} />
-          </div>
 
           <button
             onClick={onLoadDummy}

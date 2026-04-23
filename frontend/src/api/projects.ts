@@ -34,22 +34,6 @@ export async function deleteProject(id: string): Promise<void> {
   await api.delete(`/projects/${id}/`);
 }
 
-export async function exportProjectJson(id: string): Promise<Blob> {
-  const { data } = await api.get(`/projects/${id}/export-json/`, {
-    responseType: "blob",
-  });
-  return data;
-}
-
-export async function loadProjectJson(id: string, file: File): Promise<Project> {
-  const form = new FormData();
-  form.append("file", file);
-  const { data } = await api.post<Project>(`/projects/${id}/load-json/`, form, {
-    headers: { "Content-Type": "multipart/form-data" },
-  });
-  return data;
-}
-
 // ─── Document upload ──────────────────────────────────────────────────────────
 
 export async function uploadDocuments(

@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { Loader2, ChevronDown, ChevronUp } from "lucide-react";
+import { Loader2, ChevronDown, ChevronUp, Pencil, Eye } from "lucide-react";
 import { InfoBadge } from "../components/InfoBadge";
 import { SectionCard } from "../components/SectionCard";
 import { useProjectStore } from "../store/projectStore";
 import { runAgents, runSingleAgent, pollTaskStatus } from "../api/projects";
 import clsx from "clsx";
+import ReactMarkdown from "react-markdown";
 
 const NODE_LABELS: Record<string, string> = {
   business_activities:    "Business activities description generated",
@@ -49,7 +50,11 @@ export function Step10AIAgents() {
     setAgentTaskId, setAgentPolling, setAgentTask,
   } = useProjectStore();
   const [openSections, setOpenSections] = useState<Set<string>>(new Set());
+  const [editingSections, setEditingSections] = useState<Set<string>>(new Set());
   const [regenLoading, setRegenLoading] = useState<string | null>(null);
+
+  const toggleEdit = (key: string) =>
+    setEditingSections((prev) => { const n = new Set(prev); n.has(key) ? n.delete(key) : n.add(key); return n; });
 
   const hasLlm = !!apiSettings.api_key;
   const hasTavily = !!apiSettings.tavily_key;
@@ -219,6 +224,7 @@ export function Step10AIAgents() {
           <div className="space-y-2">
             {REVIEWABLE_SECTIONS.map(({ key, label }) => {
               const isOpen = openSections.has(key);
+              const isEditing = editingSections.has(key);
               const value = (state as unknown as Record<string, string>)[key] ?? "";
               return (
                 <div key={key} className="border border-gray-200 rounded-lg overflow-hidden">
@@ -233,17 +239,34 @@ export function Step10AIAgents() {
                     </div>
                   </button>
                   {isOpen && (
-                    <div className="p-4">
-                      <textarea
-                        rows={8}
-                        className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-green resize-y"
-                        value={value}
-                        onChange={(e) => setState({ [key]: e.target.value } as Parameters<typeof setState>[0])}
-                      />
+                    <div className="p-4 space-y-3">
+                      {/* Toggle edit / preview */}
+                      <div className="flex justify-end">
+                        <button
+                          onClick={() => toggleEdit(key)}
+                          className="inline-flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-700 px-2.5 py-1 rounded-md hover:bg-gray-100 border border-gray-200 transition-colors"
+                        >
+                          {isEditing ? <><Eye className="w-3.5 h-3.5" /> Preview</> : <><Pencil className="w-3.5 h-3.5" /> Edit</>}
+                        </button>
+                      </div>
+
+                      {isEditing ? (
+                        <textarea
+                          rows={10}
+                          className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-green resize-y font-mono"
+                          value={value}
+                          onChange={(e) => setState({ [key]: e.target.value } as Parameters<typeof setState>[0])}
+                        />
+                      ) : (
+                        <div className="prose prose-sm max-w-none text-gray-700 text-sm leading-relaxed">
+                          <ReactMarkdown>{value || "*No content generated yet.*"}</ReactMarkdown>
+                        </div>
+                      )}
+
                       <button
                         onClick={() => handleRegen(key)}
                         disabled={regenLoading === key || !hasLlm}
-                        className="mt-2 inline-flex items-center gap-1.5 text-xs text-brand-green hover:text-brand-dark font-medium px-3 py-1.5 rounded-md hover:bg-green-50 border border-green-200 disabled:opacity-50 transition-colors"
+                        className="inline-flex items-center gap-1.5 text-xs text-brand-green hover:text-brand-dark font-medium px-3 py-1.5 rounded-md hover:bg-green-50 border border-green-200 disabled:opacity-50 transition-colors"
                       >
                         {regenLoading === key ? (
                           <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Regenerating…</>
@@ -279,21 +302,39 @@ export function Step10AIAgents() {
                       {entries.length === 0 ? (
                         <p className="text-sm text-gray-400 italic">No descriptions generated yet.</p>
                       ) : (
-                        entries.map(([name, desc]) => (
-                          <div key={name}>
-                            <p className="text-xs font-semibold text-gray-600 mb-1">{name}</p>
-                            <textarea
-                              rows={4}
-                              className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-green resize-y"
-                              value={desc}
-                              onChange={(e) =>
-                                setState({
-                                  comparable_descriptions: { ...state.comparable_descriptions, [name]: e.target.value },
-                                })
-                              }
-                            />
-                          </div>
-                        ))
+                        entries.map(([name, desc]) => {
+                          const ccEditKey = `cc_${name}`;
+                          const isCCEditing = editingSections.has(ccEditKey);
+                          return (
+                            <div key={name}>
+                              <div className="flex items-center justify-between mb-1">
+                                <p className="text-xs font-semibold text-gray-600">{name}</p>
+                                <button
+                                  onClick={() => toggleEdit(ccEditKey)}
+                                  className="inline-flex items-center gap-1 text-xs text-gray-400 hover:text-gray-600 px-2 py-0.5 rounded hover:bg-gray-100 transition-colors"
+                                >
+                                  {isCCEditing ? <><Eye className="w-3 h-3" /> Preview</> : <><Pencil className="w-3 h-3" /> Edit</>}
+                                </button>
+                              </div>
+                              {isCCEditing ? (
+                                <textarea
+                                  rows={4}
+                                  className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-green resize-y font-mono"
+                                  value={desc}
+                                  onChange={(e) =>
+                                    setState({
+                                      comparable_descriptions: { ...state.comparable_descriptions, [name]: e.target.value },
+                                    })
+                                  }
+                                />
+                              ) : (
+                                <div className="prose prose-sm max-w-none text-gray-700 text-sm leading-relaxed">
+                                  <ReactMarkdown>{desc}</ReactMarkdown>
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })
                       )}
                     </div>
                   )}

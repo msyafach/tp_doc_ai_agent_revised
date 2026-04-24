@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -c \" import json from graphify.detect import detect from pathlib import Path result = detect\\(Path\\('.'\\)\\) print\\(json.dumps\\(result\\)\\) \")",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\('total_files:', d.get\\('total_files'\\)\\); print\\('total_words:', d.get\\('total_words'\\)\\); print\\('files:', json.dumps\\(d.get\\('files',{}\\), indent=2\\)\\)\")",
+      "Bash(python *)",
+      "mcp__LangSmith_MCP__Hosted___fetch_runs"
+    ]
+  }
+}

@@ -1,0 +1,20 @@
+## graphify
+
+This project has a graphify knowledge graph at graphify-out/.
+
+Rules:
+- Before answering architecture or codebase questions, read graphify-out/GRAPH_REPORT.md for god nodes and community structure
+- If graphify-out/wiki/index.md exists, navigate it instead of reading raw files
+- For cross-module "how does X relate to Y" questions, prefer `graphify query "<question>"`, `graphify path "<A>" "<B>"`, or `graphify explain "<concept>"` over grep — these traverse the graph's EXTRACTED + INFERRED edges instead of scanning files
+- After modifying code files in this session, run `graphify update .` to keep the graph current (AST-only, no API cost)
+
+
+## General
+
+- Always use uv package manager to run or install any dependency
+- Use docker ps to see running container and warn user if there isn't any
+- Use docker logs <docker-id> to do debugging
+- Use docker compose up -d --build to rebuild the container after changes
+- Always commit each time you update the code
+- Always advice user to follow git best practice
+- Your code will be reviewed by claude code so goodluck

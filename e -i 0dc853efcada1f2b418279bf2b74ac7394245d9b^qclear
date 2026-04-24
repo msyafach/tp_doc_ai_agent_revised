@@ -1,0 +1,53 @@
+[33m0129237[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m Adding all the add ins
+[33m0dc853e[m Adding all the add ins
+[33mf99ca0e[m Fix tested_transaction prompt copying example text literally
+[33m6a0ac45[m Add within-run deduplication guard to prevent double LLM execution
+[33m4e393f0[m Enable LLM token streaming in invoke_prompt and invoke_prompt_with_tools
+[33mdc89232[m Slim LangGraph node state: each node receives only its required fields
+[33m1010032[m Render markdown in AI-generated section previews
+[33mafc4a68[m Strengthen no-follow-up enforcement for OpenAI
+[33m69c0f13[m Fix bullet points not rendering in DOCX P/L overview
+[33m57224d7[m Strip trailing conversational offers from LLM agent output
+[33md8cfce8[m Make AI Agents run in background across navigation
+[33mdd0f2db[m Restore persisted API settings status after login
+[33m7785512[m Add transaction synthesis stage for executive summary
+[33m2dc5302[m Strip AI-generated source summaries from research output
+[33md1ca25a[m Refactor agents to use LangChain tools
+[33me02a933[m Fix LangGraph skip-node invalid update error
+[33m4257fdb[m Remove JSON import/export option
+[33mf9f1414[m feat(auth): restrict API key settings to admin users only
+[33mb8ff8cc[m ux(step5): improve placeholder text for business strategy & restructuring fields
+[33mb5d941d[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/feature/landing-page[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mfeature/landing-page[m[33m)[m adding landing page
+[33me5ef93e[m feat: change the login page background into mesh gradient
+[33m5a24245[m fix(tests): authenticate api_client fixture for JWT-protected endpoints
+[33mc6ef19a[m fix(ci): add simplejwt to test requirements & fix sidebar step navigation
+[33m201aecc[m[33m ([m[1;31morigin/feature/login[m[33m, [m[1;32mfeature/login[m[33m)[m fix: sidebar akan otomatis switch view kembali ke wizard sekaligus pindah ke step yang diklik.
+[33m8f0af46[m feat: add JWT authentication, session timeout & user management
+[33m5b23b22[m trigger ci cd
+[33mf40688e[m feat: add LangSmith tracing, agent caching, sidebar & UI improvements
+[33m49a2a6a[m fix(docker): set VITE_API_BASE_URL to /api for local dev
+[33mc3d2c66[m feat: adding .gitignore
+[33m7f22611[m fix(frontend): add vite-env.d.ts for import.meta.env types
+[33m149688d[m fix(frontend): fix API routing for Vercel experimentalServices
+[33mbb0e94c[m debug(frontend): enable source maps to trace runtime .map error
+[33m39bfcab[m fix(frontend): fix TypeScript strict-mode cast errors in projectStore
+[33m5be2e40[m fix(frontend): sanitize array fields in setState to prevent .map crashes
+[33m22002ef[m fix(frontend): fix .map crashes in Step10AIAgents
+[33m4f6cf05[m fix(frontend): sanitize array fields in setFullState to prevent .map crashes
+[33m0603120[m fix(frontend): merge DEFAULT_STATE in setFullState to prevent .map crashes
+[33ma7d2413[m fix(frontend): fix TypeScript generic constraint and unsafe cast errors
+[33m65d53c4[m fix(frontend): relax DynamicTable generic constraint to Record<string, unknown>
+[33m281938e[m fix(ci): declare tp-secrets environment in deploy job to access secrets
+[33m4115721[m fix(ci): add celery to requirements-test.txt
+[33m102a0fb[m feat(ci-cd): add GitHub Actions CI/CD pipeline with test suite and Vercel deployment
+[33m1e3d296[m initialize github push
+[33me11c92b[m refactor(appendix4): slim template to 1 prototype table for dynamic iteration
+[33m880fdef[m Revert "refactor(appendix4): slim template to single prototype company table"
+[33m7974b8c[m refactor(appendix4): slim template to single prototype company table
+[33ma28fe48[m feat(appendix8): add Jinja2 loop for Appendix 8 independent transactions
+[33m1cf07e8[m feat(appendix7): add Jinja2 loop for Appendix 7 affiliated transactions
+[33mdc4a97e[m refactor(diagrams): compact pipeline diagram by consolidating Branch A nodes
+[33mc0eda5d[m refactor(diagrams): restructure pipeline to horizontal layout, add .puml sources
+[33m23e0ead[m feat: convert PlantUML diagrams to PNG and embed in README
+[33m8e63a62[m feat(streamlit): sync app.py with current project state
+[33m41bf8ce[m Initial commit: TP Local File Generator

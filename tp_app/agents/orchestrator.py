@@ -110,6 +110,10 @@ class AgentState(TypedDict, total=False):
     # Use Annotated reducers so parallel branches can safely write to these keys
     # without causing INVALID_CONCURRENT_GRAPH_UPDATE errors.
     errors: Annotated[list, operator.add]
+    # Within-run deduplication guard — tracks which nodes have already executed
+    # LLM calls in this graph invocation, preventing double execution caused by
+    # LangGraph fan-in firing multiple times when branches have unequal lengths.
+    _nodes_ran: Annotated[list, operator.add]
 
 
 # ─── Node wrappers ────────────────────────────────────────────────────────────
@@ -125,20 +129,23 @@ def _node(fn, output_key: str, step_name: str, input_keys: list | None = None):
     """
     def wrapped(state: AgentState) -> dict:
         if step_name in (state.get("_skip_nodes") or []):
-            # LangGraph nodes must write at least one declared state key.
-            # Use an explicit no-op write so cached nodes can be skipped safely.
-            return {"errors": []}  # cached — keep existing state values unchanged
+            return {"errors": [], "_nodes_ran": []}
+        if step_name in (state.get("_nodes_ran") or []):
+            return {"errors": [], "_nodes_ran": []}  # already ran in this execution
         slim = (
             {k: state[k] for k in input_keys if k in state}
             if input_keys is not None
             else state
         )
         try:
-            return fn(slim)
+            result = fn(slim)
+            result["_nodes_ran"] = [step_name]
+            return result
         except Exception as e:
             return {
                 output_key: f"[Error generating {step_name}. Please write this section manually.]",
                 "errors": [f"{step_name}: {type(e).__name__}"],
+                "_nodes_ran": [step_name],
             }
     wrapped.__name__ = f"node_{step_name}"
     return wrapped
@@ -153,13 +160,16 @@ _BUSINESS_ACTIVITIES_KEYS = [
 
 def node_business_activities(state: AgentState) -> dict:
     if "business_activities" in (state.get("_skip_nodes") or []):
-        # Mirror _node() skip behavior: emit a valid no-op state write.
-        return {"errors": []}
+        return {"errors": [], "_nodes_ran": []}
+    if "business_activities" in (state.get("_nodes_ran") or []):
+        return {"errors": [], "_nodes_ran": []}
     slim = {k: state[k] for k in _BUSINESS_ACTIVITIES_KEYS if k in state}
     try:
-        return generate_business_activities(slim)
+        result = generate_business_activities(slim)
+        result["_nodes_ran"] = ["business_activities"]
+        return result
     except Exception as e:
-        return {"errors": [f"business_activities: {type(e).__name__}"]}
+        return {"errors": [f"business_activities: {type(e).__name__}"], "_nodes_ran": ["business_activities"]}
 
 
 # ─── Sync (join) nodes ────────────────────────────────────────────────────────
@@ -389,7 +399,7 @@ def stream_agents(state_data: dict):
     The last yielded accumulated_state contains the final complete output.
     """
     graph = build_tp_graph()
-    initial_state = {**state_data, "current_step": "starting", "errors": []}
+    initial_state = {**state_data, "current_step": "starting", "errors": [], "_nodes_ran": []}
     accumulated = dict(initial_state)
 
     for chunk in graph.stream(initial_state, stream_mode="updates"):

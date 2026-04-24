@@ -13,7 +13,8 @@ _IGNORED_STATE_KEYS = {
     "groq_key_input", "openai_key_input", "tavily_key_input",
     "llm_provider_select", "groq_model_select", "openai_model_select",
     "doc_vectorstore",
-    "_skip_nodes",  # runtime-only, never persisted
+    "_skip_nodes",   # runtime-only, never persisted
+    "_nodes_ran",    # runtime-only, resets each graph invocation
 }
 
 _AGENT_OUTPUT_KEYS = [

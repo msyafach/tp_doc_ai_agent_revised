@@ -1,11 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Loader2, ChevronDown, ChevronUp } from "lucide-react";
 import { InfoBadge } from "../components/InfoBadge";
 import { SectionCard } from "../components/SectionCard";
-import { FormField } from "../components/FormField";
 import { useProjectStore } from "../store/projectStore";
-import { runAgents, runSingleAgent, pollTaskStatus, getProject } from "../api/projects";
-import type { AgentTask } from "../types";
+import { runAgents, runSingleAgent, pollTaskStatus } from "../api/projects";
 import clsx from "clsx";
 
 const NODE_LABELS: Record<string, string> = {
@@ -45,10 +43,11 @@ const REVIEWABLE_SECTIONS: { key: string; label: string }[] = [
 ];
 
 export function Step10AIAgents() {
-  const { projectId, state, apiSettings, setState, setFullState } = useProjectStore();
-  const [taskId, setTaskId] = useState<number | null>(null);
-  const [task, setTask] = useState<AgentTask | null>(null);
-  const [polling, setPolling] = useState(false);
+  const {
+    projectId, state, apiSettings, setState, setFullState,
+    agentTaskId, agentPolling, agentTask,
+    setAgentTaskId, setAgentPolling, setAgentTask,
+  } = useProjectStore();
   const [openSections, setOpenSections] = useState<Set<string>>(new Set());
   const [regenLoading, setRegenLoading] = useState<string | null>(null);
 
@@ -74,11 +73,11 @@ export function Step10AIAgents() {
       alert(`Please fill in required fields first: ${missingFields.join(", ")}`);
       return;
     }
-    setTask(null);
+    setAgentTask(null);
     try {
       const { task_id } = await runAgents(projectId, apiSettings);
-      setTaskId(task_id);
-      setPolling(true);
+      setAgentTaskId(task_id);
+      setAgentPolling(true);
     } catch (e: unknown) {
       let errStr = "Unknown error";
       if (e && typeof e === "object" && "response" in e) {
@@ -96,32 +95,6 @@ export function Step10AIAgents() {
       alert(`Failed to start agents: ${errStr}\n\nMake sure the backend is running (e.g. docker-compose up) and the API proxy is configured.`);
     }
   };
-
-  useEffect(() => {
-    if (!polling || taskId === null) return;
-    let cancelled = false;
-
-    const poll = async () => {
-      while (!cancelled) {
-        try {
-          const t = await pollTaskStatus(taskId);
-          setTask(t);
-          if (t.status === "success" || t.status === "error") {
-            setPolling(false);
-            if (t.status === "success" && t.result && projectId) {
-              // Refresh project state from server
-              const proj = await getProject(projectId);
-              setFullState(proj.state);
-            }
-            return;
-          }
-        } catch { /* ignore */ }
-        await new Promise((r) => setTimeout(r, 2000));
-      }
-    };
-    poll();
-    return () => { cancelled = true; };
-  }, [polling, taskId]);
 
   const toggleSection = (key: string) =>
     setOpenSections((prev) => { const n = new Set(prev); n.has(key) ? n.delete(key) : n.add(key); return n; });
@@ -148,7 +121,7 @@ export function Step10AIAgents() {
     setRegenLoading(null);
   };
 
-  const completedNodes = (task?.progress_log ?? []).map((p) => p.node);
+  const completedNodes = (agentTask?.progress_log ?? []).map((p) => p.node);
   const allNodes = Object.keys(NODE_LABELS);
 
   return (
@@ -181,22 +154,22 @@ export function Step10AIAgents() {
       <SectionCard>
         <button
           onClick={startAgents}
-          disabled={polling}
+          disabled={agentPolling}
           title={
-            polling ? "Agents are running…" :
+            agentPolling ? "Agents are running…" :
             !hasLlm ? "Add your LLM API key in the sidebar" :
             missingFields.length > 0 ? `Fill in: ${missingFields.join(", ")}` :
             undefined
           }
           className="w-full py-3 bg-brand-green text-white font-semibold rounded-lg hover:bg-brand-dark disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
         >
-          {polling ? (
+          {agentPolling ? (
             <><Loader2 className="w-5 h-5 animate-spin" /> Running agents…</>
           ) : (
             "Run All AI Agents"
           )}
         </button>
-        {!polling && (!hasLlm || missingFields.length > 0) && (
+        {!agentPolling && (!hasLlm || missingFields.length > 0) && (
           <p className="mt-2 text-xs text-amber-600">
             {!hasLlm
               ? "Add your Groq or OpenAI API key in the sidebar to enable this button."
@@ -205,13 +178,13 @@ export function Step10AIAgents() {
         )}
 
         {/* Progress log */}
-        {(task || polling) && (
+        {(agentTask || agentPolling) && (
           <div className="mt-5">
             <h4 className="text-sm font-semibold text-gray-700 mb-3">Progress</h4>
             <div className="space-y-2">
               {allNodes.map((node) => {
                 const done = completedNodes.includes(node);
-                const isCurrentlyRunning = polling && !done && completedNodes.length > 0
+                const isCurrentlyRunning = agentPolling && !done && completedNodes.length > 0
                   && allNodes.indexOf(node) === completedNodes.length;
                 return (
                   <div key={node} className="flex items-center gap-3 text-sm">
@@ -232,9 +205,9 @@ export function Step10AIAgents() {
           </div>
         )}
 
-        {task?.status === "error" && (
+        {agentTask?.status === "error" && (
           <div className="mt-3 bg-red-50 border border-red-200 rounded-lg px-4 py-3 text-sm text-red-700">
-            {task.error}
+            {agentTask.error}
           </div>
         )}
       </SectionCard>

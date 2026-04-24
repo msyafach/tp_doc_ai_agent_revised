@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { ProjectState, ApiSettings } from "../types";
+import type { ProjectState, ApiSettings, AgentTask } from "../types";
 
 const DEFAULT_STATE: ProjectState = {
   step: 0,
@@ -111,6 +111,11 @@ interface ProjectStore {
   apiSettings: ApiSettings;
   isDirty: boolean;
 
+  // Background agent task tracking (persists across navigation)
+  agentTaskId: number | null;
+  agentPolling: boolean;
+  agentTask: AgentTask | null;
+
   setProjectId: (id: string) => void;
   setState: (updates: Partial<ProjectState>) => void;
   setFullState: (state: ProjectState) => void;
@@ -118,6 +123,9 @@ interface ProjectStore {
   setStep: (step: number) => void;
   markClean: () => void;
   reset: () => void;
+  setAgentTaskId: (id: number | null) => void;
+  setAgentPolling: (polling: boolean) => void;
+  setAgentTask: (task: AgentTask | null) => void;
 }
 
 export const useProjectStore = create<ProjectStore>((set) => ({
@@ -125,6 +133,9 @@ export const useProjectStore = create<ProjectStore>((set) => ({
   state: { ...DEFAULT_STATE },
   apiSettings: { ...DEFAULT_API_SETTINGS },
   isDirty: false,
+  agentTaskId: null,
+  agentPolling: false,
+  agentTask: null,
 
   setProjectId: (id) => set({ projectId: id }),
 
@@ -164,5 +175,12 @@ export const useProjectStore = create<ProjectStore>((set) => ({
       projectId: null,
       state: { ...DEFAULT_STATE },
       isDirty: false,
+      agentTaskId: null,
+      agentPolling: false,
+      agentTask: null,
     }),
+
+  setAgentTaskId: (id) => set({ agentTaskId: id }),
+  setAgentPolling: (polling) => set({ agentPolling: polling }),
+  setAgentTask: (task) => set({ agentTask: task }),
 }));

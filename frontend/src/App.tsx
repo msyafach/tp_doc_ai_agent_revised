@@ -43,6 +43,7 @@ function AppInner() {
   const {
     projectId, state, isDirty,
     setProjectId, setFullState, setState, setStep, markClean, reset, setApiSettings,
+    agentTaskId, agentPolling, setAgentPolling, setAgentTask,
   } = useProjectStore();
 
   const { isAuthenticated, user, refreshToken, logout: authLogout } = useAuthStore();
@@ -118,6 +119,34 @@ function AppInner() {
     localStorage.removeItem("tp_project_id");
     setView("landing");
   };
+
+  // ── Global agent polling — survives navigation ────────────────────────────
+  useEffect(() => {
+    if (!agentPolling || agentTaskId === null) return;
+    let cancelled = false;
+
+    const poll = async () => {
+      while (!cancelled) {
+        try {
+          const { pollTaskStatus } = await import("./api/projects");
+          const t = await pollTaskStatus(agentTaskId);
+          setAgentTask(t);
+          if (t.status === "success" || t.status === "error") {
+            setAgentPolling(false);
+            if (t.status === "success" && projectId) {
+              const { getProject } = await import("./api/projects");
+              const proj = await getProject(projectId);
+              setFullState(proj.state);
+            }
+            return;
+          }
+        } catch { /* ignore transient errors */ }
+        await new Promise((r) => setTimeout(r, 2000));
+      }
+    };
+    poll();
+    return () => { cancelled = true; };
+  }, [agentPolling, agentTaskId]);
 
   // ── Auto-save when dirty ──────────────────────────────────────────────────
   useEffect(() => {
@@ -273,6 +302,11 @@ function AppInner() {
             )
           )}
           <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest ml-auto">
+            {agentPolling && (
+              <span className="flex items-center gap-2 text-purple-600 bg-purple-50 px-3 py-1.5 rounded-full border border-purple-200 cursor-pointer" onClick={() => setStep(10)} title="Click to view progress">
+                <span className="w-1.5 h-1.5 rounded-full bg-purple-500 animate-pulse" /> AI Agents Running
+              </span>
+            )}
             {saving && (
               <span className="flex items-center gap-2 text-amber-500 bg-amber-50 px-3 py-1.5 rounded-full border border-amber-100">
                 <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" /> Auto-saving

@@ -205,14 +205,30 @@ def add_md_paragraph(doc, text: str, style=None, alignment=WD_ALIGN_PARAGRAPH.JU
     """
     Add a paragraph that parses **bold** markdown into actual Word bold runs.
     All paragraphs are justified by default.
+    List Bullet style is rendered explicitly with • + indentation so it works
+    in documents built from scratch (no reliance on Word's numPr XML).
     """
-    p = doc.add_paragraph(style=style)
+    is_bullet = style == 'List Bullet'
+    is_number = style == 'List Number'
+
+    # Use Normal style with manual indent for bullet/number — avoids missing numPr
+    p = doc.add_paragraph(style='Normal')
     p.alignment = alignment
     if space_after is not None:
         p.paragraph_format.space_after = Pt(space_after)
+    else:
+        p.paragraph_format.space_after = Pt(3)
+
+    if is_bullet or is_number:
+        p.paragraph_format.left_indent = Pt(18)
+        p.paragraph_format.first_line_indent = Pt(-18)
+        prefix = "• " if is_bullet else ""  # numbered prefix added outside
+        full_text = prefix + text
+    else:
+        full_text = text
 
     # Tokenise on **...**
-    tokens = re.split(r'(\*\*.*?\*\*)', text)
+    tokens = re.split(r'(\*\*.*?\*\*)', full_text)
     for token in tokens:
         if token.startswith('**') and token.endswith('**'):
             run = p.add_run(token[2:-2])
@@ -228,29 +244,32 @@ def add_multiline_text(doc, text, style=None):
         para_text = para_text.strip()
         if not para_text:
             continue
-        # Bullet points
-        if para_text.startswith('- ') or para_text.startswith('• '):
-            lines = para_text.split('\n')
+
+        lines = para_text.split('\n')
+
+        # Check if ANY line in this block is a bullet or numbered item
+        has_bullets = any(l.strip().startswith('- ') or l.strip().startswith('• ') for l in lines)
+        has_numbers = any(
+            l.strip() and l.strip()[0].isdigit() and '.' in l.strip()[:3]
+            for l in lines
+        )
+
+        if has_bullets or has_numbers:
+            # Mixed block (e.g. intro sentence + bullet lines) — process line by line
             for line in lines:
                 line = line.strip()
+                if not line:
+                    continue
                 if line.startswith('- ') or line.startswith('• '):
-                    line = line[2:]
-                    add_md_paragraph(doc, line, style='List Bullet',
+                    add_md_paragraph(doc, line[2:], style='List Bullet',
                                      alignment=WD_ALIGN_PARAGRAPH.JUSTIFY)
-                elif line:
-                    add_md_paragraph(doc, line, style=style)
-        elif para_text.startswith(('1.', '2.', '3.', '4.', '5.')):
-            lines = para_text.split('\n')
-            for line in lines:
-                line = line.strip()
-                if line and line[0].isdigit() and '.' in line[:3]:
-                    line = line[line.index('.')+1:].strip()
-                    add_md_paragraph(doc, line, style='List Number',
+                elif line and line[0].isdigit() and '.' in line[:3]:
+                    add_md_paragraph(doc, line[line.index('.')+1:].strip(), style='List Number',
                                      alignment=WD_ALIGN_PARAGRAPH.JUSTIFY)
-                elif line:
+                else:
                     add_md_paragraph(doc, line, style=style)
         else:
-            # Regular paragraph — join single newlines
+            # Pure prose paragraph — join single newlines
             cleaned = para_text.replace('\n', ' ')
             add_md_paragraph(doc, cleaned, style=style)
 

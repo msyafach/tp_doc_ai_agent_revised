@@ -115,8 +115,11 @@ class AgentState(TypedDict, total=False):
 # ─── Node wrappers ────────────────────────────────────────────────────────────
 # Each wrapper catches exceptions and returns a safe fallback + error entry.
 
-def _node(fn, output_key: str, step_name: str):
+def _node(fn, output_key: str, step_name: str, input_keys: list | None = None):
     """Factory: wrap a subagent function with error handling and cache skip support.
+
+    input_keys: if provided, only these state keys are forwarded to fn,
+                reducing the memory footprint of each node call.
     NOTE: do NOT write 'current_step' — parallel nodes writing the same
     non-annotated key simultaneously causes INVALID_CONCURRENT_GRAPH_UPDATE.
     """
@@ -125,8 +128,13 @@ def _node(fn, output_key: str, step_name: str):
             # LangGraph nodes must write at least one declared state key.
             # Use an explicit no-op write so cached nodes can be skipped safely.
             return {"errors": []}  # cached — keep existing state values unchanged
+        slim = (
+            {k: state[k] for k in input_keys if k in state}
+            if input_keys is not None
+            else state
+        )
         try:
-            return fn(state)
+            return fn(slim)
         except Exception as e:
             return {
                 output_key: f"[Error generating {step_name}. Please write this section manually.]",
@@ -136,12 +144,20 @@ def _node(fn, output_key: str, step_name: str):
     return wrapped
 
 
+_BUSINESS_ACTIVITIES_KEYS = [
+    "business_activities_description", "company_name", "company_short_name",
+    "products", "parent_company", "parent_group", "fiscal_year",
+    "business_strategy", "management",
+]
+
+
 def node_business_activities(state: AgentState) -> dict:
     if "business_activities" in (state.get("_skip_nodes") or []):
         # Mirror _node() skip behavior: emit a valid no-op state write.
         return {"errors": []}
+    slim = {k: state[k] for k in _BUSINESS_ACTIVITIES_KEYS if k in state}
     try:
-        return generate_business_activities(state)
+        return generate_business_activities(slim)
     except Exception as e:
         return {"errors": [f"business_activities: {type(e).__name__}"]}
 
@@ -179,39 +195,126 @@ def build_tp_graph():
 
     # ── Register nodes ──────────────────────────────────────────────────────
     graph.add_node("business_activities", node_business_activities)
-    graph.add_node("supply_chain", _node(generate_supply_chain, "supply_chain_management", "supply_chain"))
+    graph.add_node("supply_chain", _node(
+        generate_supply_chain, "supply_chain_management", "supply_chain",
+        input_keys=[
+            "company_short_name", "company_name", "parent_company", "parent_group",
+            "products", "transaction_type", "transaction_counterparties",
+            "fiscal_year", "business_activities_description",
+        ],
+    ))
 
     # Branch A — research (sequential within branch)
-    graph.add_node("industry_global",    _node(research_industry_global,    "industry_analysis_global",       "industry_global"))
-    graph.add_node("industry_indonesia", _node(research_industry_indonesia,  "industry_analysis_indonesia",    "industry_indonesia"))
-    graph.add_node("location_analysis",      _node(research_company_location,      "company_location_analysis",      "location_analysis"))
-    graph.add_node("industry_regulations",   _node(research_industry_regulations,  "industry_regulations_text",      "industry_regulations"))
-    graph.add_node("business_env",           _node(research_business_environment,  "business_environment_overview",  "business_env"))
+    graph.add_node("industry_global", _node(
+        research_industry_global, "industry_analysis_global", "industry_global",
+        input_keys=["products", "business_activities_description"],
+    ))
+    graph.add_node("industry_indonesia", _node(
+        research_industry_indonesia, "industry_analysis_indonesia", "industry_indonesia",
+        input_keys=["products"],
+    ))
+    graph.add_node("location_analysis", _node(
+        research_company_location, "company_location_analysis", "location_analysis",
+        input_keys=["company_address", "fiscal_year", "products"],
+    ))
+    graph.add_node("industry_regulations", _node(
+        research_industry_regulations, "industry_regulations_text", "industry_regulations",
+        input_keys=["products", "fiscal_year"],
+    ))
+    graph.add_node("business_env", _node(
+        research_business_environment, "business_environment_overview", "business_env",
+        input_keys=["company_name", "parent_group", "products"],
+    ))
 
     # Branch B — analysis (sequential within branch)
-    graph.add_node("functional_analysis", _node(generate_functional_analysis,         "functional_analysis_narrative",   "functional_analysis"))
-    graph.add_node("characterization",    _node(determine_business_characterization,  "business_characterization_text",  "characterization"))
+    graph.add_node("functional_analysis", _node(
+        generate_functional_analysis, "functional_analysis_narrative", "functional_analysis",
+        input_keys=[
+            "company_short_name", "business_activities_description",
+            "products", "parent_group", "transaction_type",
+        ],
+    ))
+    graph.add_node("characterization", _node(
+        determine_business_characterization, "business_characterization_text", "characterization",
+        input_keys=[
+            "company_short_name", "functional_analysis_narrative",
+            "business_activities_description",
+        ],
+    ))
 
     # Join A+B
     graph.add_node("sync_analysis", node_sync_analysis)
 
     # Sequential: background → comparability → method → PLI
-    graph.add_node("background_tx", _node(generate_background_transaction,  "background_transaction",           "background_transaction"))
-    graph.add_node("comparability",          _node(generate_comparability_narrative, "comparability_analysis_narrative", "comparability"))
-    graph.add_node("method_selection",       _node(generate_method_justification,    "method_selection_justification",   "method_selection"))
-    graph.add_node("pli_selection",          _node(generate_pli_rationale,           "pli_selection_rationale",          "pli_selection"))
+    graph.add_node("background_tx", _node(
+        generate_background_transaction, "background_transaction", "background_tx",
+        input_keys=[
+            "company_short_name", "company_name", "parent_company", "parent_group",
+            "fiscal_year", "transaction_type", "business_activities_description",
+            "affiliated_transactions",
+        ],
+    ))
+    graph.add_node("comparability", _node(
+        generate_comparability_narrative, "comparability_analysis_narrative", "comparability",
+        input_keys=["company_short_name", "transaction_type", "products"],
+    ))
+    graph.add_node("method_selection", _node(
+        generate_method_justification, "method_selection_justification", "method_selection",
+        input_keys=[
+            "company_short_name", "selected_method", "transaction_type",
+            "business_characterization_text", "selected_pli",
+        ],
+    ))
+    graph.add_node("pli_selection", _node(
+        generate_pli_rationale, "pli_selection_rationale", "pli_selection",
+        input_keys=["company_short_name", "selected_method", "selected_pli", "transaction_type"],
+    ))
 
     # Branch C+D+E — conclusion, P/L overview, comparable research run in parallel
-    graph.add_node("conclusion",           _node(generate_conclusion,                "conclusion_text",         "conclusion"))
-    graph.add_node("pl_overview",          _node(generate_pl_overview,               "pl_overview_text",        "pl_overview"))
-    graph.add_node("research_comparables", _node(research_comparable_companies,      "comparable_descriptions", "research_comparables"))
+    graph.add_node("conclusion", _node(
+        generate_conclusion, "conclusion_text", "conclusion",
+        input_keys=[
+            "company_short_name", "selected_method", "selected_pli", "transaction_type",
+            "quartile_range", "tested_party_ratio", "comparable_companies",
+            "analysis_period", "fiscal_year",
+        ],
+    ))
+    graph.add_node("pl_overview", _node(
+        generate_pl_overview, "pl_overview_text", "pl_overview",
+        input_keys=["company_short_name", "fiscal_year", "financial_data", "financial_data_prior"],
+    ))
+    graph.add_node("research_comparables", _node(
+        research_comparable_companies, "comparable_descriptions", "research_comparables",
+        input_keys=["comparable_companies"],
+    ))
 
     # Join C+D+E
     graph.add_node("sync_summary", node_sync_summary)
-    graph.add_node("transaction_findings", _node(generate_transaction_findings_summary, "transaction_summary_packets", "transaction_findings"))
+    graph.add_node("transaction_findings", _node(
+        generate_transaction_findings_summary, "transaction_summary_packets", "transaction_findings",
+        input_keys=[
+            "company_short_name", "transaction_type", "selected_method", "selected_pli",
+            "quartile_range", "tested_party_ratio", "comparable_companies",
+            # Source material for LLM synthesis:
+            "background_transaction", "business_characterization_text",
+            "comparability_analysis_narrative", "method_selection_justification",
+            "pli_selection_rationale", "conclusion_text",
+        ],
+    ))
 
-    # Final node
-    graph.add_node("exec_summary", _node(generate_executive_summary, "executive_summary", "executive_summary"))
+    # Final node — includes fallback fields in case transaction_summary_packets is absent
+    graph.add_node("exec_summary", _node(
+        generate_executive_summary, "executive_summary", "exec_summary",
+        input_keys=[
+            "company_name", "company_short_name", "fiscal_year", "company_address",
+            "parent_group", "products", "business_characterization_text",
+            "analysis_period", "transaction_summary_packets",
+            # Fallback fields used by _fallback_transaction_summary_packet:
+            "transaction_type", "comparable_companies", "selected_method",
+            "selected_pli", "quartile_range", "tested_party_ratio",
+            "method_selection_justification",
+        ],
+    ))
 
     # ── Wire edges ──────────────────────────────────────────────────────────
     graph.set_entry_point("business_activities")

@@ -44,8 +44,15 @@ def test_invoke_prompt_with_tools_executes_requested_tool(monkeypatch):
                 )
             return SimpleNamespace(content="final answer", tool_calls=[])
 
-    monkeypatch.setattr(llm_factory, "get_llm", lambda provider=None, model=None: FakeLLM())
-    monkeypatch.setattr(llm_factory, "AGENT_TOOL_BY_NAME", {"search_web_tool": FakeTool()})
+        def stream(self, messages):
+            yield self.invoke(messages)
+
+    monkeypatch.setattr(
+        llm_factory, "get_llm", lambda provider=None, model=None: FakeLLM()
+    )
+    monkeypatch.setattr(
+        llm_factory, "AGENT_TOOL_BY_NAME", {"search_web_tool": FakeTool()}
+    )
     monkeypatch.setattr(llm_factory, "AGENT_TOOLS", [object()])
 
     result = llm_factory.invoke_prompt_with_tools("Use tools if needed.")
@@ -59,4 +66,6 @@ def test_strip_source_summary_removes_trailing_source_block():
         "Sources (footnotes): [1] Summary text. [2] Another summary."
     )
 
-    assert _strip_source_summary(text) == "Main analysis paragraph with citations [1][2]."
+    assert (
+        _strip_source_summary(text) == "Main analysis paragraph with citations [1][2]."
+    )

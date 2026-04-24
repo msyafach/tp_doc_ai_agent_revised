@@ -8,7 +8,8 @@ import os
 from typing import Any
 
 from dotenv import load_dotenv
-from langchain_core.messages import HumanMessage, ToolMessage
+import re
+from langchain_core.messages import HumanMessage, SystemMessage, ToolMessage
 
 from agents.tools import (
     AGENT_TOOL_BY_NAME,
@@ -64,11 +65,35 @@ def get_llm(provider: str | None = None, model: str | None = None):
     raise ValueError(f"Unknown LLM provider: '{provider}'. Use 'groq' or 'openai'.")
 
 
+_SYSTEM_INSTRUCTION = (
+    "You are a professional transfer pricing analyst producing formal document text. "
+    "Output ONLY the requested document content — no offers, no questions, no follow-up "
+    "suggestions, no meta-commentary. End your response when the content is complete."
+)
+
+# Regex that matches trailing "offer" sentences at the end of the output
+_TRAILING_OFFER_RE = re.compile(
+    r"\s*(If you (?:want|need|would like|wish)|I can also|Would you like|Feel free|"
+    r"Let me know|Please (?:let me know|feel free)|Should you need|"
+    r"Do not hesitate|Don't hesitate|For (?:further|additional)|"
+    r"You may also|Additionally,? I can|I'm (?:happy|available) to)[^.!?]*[.!?]?$",
+    re.IGNORECASE | re.DOTALL,
+)
+
+
+def _clean_output(text: str) -> str:
+    """Strip trailing conversational offers from LLM output."""
+    cleaned = _TRAILING_OFFER_RE.sub("", text).rstrip()
+    return cleaned
+
+
 def invoke_prompt(prompt: str, provider: str | None = None, model: str | None = None) -> str:
     """Invoke LLM without tools and return text content."""
     llm = get_llm(provider=provider, model=model)
-    response = llm.invoke(prompt)
-    return response.content if hasattr(response, "content") else str(response)
+    messages = [SystemMessage(content=_SYSTEM_INSTRUCTION), HumanMessage(content=prompt)]
+    response = llm.invoke(messages)
+    raw = response.content if hasattr(response, "content") else str(response)
+    return _clean_output(raw)
 
 
 def invoke_prompt_with_tools(
@@ -81,7 +106,7 @@ def invoke_prompt_with_tools(
     Invoke LLM with LangChain tools bound, handling tool-calling loop.
     """
     llm_with_tools = get_llm(provider=provider, model=model).bind_tools(AGENT_TOOLS)
-    messages: list[Any] = [HumanMessage(content=prompt)]
+    messages: list[Any] = [SystemMessage(content=_SYSTEM_INSTRUCTION), HumanMessage(content=prompt)]
 
     for _ in range(max_tool_rounds):
         ai_message = llm_with_tools.invoke(messages)
@@ -89,7 +114,8 @@ def invoke_prompt_with_tools(
 
         tool_calls = getattr(ai_message, "tool_calls", None) or []
         if not tool_calls:
-            return ai_message.content if hasattr(ai_message, "content") else str(ai_message)
+            raw = ai_message.content if hasattr(ai_message, "content") else str(ai_message)
+            return _clean_output(raw)
 
         for call in tool_calls:
             tool_name = call.get("name", "")
@@ -108,4 +134,5 @@ def invoke_prompt_with_tools(
             messages.append(ToolMessage(content=content, tool_call_id=call["id"]))
 
     final_message = llm_with_tools.invoke(messages)
-    return final_message.content if hasattr(final_message, "content") else str(final_message)
+    raw = final_message.content if hasattr(final_message, "content") else str(final_message)
+    return _clean_output(raw)

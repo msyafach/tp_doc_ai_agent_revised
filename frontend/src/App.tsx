@@ -42,7 +42,7 @@ type View = "loading" | "login" | "landing" | "dashboard" | "wizard" | "admin";
 function AppInner() {
   const {
     projectId, state, isDirty,
-    setProjectId, setFullState, setState, setStep, markClean, reset,
+    setProjectId, setFullState, setState, setStep, markClean, reset, setApiSettings,
   } = useProjectStore();
 
   const { isAuthenticated, user, refreshToken, logout: authLogout } = useAuthStore();
@@ -74,7 +74,14 @@ function AppInner() {
       if (isAuthenticated) {
         // Load API settings from backend (non-sensitive status for all users)
         getSettingsStatusApi()
-          .then((s) => setApiSettings({ llm_provider: s.llm_provider, model: s.model, langsmith_project: s.langsmith_project }))
+          .then((s) => setApiSettings({
+            llm_provider: s.llm_provider as "groq" | "openai",
+            model: s.model,
+            langsmith_project: s.langsmith_project,
+            api_key: s.has_api_key ? "__configured__" : "",
+            tavily_key: s.has_tavily_key ? "__configured__" : "",
+            langsmith_api_key: s.has_langsmith_key ? "__configured__" : "",
+          }))
           .catch(() => { /* ignore — defaults remain */ });
 
         if (stored) {
@@ -94,7 +101,7 @@ function AppInner() {
       }
     };
     init();
-  }, [isAuthenticated, setProjectId, setFullState]);
+  }, [isAuthenticated, setApiSettings, setProjectId, setFullState]);
 
   const handleLogin = () => {
     setView("dashboard");

@@ -29,6 +29,7 @@ _AGENT_OUTPUT_KEYS = [
     "pl_overview_text", "background_transaction", "executive_summary",
     "supply_chain_management",
     "comparable_descriptions",
+    "transaction_summary_packets",
 ]
 
 _NODE_LABELS = {
@@ -48,6 +49,7 @@ _NODE_LABELS = {
     "conclusion":             "Conclusion written",
     "pl_overview":             "P/L overview generated",
     "research_comparables":    "Comparable companies researched",
+    "transaction_findings":    "Transaction findings synthesized",
     "exec_summary":            "Executive summary written",
 }
 
@@ -67,6 +69,7 @@ AGENT_KEY_MAP = {
     "pl_overview_text":              "pl_overview",
     "background_transaction":        "background_transaction",
     "supply_chain_management":       "supply_chain",
+    "transaction_summary_packets":   "transaction_findings",
 }
 
 # Input fields each node depends on — used for cache invalidation.
@@ -141,10 +144,18 @@ _NODE_INPUT_FIELDS: dict[str, list[str]] = {
     "research_comparables": [
         "comparable_companies", "fiscal_year",
     ],
+    "transaction_findings": [
+        "background_transaction", "business_characterization_text",
+        "comparability_analysis_narrative", "method_selection_justification",
+        "pli_selection_rationale", "conclusion_text", "quartile_range",
+        "tested_party_ratio", "comparable_companies", "transaction_type",
+        "selected_method", "selected_pli",
+    ],
     "exec_summary": [
         "company_name", "company_short_name", "fiscal_year",
-        "conclusion_text", "method_selection_justification",
-        "functional_analysis_narrative", "background_transaction",
+        "transaction_summary_packets", "analysis_period",
+        "business_characterization_text", "products", "parent_group",
+        "company_address",
     ],
 }
 
@@ -166,6 +177,7 @@ _NODE_OUTPUT_KEY: dict[str, str] = {
     "conclusion":           "conclusion_text",
     "pl_overview":          "pl_overview_text",
     "research_comparables": "comparable_descriptions",
+    "transaction_findings": "transaction_summary_packets",
     "exec_summary":         "executive_summary",
 }
 

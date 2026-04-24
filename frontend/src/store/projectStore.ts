@@ -76,6 +76,7 @@ const DEFAULT_STATE: ProjectState = {
   comparability_analysis_narrative: "",
   pl_overview_text: "",
   comparable_descriptions: {},
+  transaction_summary_packets: [],
   agent_ran: false,
   agent_errors: [],
 };

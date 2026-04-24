@@ -80,6 +80,7 @@ DEFAULT_STATE = {
     "method_selection_justification": "",
     "pli_selection_rationale": "",
     "comparability_analysis_narrative": "",
+    "transaction_summary_packets": [],
     "agent_ran": False,
     "agent_errors": [],
     "comparability_factors": [

@@ -39,6 +39,7 @@ from agents.summary_subagent import (
     generate_executive_summary,
     generate_conclusion,
     generate_pl_overview,
+    generate_transaction_findings_summary,
 )
 from agents.business_subagent import generate_business_activities, generate_supply_chain
 
@@ -100,6 +101,7 @@ class AgentState(TypedDict, total=False):
     background_transaction: str
     supply_chain_management: str
     comparable_descriptions: dict
+    transaction_summary_packets: list
     # Document upload / extraction
     uploaded_docs_processed: bool
     doc_extraction_result: dict
@@ -206,6 +208,7 @@ def build_tp_graph():
 
     # Join C+D+E
     graph.add_node("sync_summary", node_sync_summary)
+    graph.add_node("transaction_findings", _node(generate_transaction_findings_summary, "transaction_summary_packets", "transaction_findings"))
 
     # Final node
     graph.add_node("exec_summary", _node(generate_executive_summary, "executive_summary", "executive_summary"))
@@ -245,8 +248,9 @@ def build_tp_graph():
     graph.add_edge("pl_overview",          "sync_summary")
     graph.add_edge("research_comparables", "sync_summary")
 
-    # Final
-    graph.add_edge("sync_summary",    "exec_summary")
+    # Final synthesis
+    graph.add_edge("sync_summary",    "transaction_findings")
+    graph.add_edge("transaction_findings", "exec_summary")
     graph.add_edge("exec_summary", END)
 
     return graph.compile()
@@ -319,6 +323,7 @@ def run_single_agent(agent_name: str, state_data: dict) -> dict:
         "conclusion":             generate_conclusion,
         "pl_overview":            generate_pl_overview,
         "research_comparables":   research_comparable_companies,
+        "transaction_findings":   generate_transaction_findings_summary,
         "executive_summary":      generate_executive_summary,
     }
 

@@ -94,6 +94,19 @@ export interface ComparabilityFactor {
   description: string;
 }
 
+export interface TransactionSummaryPacket {
+  section_title: string;
+  tested_transaction: string;
+  selected_method: string;
+  selected_pli: string;
+  method_reason: string;
+  comparable_search_basis: string;
+  comparable_count: number;
+  range_result: string;
+  holding: string;
+  tax_implication: string;
+}
+
 export interface OrgDepartment {
   name: string;
   head: string;
@@ -185,6 +198,7 @@ export interface ProjectState {
   comparability_analysis_narrative: string;
   pl_overview_text: string;
   comparable_descriptions: Record<string, string>;
+  transaction_summary_packets: TransactionSummaryPacket[];
   agent_ran: boolean;
   agent_errors: string[];
 }

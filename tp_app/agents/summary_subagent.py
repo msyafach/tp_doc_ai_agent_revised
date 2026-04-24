@@ -208,19 +208,20 @@ def generate_transaction_findings_summary(state: dict) -> dict:
 
 Return JSON ONLY. Do not add markdown fences. Do not add explanation.
 
-Create a JSON array with one object summarizing the tested affiliated transaction using the exact schema below:
+Create a JSON array with one object summarizing the tested affiliated transaction.
+Use EXACTLY this schema (field names are fixed; values must reflect the actual facts below):
 [
   {{
-    "section_title": "Purchase Transaction",
-    "tested_transaction": "purchase of heavy equipment from affiliated parties",
-    "selected_method": "TNMM",
-    "selected_pli": "ROS",
-    "method_reason": "why the method is appropriate",
-    "comparable_search_basis": "how comparable companies were identified",
-    "comparable_count": 6,
-    "range_result": "Q1/Q3/median/tested-party result in one sentence",
-    "holding": "arm's length / above range / below range",
-    "tax_implication": "no TP issue / adjustment may be required"
+    "section_title": "<derive from transaction_type — e.g. 'Purchase of Raw Materials'>",
+    "tested_transaction": "<describe the actual transaction in one short phrase using transaction_type>",
+    "selected_method": "<actual method>",
+    "selected_pli": "<actual PLI>",
+    "method_reason": "<why this method fits this specific transaction>",
+    "comparable_search_basis": "<how comparable companies were identified>",
+    "comparable_count": 0,
+    "range_result": "<Q1/median/Q3 and tested-party result in one sentence>",
+    "holding": "<one of: arm's length | above range | below range>",
+    "tax_implication": "<one sentence on tax consequence>"
   }}
 ]
 

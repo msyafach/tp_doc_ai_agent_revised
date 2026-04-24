@@ -24,8 +24,11 @@ jobs:
       - name: Create virtual environment
         run: uv venv .venv --python 3.11
 
-      - name: Install test dependencies
-        run: uv pip install -r backend/requirements-test.txt
+      - name: Install dependencies
+        run: |
+          uv pip install -r backend/requirements.txt
+          uv pip install -r backend/requirements-test.txt
+          uv pip install -r tp_app/requirements.txt
 
       - name: Run tests
         run: uv run pytest tests/ -v --tb=short

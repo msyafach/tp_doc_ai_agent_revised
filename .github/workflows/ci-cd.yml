@@ -58,7 +58,7 @@ jobs:
           EOF
 
       - name: Build and start containers
-        run: docker compose up -d --build
+        run: docker compose up -d --build --renew-anon-volumes
 
       - name: Wait for backend to be ready
         run: |

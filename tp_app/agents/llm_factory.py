@@ -71,12 +71,13 @@ _SYSTEM_INSTRUCTION = (
     "suggestions, no meta-commentary. End your response when the content is complete."
 )
 
-# Regex that matches trailing "offer" sentences at the end of the output
+# Fallback regex — removes trailing offer paragraph(s) from the end of output.
+# Uses .* with DOTALL so mid-sentence periods (e.g. "vs.", "e.g.") don't break it.
 _TRAILING_OFFER_RE = re.compile(
-    r"\s*(If you (?:want|need|would like|wish)|I can also|Would you like|Feel free|"
+    r"\n*\s*(If you (?:want|need|would like|wish)|I can also|Would you like|Feel free|"
     r"Let me know|Please (?:let me know|feel free)|Should you need|"
     r"Do not hesitate|Don't hesitate|For (?:further|additional)|"
-    r"You may also|Additionally,? I can|I'm (?:happy|available) to)[^.!?]*[.!?]?$",
+    r"You may also|Additionally,? I can|I(?:'m| am) (?:happy|available) to).*$",
     re.IGNORECASE | re.DOTALL,
 )
 
@@ -87,10 +88,20 @@ def _clean_output(text: str) -> str:
     return cleaned
 
 
+_NO_FOLLOWUP = (
+    "\n\nIMPORTANT: Stop immediately after the document content above. "
+    "Do NOT add any sentence that offers further help, customisation, follow-up, "
+    "or asks the reader a question. The document text is the complete output."
+)
+
+
 def invoke_prompt(prompt: str, provider: str | None = None, model: str | None = None) -> str:
     """Invoke LLM without tools and return text content."""
     llm = get_llm(provider=provider, model=model)
-    messages = [SystemMessage(content=_SYSTEM_INSTRUCTION), HumanMessage(content=prompt)]
+    messages = [
+        SystemMessage(content=_SYSTEM_INSTRUCTION),
+        HumanMessage(content=prompt + _NO_FOLLOWUP),
+    ]
     response = llm.invoke(messages)
     raw = response.content if hasattr(response, "content") else str(response)
     return _clean_output(raw)
@@ -106,7 +117,10 @@ def invoke_prompt_with_tools(
     Invoke LLM with LangChain tools bound, handling tool-calling loop.
     """
     llm_with_tools = get_llm(provider=provider, model=model).bind_tools(AGENT_TOOLS)
-    messages: list[Any] = [SystemMessage(content=_SYSTEM_INSTRUCTION), HumanMessage(content=prompt)]
+    messages: list[Any] = [
+        SystemMessage(content=_SYSTEM_INSTRUCTION),
+        HumanMessage(content=prompt + _NO_FOLLOWUP),
+    ]
 
     for _ in range(max_tool_rounds):
         ai_message = llm_with_tools.invoke(messages)

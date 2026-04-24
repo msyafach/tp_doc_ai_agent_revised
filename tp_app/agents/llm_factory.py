@@ -102,8 +102,12 @@ def invoke_prompt(prompt: str, provider: str | None = None, model: str | None = 
         SystemMessage(content=_SYSTEM_INSTRUCTION),
         HumanMessage(content=prompt + _NO_FOLLOWUP),
     ]
-    response = llm.invoke(messages)
-    raw = response.content if hasattr(response, "content") else str(response)
+    chunks = []
+    for chunk in llm.stream(messages):
+        content = chunk.content if hasattr(chunk, "content") else ""
+        if content:
+            chunks.append(content)
+    raw = "".join(chunks)
     return _clean_output(raw)
 
 
@@ -123,7 +127,10 @@ def invoke_prompt_with_tools(
     ]
 
     for _ in range(max_tool_rounds):
-        ai_message = llm_with_tools.invoke(messages)
+        gathered = None
+        for chunk in llm_with_tools.stream(messages):
+            gathered = chunk if gathered is None else gathered + chunk
+        ai_message = gathered
         messages.append(ai_message)
 
         tool_calls = getattr(ai_message, "tool_calls", None) or []
@@ -147,6 +154,8 @@ def invoke_prompt_with_tools(
             content = tool_output if isinstance(tool_output, str) else json.dumps(tool_output, default=str)
             messages.append(ToolMessage(content=content, tool_call_id=call["id"]))
 
-    final_message = llm_with_tools.invoke(messages)
-    raw = final_message.content if hasattr(final_message, "content") else str(final_message)
+    gathered = None
+    for chunk in llm_with_tools.stream(messages):
+        gathered = chunk if gathered is None else gathered + chunk
+    raw = gathered.content if gathered and hasattr(gathered, "content") else ""
     return _clean_output(raw)

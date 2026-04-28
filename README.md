@@ -42,6 +42,7 @@ The name was chosen deliberately so that tax consultants — the primary users �
 - [Graphify — Codebase Knowledge Graph](#graphify--codebase-knowledge-graph)
 - [Development Guide](#development-guide)
 - [Deployment](#deployment)
+- [Next Development Suggestions](#next-development-suggestions)
 
 ---
 
@@ -905,3 +906,93 @@ If the runner shows as **Offline** in GitHub → Settings → Actions → Runner
 ```bash
 sudo systemctl restart actions.runner.*
 ```
+
+---
+
+## Next Development Suggestions
+
+The following items are concrete gaps identified in the current codebase. They are grouped by area and ordered roughly by impact. Each entry includes the relevant file so you can jump straight to the code.
+
+---
+
+### 🔴 High Priority — Security & Reliability
+
+| # | Issue | File | Fix |
+|---|-------|------|-----|
+| 1 | `DEBUG=True` and `CORS_ALLOW_ALL_ORIGINS=True` in production | `config/settings.py` | Create separate `settings_prod.py`; set `DEBUG=False`, explicit `CORS_ALLOWED_ORIGINS` |
+| 2 | `SECRET_KEY` committed in `.env` | `.env` | Rotate the key; generate a new one per environment and never commit real secrets |
+| 3 | No API rate limiting | `tp_app/views.py` | Add `djangorestframework` throttle classes (`UserRateThrottle`, `AnonRateThrottle`) in `settings.py` |
+| 4 | No audit logging | `tp_app/views.py` | Log who created/modified/deleted which project and when (Django signals or middleware) |
+| 5 | Expired blacklisted tokens never purged | `config/settings.py` | Add a Celery beat task running `manage.py flushexpiredtokens` daily |
+
+---
+
+### 🟠 AI Pipeline — Robustness & Quality
+
+| # | Issue | File | Fix |
+|---|-------|------|-----|
+| 6 | No LLM retry on transient errors | `tp_app/agents/agent_service.py` | Wrap LLM calls with `tenacity` (`retry`, `wait_exponential`, `stop_after_attempt(3)`) |
+| 7 | No fallback LLM if primary fails | `tp_app/agents/llm_factory.py` | Chain providers: try Groq → OpenAI → raise, so the pipeline survives a single provider outage |
+| 8 | No streaming output to frontend | `tp_app/agents/agent_service.py` | Use LangChain streaming callbacks + Django Channels (WebSocket) or SSE to stream tokens as they arrive |
+| 9 | Celery task has no hard timeout | `docker-compose.yml` | Add `--time-limit=600 --soft-time-limit=540` to the Celery worker command so hung tasks are killed |
+| 10 | Prompts hardcoded in agent files | `tp_app/agents/` | Move prompts to a YAML/JSON registry so they can be edited without touching Python code |
+| 11 | Intermediate research results not cached | `tp_app/agents/agent_service.py` | Cache Tavily search results in Redis with a TTL (e.g. 1 hour) so re-runs of the same company skip the web search |
+
+---
+
+### 🟠 Document Processing
+
+| # | Issue | File | Fix |
+|---|-------|------|-----|
+| 12 | 20 MB file size limit hardcoded | `tp_app/views.py` line ~221 | Move to `settings.py` as `TP_MAX_UPLOAD_MB = 20` |
+| 13 | `PAGE_THRESHOLD = 50` hardcoded | `tp_app/utils/document_processor.py` line 32 | Move to `settings.py` as `TP_PAGE_INDEX_THRESHOLD` |
+| 14 | FAISS vector store lost after task | `tp_app/utils/document_processor.py` | Persist the FAISS index to disk (keyed by project ID) so re-queries don't re-embed the same document |
+| 15 | No CSV or image OCR support | `tp_app/utils/document_processor.py` | Add CSV via `pandas`, image PDF OCR via `pytesseract` or `easyocr` |
+
+---
+
+### 🟡 API / Backend
+
+| # | Issue | File | Fix |
+|---|-------|------|-----|
+| 16 | Project list has no pagination | `tp_app/views.py` | Add DRF `PageNumberPagination` or cursor pagination |
+| 17 | No request body size validation | `tp_app/views.py` | Add `Content-Length` guard on non-file POST endpoints |
+| 18 | Gunicorn worker count hardcoded | `docker-compose.yml` | Replace `--workers 2` with `--workers ${GUNICORN_WORKERS:-2}` driven by env var |
+| 19 | Celery concurrency hardcoded | `docker-compose.yml` | Replace `--concurrency=2` with `--concurrency=${CELERY_CONCURRENCY:-2}` or use `--autoscale=4,1` |
+| 20 | `sys.path` injection in settings | `config/settings.py` lines 128–131 | Refactor `tp_app` into a proper Django app package so the path hack is not needed |
+
+---
+
+### 🟡 Frontend
+
+| # | Issue | File | Fix |
+|---|-------|------|-----|
+| 21 | Polling uses fixed 2 s interval | `src/components/Step0Upload.tsx`, `Step10AIAgents.tsx` | Use exponential backoff: 1 s → 2 s → 4 s → max 10 s |
+| 22 | No React error boundaries | `src/` | Wrap route-level components in an `<ErrorBoundary>` so one crash doesn't white-screen the whole app |
+| 23 | Axios client has no timeout | `src/lib/client.ts` | Add `timeout: 30000` to the Axios instance |
+| 24 | No real-time input validation | Forms | Add Zod or Yup schema validation on form fields with inline error hints |
+| 25 | No offline / network-loss detection | `src/` | Listen to `window.addEventListener('offline', ...)` and show a banner |
+
+---
+
+### 🟢 Infrastructure & Observability
+
+| # | Issue | File | Fix |
+|---|-------|------|-----|
+| 26 | No container resource limits | `docker-compose.yml` | Add `mem_limit`, `cpus` per service to prevent one container starving others |
+| 27 | No health checks in compose | `docker-compose.yml` | Add `healthcheck` stanzas for `backend`, `worker`, `db`, `redis` so Docker restarts sick containers automatically |
+| 28 | No log rotation | `docker-compose.yml` | Add `logging: driver: json-file options: max-size: "10m" max-file: "3"` per service |
+| 29 | No metrics / alerting | Infrastructure | Add Prometheus + Grafana (or Datadog) to track request latency, Celery queue depth, and LLM error rate |
+| 30 | No database backup schedule | EC2 | Add a daily `pg_dump` cron job to S3 with a 30-day retention policy |
+
+---
+
+### 🟢 Testing
+
+| # | Issue | Location | Fix |
+|---|-------|----------|-----|
+| 31 | No end-to-end tests | `tests/` | Add Playwright tests covering: login → upload → run agents → export DOCX |
+| 32 | No integration test for AI pipeline | `tests/` | Add a test that runs the full LangGraph orchestration with a `FakeLLM` against a real in-memory DB |
+| 33 | No frontend unit tests | `frontend/` | Add Vitest + React Testing Library for critical components (auth store, project wizard steps) |
+| 34 | No load test | — | Add a Locust script simulating 10 concurrent users uploading and running agents to find the concurrency ceiling |
+

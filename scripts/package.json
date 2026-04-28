@@ -1,0 +1,13 @@
+{
+  "name": "tp-scripts",
+  "version": "1.0.0",
+  "private": true,
+  "description": "One-time utility scripts for the TP Local File Generator project",
+  "scripts": {
+    "export-pdf": "node export-pdf.js"
+  },
+  "dependencies": {
+    "marked": "^13.0.0",
+    "puppeteer": "^22.0.0"
+  }
+}

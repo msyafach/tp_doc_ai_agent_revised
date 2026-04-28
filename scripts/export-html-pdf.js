@@ -32,6 +32,10 @@ const OUTPUT_PATH = path.resolve(__dirname, "../TP Local File Generator — READ
   // A4 portrait: 210mm × 297mm → at 96 dpi ≈ 794 × 1123 px
   await page.setViewport({ width: 794, height: 1123, deviceScaleFactor: 1 });
 
+  // Keep screen styles — without this Puppeteer switches to @media print
+  // which strips colours, backgrounds and layout from the Typora theme.
+  await page.emulateMediaType("screen");
+
   // Use file:// URL so Puppeteer can access _files/ assets (CSS, images, fonts)
   const fileUrl = pathToFileURL(HTML_PATH).href;
   console.log(`🌐  Loading: ${HTML_PATH}`);

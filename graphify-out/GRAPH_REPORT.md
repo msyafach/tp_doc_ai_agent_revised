@@ -1,12 +1,12 @@
 # Graph Report - tp_local_file_generator  (2026-04-28)
 
 ## Corpus Check
-- 2321 files · ~1,519,734 words
+- 2321 files · ~1,520,498 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 7396 nodes · 12112 edges · 208 communities detected
-- Extraction: 53% EXTRACTED · 47% INFERRED · 0% AMBIGUOUS · INFERRED: 5639 edges (avg confidence: 0.8)
+- 7404 nodes · 12123 edges · 214 communities detected
+- Extraction: 53% EXTRACTED · 47% INFERRED · 0% AMBIGUOUS · INFERRED: 5642 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Community Hubs (Navigation)
@@ -80,38 +80,38 @@
 - [[_COMMUNITY_Community 71|Community 71]]
 - [[_COMMUNITY_Community 72|Community 72]]
 - [[_COMMUNITY_Community 73|Community 73]]
+- [[_COMMUNITY_Community 74|Community 74]]
 - [[_COMMUNITY_Community 75|Community 75]]
 - [[_COMMUNITY_Community 76|Community 76]]
-- [[_COMMUNITY_Community 77|Community 77]]
+- [[_COMMUNITY_Community 78|Community 78]]
 - [[_COMMUNITY_Community 79|Community 79]]
+- [[_COMMUNITY_Community 80|Community 80]]
 - [[_COMMUNITY_Community 81|Community 81]]
-- [[_COMMUNITY_Community 82|Community 82]]
 - [[_COMMUNITY_Community 83|Community 83]]
-- [[_COMMUNITY_Community 84|Community 84]]
 - [[_COMMUNITY_Community 85|Community 85]]
 - [[_COMMUNITY_Community 86|Community 86]]
 - [[_COMMUNITY_Community 87|Community 87]]
 - [[_COMMUNITY_Community 88|Community 88]]
-- [[_COMMUNITY_Community 91|Community 91]]
-- [[_COMMUNITY_Community 92|Community 92]]
+- [[_COMMUNITY_Community 89|Community 89]]
+- [[_COMMUNITY_Community 90|Community 90]]
+- [[_COMMUNITY_Community 93|Community 93]]
 - [[_COMMUNITY_Community 94|Community 94]]
-- [[_COMMUNITY_Community 96|Community 96]]
 - [[_COMMUNITY_Community 97|Community 97]]
-- [[_COMMUNITY_Community 101|Community 101]]
+- [[_COMMUNITY_Community 98|Community 98]]
 - [[_COMMUNITY_Community 102|Community 102]]
 - [[_COMMUNITY_Community 103|Community 103]]
 - [[_COMMUNITY_Community 104|Community 104]]
 - [[_COMMUNITY_Community 105|Community 105]]
-- [[_COMMUNITY_Community 107|Community 107]]
+- [[_COMMUNITY_Community 106|Community 106]]
 - [[_COMMUNITY_Community 108|Community 108]]
 - [[_COMMUNITY_Community 109|Community 109]]
 - [[_COMMUNITY_Community 110|Community 110]]
 - [[_COMMUNITY_Community 111|Community 111]]
+- [[_COMMUNITY_Community 112|Community 112]]
 - [[_COMMUNITY_Community 113|Community 113]]
-- [[_COMMUNITY_Community 114|Community 114]]
 - [[_COMMUNITY_Community 115|Community 115]]
+- [[_COMMUNITY_Community 116|Community 116]]
 - [[_COMMUNITY_Community 117|Community 117]]
-- [[_COMMUNITY_Community 118|Community 118]]
 - [[_COMMUNITY_Community 119|Community 119]]
 - [[_COMMUNITY_Community 120|Community 120]]
 - [[_COMMUNITY_Community 121|Community 121]]
@@ -121,23 +121,23 @@
 - [[_COMMUNITY_Community 125|Community 125]]
 - [[_COMMUNITY_Community 126|Community 126]]
 - [[_COMMUNITY_Community 127|Community 127]]
-- [[_COMMUNITY_Community 131|Community 131]]
+- [[_COMMUNITY_Community 128|Community 128]]
+- [[_COMMUNITY_Community 129|Community 129]]
 - [[_COMMUNITY_Community 133|Community 133]]
-- [[_COMMUNITY_Community 134|Community 134]]
-- [[_COMMUNITY_Community 139|Community 139]]
-- [[_COMMUNITY_Community 147|Community 147]]
-- [[_COMMUNITY_Community 156|Community 156]]
-- [[_COMMUNITY_Community 160|Community 160]]
-- [[_COMMUNITY_Community 175|Community 175]]
-- [[_COMMUNITY_Community 176|Community 176]]
-- [[_COMMUNITY_Community 452|Community 452]]
-- [[_COMMUNITY_Community 453|Community 453]]
+- [[_COMMUNITY_Community 135|Community 135]]
+- [[_COMMUNITY_Community 140|Community 140]]
+- [[_COMMUNITY_Community 148|Community 148]]
+- [[_COMMUNITY_Community 151|Community 151]]
+- [[_COMMUNITY_Community 158|Community 158]]
+- [[_COMMUNITY_Community 162|Community 162]]
+- [[_COMMUNITY_Community 177|Community 177]]
+- [[_COMMUNITY_Community 178|Community 178]]
 - [[_COMMUNITY_Community 454|Community 454]]
 - [[_COMMUNITY_Community 455|Community 455]]
 - [[_COMMUNITY_Community 456|Community 456]]
 - [[_COMMUNITY_Community 457|Community 457]]
-- [[_COMMUNITY_Community 1265|Community 1265]]
-- [[_COMMUNITY_Community 1266|Community 1266]]
+- [[_COMMUNITY_Community 458|Community 458]]
+- [[_COMMUNITY_Community 459|Community 459]]
 - [[_COMMUNITY_Community 1267|Community 1267]]
 - [[_COMMUNITY_Community 1268|Community 1268]]
 - [[_COMMUNITY_Community 1269|Community 1269]]
@@ -218,6 +218,12 @@
 - [[_COMMUNITY_Community 1344|Community 1344]]
 - [[_COMMUNITY_Community 1345|Community 1345]]
 - [[_COMMUNITY_Community 1346|Community 1346]]
+- [[_COMMUNITY_Community 1347|Community 1347]]
+- [[_COMMUNITY_Community 1348|Community 1348]]
+- [[_COMMUNITY_Community 1349|Community 1349]]
+- [[_COMMUNITY_Community 1350|Community 1350]]
+- [[_COMMUNITY_Community 1351|Community 1351]]
+- [[_COMMUNITY_Community 1352|Community 1352]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `createFilterFromFilterState()` - 69 edges
@@ -232,8 +238,6 @@
 10. `whereRaw()` - 40 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `getEvaluatorBlockMetadata()` --calls--> `notifyBlockedEvaluatorConfigs()`  [INFERRED]
-  langfuse\packages\shared\src\features\evals\evalConfigBlocking.ts → langfuse\packages\shared\src\server\services\blockEvaluatorConfigs.ts
 - `clickhouseClient()` --calls--> `getClickhouseRecord()`  [INFERRED]
   langfuse\packages\shared\src\server\clickhouse\client.ts → langfuse\worker\src\services\IngestionService\tests\IngestionService.integration.test.ts
 - `convertDateToClickhouseDateTime()` --calls--> `convertDatasetRunItemDomainToClickhouse()`  [INFERRED]
@@ -242,6 +246,8 @@
   langfuse\packages\shared\src\server\clickhouse\client.ts → langfuse\packages\shared\src\server\repositories\traces_converters.ts
 - `instrumentAsync()` --calls--> `blobStorageIntegrationProcessingProcessor()`  [INFERRED]
   langfuse\packages\shared\src\server\instrumentation\index.ts → langfuse\worker\src\queues\blobStorageIntegrationQueue.ts
+- `instrumentAsync()` --calls--> `mixpanelIntegrationProcessingProcessor()`  [INFERRED]
+  langfuse\packages\shared\src\server\instrumentation\index.ts → langfuse\worker\src\queues\mixpanelIntegrationQueue.ts
 
 ## Hyperedges (group relationships)
 - **LangGraph Parallel AI Agent Pipeline for TP Document Generation** — concept_orchestrator, concept_research_subagent, concept_analysis_subagent, concept_transaction_subagent, concept_summary_subagent, concept_business_subagent [EXTRACTED 1.00]
@@ -266,67 +272,67 @@
 
 ### Community 0 - "Community 0"
 Cohesion: 0.01
-Nodes (479): getInvites(), getMembers(), handleResultsClick(), generateAuth(), mapAuditLogsWithActors(), calculateAggregatedUsage(), transformLanggraphToGeneralized(), addLangfuseSystemNodes() (+471 more)
+Nodes (449): getInvites(), getMembers(), handleResultsClick(), generateAuth(), mapAuditLogsWithActors(), AuthenticatedLayout(), calculateAggregatedUsage(), transformLanggraphToGeneralized() (+441 more)
 
 ### Community 1 - "Community 1"
 Cohesion: 0.01
-Nodes (175): AddGenerationsCostBackfill, addTemporaryColumnIfNotExists(), main(), updateStatementTimeout(), BackfillEventsHistoric, ConcurrentQueryManager, main(), BackfillEventsHistoricFromParts (+167 more)
+Nodes (177): AddGenerationsCostBackfill, addTemporaryColumnIfNotExists(), main(), updateStatementTimeout(), applyIngestionMasking(), getIngestionMaskingConfig(), isIngestionMaskingEnabled(), makeCallbackRequest() (+169 more)
 
 ### Community 2 - "Community 2"
 Cohesion: 0.01
-Nodes (219): AgentTaskAdmin, ProjectAdmin, State definitions and configuration for the TP Documentation Agent., TPDocState, _build_new_cache(), _build_skip_nodes(), _compute_hash(), Wraps tp_app LangGraph agent orchestration. (+211 more)
+Nodes (213): AgentTaskAdmin, ProjectAdmin, State definitions and configuration for the TP Documentation Agent., TPDocState, _build_new_cache(), _build_skip_nodes(), _compute_hash(), Wraps tp_app LangGraph agent orchestration. (+205 more)
 
 ### Community 3 - "Community 3"
 Cohesion: 0.01
-Nodes (151): ArchiveScoreConfigButton(), AuditLogsSettingsPage(), BookACallButton(), Callout(), hasProjectAccess(), throwIfNoProjectAccess(), useHasProjectAccess(), CloneModelButton() (+143 more)
+Nodes (148): batchActionQueueProcessor(), batchExportQueueProcessor(), BatchExportSuccessEmailTemplate(), BufferedStreamUploader, ErrorSink, isTransientError(), bulkUpdateOrganizations(), bulkUpdateOrganizationsRawSQL() (+140 more)
 
 ### Community 4 - "Community 4"
 Cohesion: 0.01
-Nodes (148): determine_business_characterization(), generate_functional_analysis(), Analysis Subagent — functional analysis and business characterization nodes., Generate functional analysis narrative based on company type and transactions., Determine and justify the business characterization based on functional analysis, getOrgPath(), getProjectPath(), truncatePathBeforeDynamicSegments() (+140 more)
+Nodes (129): applyFieldMappingConfig(), applyFullMapping(), evaluateJsonPath(), generateJsonPathSuggestions(), isJsonPath(), setNestedValue(), getCalledProjectIds(), insertBlobRefs() (+121 more)
 
 ### Community 5 - "Community 5"
 Cohesion: 0.01
-Nodes (133): addDatasetRunItemsToEvalQueue(), addToDeleteDatasetQueue(), AdminApiAuthService, ApiAuthService, handleDeleteApiKey(), validateQueryParams(), handler(), auditLog() (+125 more)
+Nodes (140): DemoBadge(), ArchiveScoreConfigButton(), AuditLogsSettingsPage(), ProjectBillingRedirect(), BillingCurrentPlanLabel(), BillingDiscountView(), BillingInvoiceTable(), BillingSettings() (+132 more)
 
 ### Community 6 - "Community 6"
-Cohesion: 0.02
-Nodes (90): BackfillBillingCycleAnchors, main(), batchExportQueueProcessor(), BatchExportSuccessEmailTemplate(), BufferedStreamUploader, ErrorSink, isTransientError(), toggleRole() (+82 more)
+Cohesion: 0.01
+Nodes (149): determine_business_characterization(), generate_functional_analysis(), Analysis Subagent — functional analysis and business characterization nodes., Generate functional analysis narrative based on company type and transactions., Determine and justify the business characterization based on functional analysis, _accept_section(), add_dynamic_rows(), _preview_value() (+141 more)
 
 ### Community 7 - "Community 7"
 Cohesion: 0.01
-Nodes (86): resetAdminAccessWebhookCacheForTests(), sendAdminAccessWebhook(), shouldSkipDueToRecentDuplicate(), BatchActionQueue, BatchExportQueue, BlobStorageIntegrationProcessingQueue, BlobStorageIntegrationQueue, CloudFreeTierUsageThresholdQueue (+78 more)
+Nodes (143): buildGraphFromStepData(), generateEdgesWithParallelBranches(), calculateMinimumWidth(), calculateNodeWidth(), calculateRowWidth(), getValueDisplayLength(), clickhouseCompliantRandomCharacters(), ArrayOptionsFilter (+135 more)
 
 ### Community 8 - "Community 8"
-Cohesion: 0.01
-Nodes (129): buildGraphFromStepData(), generateEdgesWithParallelBranches(), calculateMinimumWidth(), calculateNodeWidth(), calculateRowWidth(), getValueDisplayLength(), handleBetaSwitchChange(), flushQueue() (+121 more)
+Cohesion: 0.02
+Nodes (113): addDatasetRunItemsToEvalQueue(), addToDeleteDatasetQueue(), AdminApiAuthService, ApiAuthService, handleDeleteApiKey(), validateQueryParams(), handler(), auditLog() (+105 more)
 
 ### Community 9 - "Community 9"
 Cohesion: 0.02
-Nodes (89): applyFieldMappingConfig(), applyFullMapping(), evaluateJsonPath(), generateJsonPathSuggestions(), isJsonPath(), setNestedValue(), applyIngestionMasking(), getIngestionMaskingConfig() (+81 more)
+Nodes (90): getAutomations(), getTriggerConfigurations(), BackfillExperimentsHistoric, main(), BackgroundMigrationManager, assertNoLegacyEventsRead(), getS3StorageServiceClient(), handleExceptionRow() (+82 more)
 
 ### Community 10 - "Community 10"
 Cohesion: 0.01
-Nodes (92): fetchUsers(), handleCreate(), handleDelete(), handleConfirm(), handleBlur(), goTo(), handleBackToDashboard(), handleLogout() (+84 more)
+Nodes (98): fetchUsers(), handleCreate(), handleDelete(), handleConfirm(), handleBlur(), goTo(), handleBackToDashboard(), handleLogout() (+90 more)
 
 ### Community 11 - "Community 11"
-Cohesion: 0.02
-Nodes (75): getAutomations(), getTriggerConfigurations(), ClickHouseLogger, mapLogLevel(), ClickhouseReadSkipCache, cloudUsageMeteringQueueProcessor(), dataRetentionProcessingProcessor(), dataRetentionProcessor() (+67 more)
+Cohesion: 0.01
+Nodes (114): composeAggregateScoreKey(), decomposeAggregateScoreKey(), getScoreLabelFromKey(), normalizeScoreName(), handleCategoricalUpsert(), handleDeleteScore(), handleNumericUpsert(), handleTextUpsert() (+106 more)
 
 ### Community 12 - "Community 12"
 Cohesion: 0.02
-Nodes (51): getBlobStorageByProjectAndEntityId(), getBlobStorageByProjectId(), getBlobStorageByProjectIdAndEntityIds(), getBlobStorageByProjectIdAndTraceIds(), getBlobStorageByProjectIdBeforeDate(), bootstrapMcpFeatures(), deleteDatasetRunItemsByProjectId(), hasAnyDatasetRunItem() (+43 more)
+Nodes (84): resetAdminAccessWebhookCacheForTests(), sendAdminAccessWebhook(), shouldSkipDueToRecentDuplicate(), handleBetaSwitchChange(), calculateRecursiveCost(), findObservationDescendants(), sumObservationCosts(), duplicatePrompt() (+76 more)
 
 ### Community 13 - "Community 13"
 Cohesion: 0.02
-Nodes (84): convertActionToDomain(), convertTriggerToDomain(), getActionById(), getActionByIdWithSecrets(), getAutomationById(), getConsecutiveAutomationFailures(), getDisplayHeaders(), convertToSafeWebhookConfig() (+76 more)
+Nodes (57): findS3RefsByPrimaryKey(), getBlobStorageByProjectAndEntityId(), getBlobStorageByProjectId(), getBlobStorageByProjectIdAndEntityIds(), getBlobStorageByProjectIdAndTraceIds(), getBlobStorageByProjectIdBeforeDate(), getLastEventLogPrimaryKey(), insertIntoS3RefsTableFromEventLog() (+49 more)
 
 ### Community 14 - "Community 14"
-Cohesion: 0.03
-Nodes (71): normalizeHostname(), normalizeURL(), validateLlmConnectionBaseURL(), upsertDataset(), createInternalEventsWriter(), getInternalTraceIngestionService(), writeInternalEventInputs(), buildDatasetItemsAtVersionQuery() (+63 more)
+Cohesion: 0.02
+Nodes (44): BatchActionQueue, BatchExportQueue, BlobStorageIntegrationProcessingQueue, BlobStorageIntegrationQueue, CloudFreeTierUsageThresholdQueue, CloudSpendAlertQueue, CloudUsageMeteringQueue, CoreDataS3ExportQueue (+36 more)
 
 ### Community 15 - "Community 15"
-Cohesion: 0.02
-Nodes (58): ActionHandlerRegistry, getErrorHash(), handleTrpcError(), shouldShowToast(), getActionType(), getCurrentActionHandler(), getDefaultValues(), handleActionTypeChange() (+50 more)
+Cohesion: 0.03
+Nodes (75): normalizeHostname(), normalizeURL(), validateLlmConnectionBaseURL(), upsertDataset(), buildDatasetItemsAtVersionQuery(), buildDatasetItemsCountQuery(), buildPrismaWhereFromFilterState(), buildStatefulDatasetItemsCountQuery() (+67 more)
 
 ### Community 16 - "Community 16"
 Cohesion: 0.02
@@ -334,83 +340,83 @@ Nodes (66): useAnalyticsUrlState(), AnnotationProcessingLayout(), formatChartTim
 
 ### Community 17 - "Community 17"
 Cohesion: 0.04
-Nodes (72): assertPublicTarget(), deriveEvaluatorVariables(), getPublicFilterArraySchema(), parseStoredOutputDefinition(), toApiEvaluationRule(), toApiEvaluationRuleStatus(), toApiEvaluator(), toApiFilters() (+64 more)
+Nodes (69): assertPublicTarget(), deriveEvaluatorVariables(), getPublicFilterArraySchema(), parseStoredOutputDefinition(), toApiEvaluationRule(), toApiEvaluationRuleStatus(), toApiEvaluator(), toApiFilters() (+61 more)
 
 ### Community 18 - "Community 18"
 Cohesion: 0.03
-Nodes (61): createAdminSession(), createTestCaller(), clearApiKeyCacheSafely(), createMissingAuthHeader(), createRedisClient(), getApiKeyCacheKeys(), getInvalidAuthHeader(), createAndAddApiKeysToDb() (+53 more)
+Nodes (61): convertActionToDomain(), convertTriggerToDomain(), getActionById(), getActionByIdWithSecrets(), getAutomationById(), getConsecutiveAutomationFailures(), getDisplayHeaders(), convertToSafeWebhookConfig() (+53 more)
 
 ### Community 19 - "Community 19"
 Cohesion: 0.03
-Nodes (57): composeAggregateScoreKey(), decomposeAggregateScoreKey(), getScoreLabelFromKey(), normalizeScoreName(), handleCategoricalUpsert(), handleDeleteScore(), handleNumericUpsert(), handleTextUpsert() (+49 more)
+Nodes (55): clearApiKeyCacheSafely(), createMissingAuthHeader(), createRedisClient(), getApiKeyCacheKeys(), getInvalidAuthHeader(), createAndAddApiKeysToDb(), createShaHash(), generateKeySet() (+47 more)
 
 ### Community 20 - "Community 20"
-Cohesion: 0.03
-Nodes (55): CategoricalScoreChart(), createTracesTimeFilter(), totalCostDashboardFormatted(), traceViewQuery(), extractAllModels(), extractTimeSeriesData(), fillMissingValuesAndTransform(), generateChartLabelFromColumns() (+47 more)
-
-### Community 21 - "Community 21"
-Cohesion: 0.03
-Nodes (52): DemoBadge(), AuthenticatedLayout(), ProjectBillingRedirect(), BillingCurrentPlanLabel(), BillingDiscountView(), BillingInvoiceTable(), BillingSettings(), hasOrganizationAccess() (+44 more)
-
-### Community 22 - "Community 22"
-Cohesion: 0.04
-Nodes (41): BackfillExperimentsHistoric, main(), assertNoLegacyEventsRead(), clickhouseCompliantRandomCharacters(), ClickHouseResourceError, ArrayOptionsFilter, BooleanFilter, CategoryOptionsFilter (+33 more)
-
-### Community 23 - "Community 23"
 Cohesion: 0.04
 Nodes (64): Backend Python Requirements, Backend Test Requirements, Analysis Subagent (Functional Analysis + Characterization), Bayesian Networks and Decision Graphs, Broker-Dealer Exclusion from Investment Adviser Definition (Section 202(a)(11)(C)), Business Subagent (Business Activities, Supply Chain), Celery + Redis Async Task Queue, Django REST Framework Backend (+56 more)
 
-### Community 24 - "Community 24"
-Cohesion: 0.05
-Nodes (37): BackgroundMigrationManager, add_formatted_paragraph(), add_md_paragraph(), add_multiline_text(), _add_section_sources(), add_table_caption(), create_table(), generate_tp_document() (+29 more)
+### Community 21 - "Community 21"
+Cohesion: 0.04
+Nodes (34): useMessageSearch(), useMessageSearchActions(), useMessageSearchController(), useOptionalMessageSearchActions(), useSyncMessageSearchMessages(), createEmptyMessage(), getFinalModelParams(), filterKeyFromObject() (+26 more)
 
-### Community 25 - "Community 25"
+### Community 22 - "Community 22"
+Cohesion: 0.06
+Nodes (21): BackfillEventsHistoric, ConcurrentQueryManager, main(), BackfillEventsHistoricFromParts, main(), runAndScheduleNext(), scheduleNext(), start() (+13 more)
+
+### Community 23 - "Community 23"
 Cohesion: 0.06
 Nodes (40): onCalendarSelection(), onEndTimeSelection(), onStartTimeSelection(), setNewDateRange(), updateDashboardDateRange(), onDropDownSelection(), formatIntervalSeconds(), localtimeDateOffsetByDays() (+32 more)
 
-### Community 26 - "Community 26"
-Cohesion: 0.06
-Nodes (18): createPrompt(), duplicateFolder(), duplicatePrompt(), rewriteDuplicatedPromptContent(), buildPathPrefixFilter(), requiresClickhouseLookups(), resolveMetadata(), PromptService (+10 more)
+### Community 24 - "Community 24"
+Cohesion: 0.05
+Nodes (27): CompareViewAdapter, DashboardCategoricalScoreAdapter, formatDuration(), applyAggregation(), calculateGrandTotals(), calculateSubtotals(), createEmptyMetricValues(), createGrandTotalRow() (+19 more)
 
-### Community 27 - "Community 27"
+### Community 25 - "Community 25"
+Cohesion: 0.04
+Nodes (23): RunAggregateHeader(), useMergeScoreColumns(), useScoreCache(), SelectionProvider(), Trace(), TraceDataProvider(), useTraceData(), TraceGraphDataProvider() (+15 more)
+
+### Community 26 - "Community 26"
 Cohesion: 0.07
 Nodes (37): normalizeMessage(), preprocessData(), splitToolResultMessages(), extractFromParts(), extractToolDeclarations(), getField(), normalizeGeminiMessage(), normalizeMessages() (+29 more)
 
-### Community 28 - "Community 28"
+### Community 27 - "Community 27"
 Cohesion: 0.06
-Nodes (26): createMockS3Client(), createMockStrategy(), streamFrom(), createMockEvalExecutionDeps(), createPostMocks(), parseSSEEvents(), createExecutionParams(), createSuccessfulDeps() (+18 more)
+Nodes (27): createAdminSession(), createTestCaller(), createMockS3Client(), createMockStrategy(), streamFrom(), createMockEvalExecutionDeps(), createPostMocks(), parseSSEEvents() (+19 more)
 
-### Community 29 - "Community 29"
+### Community 28 - "Community 28"
 Cohesion: 0.07
 Nodes (30): parseClickhouseUTCDateTimeFormat(), convertDatasetRunsRowsRecord(), convertDatasetRunItemClickhouseToDomain(), convertDatasetRunItemDomainToClickhouse(), metadataArraysToRecord(), parseMetadataCHRecordToDomain(), convertEventRecordToObservationForEval(), convertEventsObservation() (+22 more)
 
-### Community 30 - "Community 30"
-Cohesion: 0.07
-Nodes (22): getTokenCountWorkerManager(), tokenCountAsync(), TokenCountWorkerManager, handleDragEnd(), runAndScheduleNext(), scheduleNext(), start(), stop() (+14 more)
-
-### Community 31 - "Community 31"
+### Community 29 - "Community 29"
 Cohesion: 0.07
 Nodes (20): copyTextToClipboard(), _unsafeNonSecureCopyToClipboard(), handleCopy(), handleCopy(), handleOnCopy(), handleOnValueChange(), stringify(), handleCopyExample() (+12 more)
 
-### Community 32 - "Community 32"
-Cohesion: 0.07
-Nodes (17): createObservationEvalSchedulerDeps(), getChunkWithFlattenedScores(), getDatabaseReadStreamPaginated(), getTraceIdentifierStream(), assertIsDatasetRunItemTableRecord(), assertIsTracesTableRecord(), convertDatesInFiltersFromStrings(), handleBatchActionJob() (+9 more)
-
-### Community 33 - "Community 33"
+### Community 30 - "Community 30"
 Cohesion: 0.07
 Nodes (22): poll(), fetchProjects(), handleCreate(), handleDelete(), handleOpen(), createProject(), deleteProject(), exportDocx() (+14 more)
 
-### Community 34 - "Community 34"
+### Community 31 - "Community 31"
+Cohesion: 0.08
+Nodes (22): handleAddEntry(), handleEntryChange(), handleRootConfigChange(), handleTypeChange(), handleLayoutChange(), useMediaQuery(), DataTableControlsProvider(), handleMaxInputChange() (+14 more)
+
+### Community 32 - "Community 32"
 Cohesion: 0.07
 Nodes (14): a(), getNodeTextContent(), getSafeUrl(), isChecklist(), isImageNode(), splitTextNodeWithPromptReferences(), transformListItemChildren(), ul() (+6 more)
 
-### Community 35 - "Community 35"
+### Community 33 - "Community 33"
 Cohesion: 0.09
 Nodes (21): buildColorMappings(), createCustomMonoScale(), extractHslToHex(), generateMonoColorScale(), getColorFromMonoScale(), getHeatmapCellColor(), getMonochromeScale(), getScoreBooleanColors() (+13 more)
 
-### Community 36 - "Community 36"
+### Community 34 - "Community 34"
+Cohesion: 0.08
+Nodes (14): ActionHandlerRegistry, getActionType(), getCurrentActionHandler(), getDefaultValues(), handleActionTypeChange(), handleCancel(), onSubmit(), copyVersionTimestamp() (+6 more)
+
+### Community 35 - "Community 35"
 Cohesion: 0.09
 Nodes (21): buildEventsTablePathForObservationType(), buildEventsTablePathForSpanName(), buildEventsTablePathForStringFilter(), simulateUrlFlow(), computeSelectedValues(), decodeFiltersGeneric(), decodeFilters(), encodeFilters() (+13 more)
+
+### Community 36 - "Community 36"
+Cohesion: 0.11
+Nodes (18): transformDbDatasetItemDomainToAPIDatasetItem(), transformDbDatasetRunItemToAPIDatasetRunItemCh(), transformDbDatasetRunToAPIDatasetRun(), transformDbDatasetToAPIDataset(), buildInternalTraceEventInputs(), flattenMetadata(), getSnapshotType(), materializeInternalTrace() (+10 more)
 
 ### Community 37 - "Community 37"
 Cohesion: 0.11
@@ -418,55 +424,55 @@ Nodes (23): Branch A, Branch B, Branch C, Branch D, Branch E, Comparability Anal
 
 ### Community 38 - "Community 38"
 Cohesion: 0.16
-Nodes (16): transformDbDatasetItemDomainToAPIDatasetItem(), transformDbDatasetRunItemToAPIDatasetRunItemCh(), transformDbDatasetRunToAPIDatasetRun(), transformDbDatasetToAPIDataset(), buildInternalTraceEventInputs(), flattenMetadata(), getSnapshotType(), materializeInternalTrace() (+8 more)
+Nodes (15): getCommentRangesForRow(), comparePaths(), getAncestorPaths(), getChildPaths(), getDescendantPaths(), getParentPath(), getPathDepth(), getPathKey() (+7 more)
 
 ### Community 39 - "Community 39"
 Cohesion: 0.13
 Nodes (13): combineInputOutputMessages(), extractAdditionalInput(), mapOutputToChatMl(), mapToChatMl(), normalizeInput(), normalizeOutput(), normalizeInput(), selectAdapter() (+5 more)
 
 ### Community 40 - "Community 40"
-Cohesion: 0.16
-Nodes (15): getCommentRangesForRow(), comparePaths(), getAncestorPaths(), getChildPaths(), getDescendantPaths(), getParentPath(), getPathDepth(), getPathKey() (+7 more)
+Cohesion: 0.2
+Nodes (8): AzuriteCompletionHandler(), ClickHouseCompletionHandler(), CompletionHandler(), ErrorCompletionHandler(), JsonCompletionHandler(), MinioCompletionHandler(), NetworkErrorCompletionHandler(), OpenAIServer
 
 ### Community 41 - "Community 41"
-Cohesion: 0.18
-Nodes (8): appendErrors(), main(), parseCSVField(), readCheckpoint(), readKeys(), Semaphore, splitCSVLine(), TokenBucket
-
-### Community 42 - "Community 42"
 Cohesion: 0.19
 Nodes (16): Backend :8000, Browser, Celery Worker (async tasks), Django REST API (Gunicorn), Docker Compose, Document Parser (pdfplumber), DOCX Export (python-docx + docxtpl), External APIs (+8 more)
 
-### Community 43 - "Community 43"
+### Community 42 - "Community 42"
 Cohesion: 0.17
 Nodes (5): CustomAttributeMapper, hasMeaningfulValue(), matchesVercelAiSdkOperation(), ObservationTypeMapperRegistry, SimpleAttributeMapper
 
-### Community 44 - "Community 44"
+### Community 43 - "Community 43"
 Cohesion: 0.13
 Nodes (8): getEventsColumnName(), getExperimentsColumnName(), getExperimentsFilterConfig(), getObservationEventsFilterConfig(), omitFilterFacets(), getObservationsFilterConfig(), getSessionFilterConfig(), getTraceFilterConfig()
 
-### Community 45 - "Community 45"
-Cohesion: 0.2
-Nodes (9): findViewFilterMapping(), isCanonicalViewFilterColumn(), isKnownWidgetFilterColumn(), mapViewFilterToUiTableFilter(), mapWidgetUiTableFilterToView(), normalizeStoredWidgetFiltersForEditor(), partitionStoredUiTableFiltersToView(), partitionUiTableFiltersToView() (+1 more)
+### Community 44 - "Community 44"
+Cohesion: 0.18
+Nodes (8): getErrorHash(), handleTrpcError(), shouldShowToast(), showVersionUpdateToast(), getErrorDescription(), getErrorTitleAndHttpCode(), isResponseParseError(), trpcErrorToast()
 
-### Community 46 - "Community 46"
+### Community 45 - "Community 45"
 Cohesion: 0.26
 Nodes (8): inferDataType(), inflateScoreBody(), mapStringValueToNumericValue(), resolveScoreValueAnnotation(), resolveScoreValueIngestion(), validateAndInflateScore(), validateConfigAgainstBody(), validateDbScoreConfigSafe()
+
+### Community 46 - "Community 46"
+Cohesion: 0.2
+Nodes (7): buildSchemaObject(), createParser(), getParserConfig(), parseColumns(), parseCsvClient(), parseValue(), handleFiles()
 
 ### Community 47 - "Community 47"
 Cohesion: 0.2
 Nodes (7): createAuthedProjectAPIRoute(), verifyAdminApiKeyAuth(), verifyApiKeyAuth(), verifyAuth(), createUnstablePublicEvalsRoute(), withUnstablePublicEvalsMiddlewares(), withMiddlewares()
 
 ### Community 48 - "Community 48"
-Cohesion: 0.27
-Nodes (3): getReadCompatibleTableNames(), TableViewService, throwTableViewPresetConflictIfDuplicateName()
-
-### Community 49 - "Community 49"
 Cohesion: 0.33
 Nodes (8): buildMatches(), createMessageSearchController(), getActiveMatch(), getActiveMatchIndex(), getCommittedQuery(), getMatchKey(), getMessageSearchLabel(), getMessageSearchText()
 
-### Community 50 - "Community 50"
+### Community 49 - "Community 49"
 Cohesion: 0.24
 Nodes (4): hasAdditionalData(), hasRenderableContent(), isPlaceholderMessage(), shouldRenderMessage()
+
+### Community 50 - "Community 50"
+Cohesion: 0.2
+Nodes (6): handleKeyDown(), humanizeJsonPath(), handleKeyDown(), handleSkipButton(), handleSubmitButton(), handleSubmit()
 
 ### Community 51 - "Community 51"
 Cohesion: 0.27
@@ -522,355 +528,355 @@ Nodes (3): setSelectedTab(), handleTabChange(), handleConfirmLogView()
 
 ### Community 68 - "Community 68"
 Cohesion: 0.33
-Nodes (1): GitHubDispatchActionHandler
+Nodes (1): handleItemRemove()
 
 ### Community 69 - "Community 69"
-Cohesion: 0.33
-Nodes (1): SlackActionHandler
+Cohesion: 0.53
+Nodes (4): DropzoneContent(), DropzoneEmptyState(), renderBytes(), useDropzoneContext()
 
 ### Community 70 - "Community 70"
-Cohesion: 0.47
-Nodes (3): findNearestScrollContainer(), getComputedOverflowY(), isScrollable()
+Cohesion: 0.33
+Nodes (1): GitHubDispatchActionHandler
 
 ### Community 71 - "Community 71"
 Cohesion: 0.33
-Nodes (1): handleDeleteWidget()
+Nodes (1): SlackActionHandler
 
 ### Community 72 - "Community 72"
+Cohesion: 0.47
+Nodes (3): findNearestScrollContainer(), getComputedOverflowY(), isScrollable()
+
+### Community 73 - "Community 73"
+Cohesion: 0.33
+Nodes (1): handleDeleteWidget()
+
+### Community 74 - "Community 74"
 Cohesion: 0.33
 Nodes (1): TestRouter
 
-### Community 73 - "Community 73"
-Cohesion: 0.4
-Nodes (1): setActiveSearchMarkCodeMirrorRange()
-
 ### Community 75 - "Community 75"
-Cohesion: 0.5
-Nodes (3): generateTree(), runPerformanceTest(), flattenTree()
-
-### Community 76 - "Community 76"
-Cohesion: 0.4
-Nodes (2): useSearch(), TracePanelNavigation()
-
-### Community 77 - "Community 77"
-Cohesion: 0.4
-Nodes (2): customLoader(), buildResizableImageSrc()
-
-### Community 79 - "Community 79"
-Cohesion: 0.8
-Nodes (4): hasEntitlementLimit(), hasEntitlementLimitBasedOnPlan(), isWithinEntitlementLimit(), throwIfExceedsLimit()
-
-### Community 81 - "Community 81"
-Cohesion: 0.4
-Nodes (2): MobileDrawer(), useSupportDrawer()
-
-### Community 82 - "Community 82"
-Cohesion: 0.4
-Nodes (2): getFileExtensionFromContentType(), getBucketPath()
-
-### Community 83 - "Community 83"
 Cohesion: 0.7
 Nodes (4): buildEvalScoreWritePayloads(), buildScoreEvent(), buildScoreWritePayload(), createScoreEventEnvelope()
 
-### Community 84 - "Community 84"
+### Community 76 - "Community 76"
 Cohesion: 0.4
-Nodes (1): MockLLMCompletionError
+Nodes (1): setActiveSearchMarkCodeMirrorRange()
+
+### Community 78 - "Community 78"
+Cohesion: 0.4
+Nodes (2): MobileDrawer(), useSupportDrawer()
+
+### Community 79 - "Community 79"
+Cohesion: 0.5
+Nodes (3): generateTree(), runPerformanceTest(), flattenTree()
+
+### Community 80 - "Community 80"
+Cohesion: 0.4
+Nodes (2): useSearch(), TracePanelNavigation()
+
+### Community 81 - "Community 81"
+Cohesion: 0.4
+Nodes (2): customLoader(), buildResizableImageSrc()
+
+### Community 83 - "Community 83"
+Cohesion: 0.8
+Nodes (4): hasEntitlementLimit(), hasEntitlementLimitBasedOnPlan(), isWithinEntitlementLimit(), throwIfExceedsLimit()
 
 ### Community 85 - "Community 85"
 Cohesion: 0.4
-Nodes (5): ML Heap Data Structure (Binary Tree), ML Modules (Structures, Signatures, Functors), ML Type System and Static Semantics, Standard ML Programming Language, Four Lectures on Standard ML
+Nodes (2): getFileExtensionFromContentType(), getBucketPath()
 
 ### Community 86 - "Community 86"
+Cohesion: 0.4
+Nodes (1): MockLLMCompletionError
+
+### Community 87 - "Community 87"
+Cohesion: 0.4
+Nodes (5): ML Heap Data Structure (Binary Tree), ML Modules (Structures, Signatures, Functors), ML Type System and Static Semantics, Standard ML Programming Language, Four Lectures on Standard ML
+
+### Community 88 - "Community 88"
 Cohesion: 0.67
 Nodes (2): createPrismaInstance(), PrismaClientSingleton
 
-### Community 87 - "Community 87"
+### Community 89 - "Community 89"
 Cohesion: 0.5
 Nodes (1): handleRemoveFilter()
 
-### Community 88 - "Community 88"
+### Community 90 - "Community 90"
 Cohesion: 0.5
 Nodes (2): PeekViewEvaluatorTemplateDetail(), usePeekEvalTemplateData()
 
-### Community 91 - "Community 91"
+### Community 93 - "Community 93"
 Cohesion: 0.67
 Nodes (2): useDesktopLayoutContext(), useLayoutContext()
 
-### Community 92 - "Community 92"
+### Community 94 - "Community 94"
 Cohesion: 0.67
 Nodes (2): useLayoutContext(), useMobileLayoutContext()
 
-### Community 94 - "Community 94"
-Cohesion: 0.5
-Nodes (2): JSONTableViewRowInner(), useClickWithoutSelection()
-
-### Community 96 - "Community 96"
+### Community 97 - "Community 97"
 Cohesion: 0.67
 Nodes (2): handleInputBlur(), handleKeyDown()
 
-### Community 97 - "Community 97"
+### Community 98 - "Community 98"
 Cohesion: 0.5
 Nodes (2): useMonospaceCharWidth(), useMultiSectionTreeState()
 
-### Community 101 - "Community 101"
+### Community 102 - "Community 102"
 Cohesion: 0.67
 Nodes (3): getExperimentColor(), getExperimentColorStyles(), getVisibleCellRows()
 
-### Community 102 - "Community 102"
+### Community 103 - "Community 103"
 Cohesion: 0.67
 Nodes (2): FeatureFlagToggle(), isAdminOrExperimentalFeatures()
 
-### Community 103 - "Community 103"
+### Community 104 - "Community 104"
 Cohesion: 0.67
 Nodes (3): addNewFilter(), getValidFilters(), setWipFilterState()
 
-### Community 104 - "Community 104"
+### Community 105 - "Community 105"
 Cohesion: 0.5
 Nodes (1): parseFiltersFromCompletion()
 
-### Community 105 - "Community 105"
+### Community 106 - "Community 106"
 Cohesion: 0.5
 Nodes (2): ResetPlaygroundButton(), usePersistedWindowIds()
 
-### Community 107 - "Community 107"
+### Community 108 - "Community 108"
 Cohesion: 0.5
 Nodes (1): deriveOrganizationFromProject()
 
-### Community 108 - "Community 108"
+### Community 109 - "Community 109"
 Cohesion: 0.5
 Nodes (1): handleEdit()
 
-### Community 109 - "Community 109"
+### Community 110 - "Community 110"
+Cohesion: 0.5
+Nodes (2): JSONTableViewRowInner(), useClickWithoutSelection()
+
+### Community 111 - "Community 111"
 Cohesion: 0.5
 Nodes (2): useExperimentNameValidation(), useUniqueNameValidation()
 
-### Community 110 - "Community 110"
+### Community 112 - "Community 112"
 Cohesion: 0.67
 Nodes (2): setSigtermReceived(), shutdown()
 
-### Community 111 - "Community 111"
+### Community 113 - "Community 113"
 Cohesion: 0.67
 Nodes (2): isNotNullOrUndefined(), isUndefinedOrNull()
 
-### Community 113 - "Community 113"
+### Community 115 - "Community 115"
 Cohesion: 0.67
 Nodes (4): PMK-172 Year 2023 (Indonesian TP Regulation), PMK-213/2016 (Indonesian TP Regulation), Transfer Pricing Local File, TP Local File Generator (Main README)
 
-### Community 114 - "Community 114"
+### Community 116 - "Community 116"
 Cohesion: 0.5
 Nodes (4): Disney Entertainment Segment (DTC, Content Sales), Disney Experiences Segment (Parks, Cruise Line), Disney Sports Segment (ESPN), Walt Disney Company Q1 FY2025 Earnings Report
 
-### Community 115 - "Community 115"
+### Community 117 - "Community 117"
 Cohesion: 0.67
 Nodes (2): AppConfig, ApiConfig
 
-### Community 117 - "Community 117"
+### Community 119 - "Community 119"
 Cohesion: 0.67
 Nodes (1): ApiError
 
-### Community 118 - "Community 118"
+### Community 120 - "Community 120"
 Cohesion: 0.67
 Nodes (1): BaseError
 
-### Community 119 - "Community 119"
+### Community 121 - "Community 121"
 Cohesion: 0.67
 Nodes (1): LangfuseConflictError
 
-### Community 120 - "Community 120"
+### Community 122 - "Community 122"
 Cohesion: 0.67
 Nodes (1): ForbiddenError
 
-### Community 121 - "Community 121"
+### Community 123 - "Community 123"
 Cohesion: 0.67
 Nodes (1): InternalServerError
 
-### Community 122 - "Community 122"
+### Community 124 - "Community 124"
 Cohesion: 0.67
 Nodes (1): InvalidRequestError
 
-### Community 123 - "Community 123"
+### Community 125 - "Community 125"
 Cohesion: 0.67
 Nodes (1): MethodNotAllowedError
 
-### Community 124 - "Community 124"
+### Community 126 - "Community 126"
 Cohesion: 0.67
 Nodes (1): LangfuseNotFoundError
 
-### Community 125 - "Community 125"
+### Community 127 - "Community 127"
 Cohesion: 0.67
 Nodes (1): NotImplementedError
 
-### Community 126 - "Community 126"
+### Community 128 - "Community 128"
 Cohesion: 0.67
 Nodes (1): ServiceUnavailableError
 
-### Community 127 - "Community 127"
+### Community 129 - "Community 129"
 Cohesion: 0.67
 Nodes (1): UnauthorizedError
 
-### Community 131 - "Community 131"
+### Community 133 - "Community 133"
 Cohesion: 1.0
 Nodes (2): formatLocalIsoDate(), LocalIsoDate()
 
-### Community 133 - "Community 133"
-Cohesion: 1.0
-Nodes (2): getSessionDetailDefaultPreset(), getSessionDetailPresetToApply()
-
-### Community 134 - "Community 134"
+### Community 135 - "Community 135"
 Cohesion: 1.0
 Nodes (2): createPeekEventHandler(), TablePeekViewComponent()
 
-### Community 139 - "Community 139"
+### Community 140 - "Community 140"
 Cohesion: 1.0
 Nodes (2): countJsonRows(), exceedsRowThreshold()
 
-### Community 147 - "Community 147"
+### Community 148 - "Community 148"
 Cohesion: 1.0
 Nodes (2): ColoredVariable(), getVariableColor()
 
-### Community 156 - "Community 156"
+### Community 151 - "Community 151"
+Cohesion: 1.0
+Nodes (2): getSessionDetailDefaultPreset(), getSessionDetailPresetToApply()
+
+### Community 158 - "Community 158"
 Cohesion: 1.0
 Nodes (2): createOrFetchDatasetRun(), isUniqueConstraintError()
 
-### Community 160 - "Community 160"
+### Community 162 - "Community 162"
 Cohesion: 1.0
 Nodes (2): formatBigNumber(), stripTrailingDecimalZeros()
 
-### Community 175 - "Community 175"
+### Community 177 - "Community 177"
 Cohesion: 1.0
 Nodes (1): Migration
 
-### Community 176 - "Community 176"
+### Community 178 - "Community 178"
 Cohesion: 1.0
 Nodes (1): Migration
-
-### Community 452 - "Community 452"
-Cohesion: 1.0
-Nodes (1): fix_header_border.py ==================== Restores the blue separator line (w:
-
-### Community 453 - "Community 453"
-Cohesion: 1.0
-Nodes (1): Quick test: end-to-end template export with pl_overview_text
 
 ### Community 454 - "Community 454"
 Cohesion: 1.0
-Nodes (1): Backward-compatibility re-exports.  All logic has been split into focused suba
+Nodes (1): fix_header_border.py ==================== Restores the blue separator line (w:
 
 ### Community 455 - "Community 455"
 Cohesion: 1.0
-Nodes (1): Template sections for Transfer Pricing Local File documentation. These sections
+Nodes (1): Quick test: end-to-end template export with pl_overview_text
 
 ### Community 456 - "Community 456"
 Cohesion: 1.0
-Nodes (1): dummy_data.py ============= Realistic dummy data for testing the TP Local File
+Nodes (1): Backward-compatibility re-exports.  All logic has been split into focused suba
 
 ### Community 457 - "Community 457"
 Cohesion: 1.0
+Nodes (1): Template sections for Transfer Pricing Local File documentation. These sections
+
+### Community 458 - "Community 458"
+Cohesion: 1.0
+Nodes (1): dummy_data.py ============= Realistic dummy data for testing the TP Local File
+
+### Community 459 - "Community 459"
+Cohesion: 1.0
 Nodes (2): Groq LLM API (llama-3.3-70b-versatile), OpenAI LLM API (GPT-4o)
-
-### Community 1265 - "Community 1265"
-Cohesion: 1.0
-Nodes (1): Strip markdown fences and parse JSON. Returns None on failure.
-
-### Community 1266 - "Community 1266"
-Cohesion: 1.0
-Nodes (1): DFS over the PageIndex tree collecting leaf node 'text' values.
 
 ### Community 1267 - "Community 1267"
 Cohesion: 1.0
-Nodes (1): Strategy:       1. Flatten tree into a concise summary (title + summary per nod
+Nodes (1): DFS over the PageIndex tree collecting leaf node 'text' values.
 
 ### Community 1268 - "Community 1268"
 Cohesion: 1.0
-Nodes (1): Run extraction for all form field groups.      `context` must be a RetrievalCo
+Nodes (1): Strategy:       1. Flatten tree into a concise summary (title + summary per nod
 
 ### Community 1269 - "Community 1269"
 Cohesion: 1.0
-Nodes (1): Returns a human-readable summary of what was found vs. not found.
+Nodes (1): Run extraction for all form field groups.      `context` must be a RetrievalCo
 
 ### Community 1270 - "Community 1270"
 Cohesion: 1.0
-Nodes (1): Removes the first section between <physical_index_X> and <physical_index_X> tags
+Nodes (1): Returns a human-readable summary of what was found vs. not found.
 
 ### Community 1271 - "Community 1271"
 Cohesion: 1.0
-Nodes (1): Validates and truncates physical indices that exceed the actual document length.
+Nodes (1): Strip markdown fences and parse JSON. Returns None on failure.
 
 ### Community 1272 - "Community 1272"
 Cohesion: 1.0
-Nodes (1): Create a clean structure for document description generation,     excluding unn
+Nodes (1): DFS over the PageIndex tree collecting leaf node 'text' values.
 
 ### Community 1273 - "Community 1273"
 Cohesion: 1.0
-Nodes (1): Load the configuration, merging user options with default values.
+Nodes (1): Strategy:       1. Flatten tree into a concise summary (title + summary per nod
 
 ### Community 1274 - "Community 1274"
 Cohesion: 1.0
-Nodes (1): Builds a PageIndex tree for a short PDF (<PAGE_THRESHOLD pages).      Returns
+Nodes (1): Run extraction for all form field groups.      `context` must be a RetrievalCo
 
 ### Community 1275 - "Community 1275"
 Cohesion: 1.0
-Nodes (1): Returns the best available embeddings — OpenAI first, then HuggingFace.
+Nodes (1): Returns a human-readable summary of what was found vs. not found.
 
 ### Community 1276 - "Community 1276"
 Cohesion: 1.0
-Nodes (1): Chunk text and embed into an in-memory FAISS store.
+Nodes (1): Removes the first section between <physical_index_X> and <physical_index_X> tags
 
 ### Community 1277 - "Community 1277"
 Cohesion: 1.0
-Nodes (1): Process one or more Streamlit UploadedFile objects.      Returns (RetrievalCon
+Nodes (1): Validates and truncates physical indices that exceed the actual document length.
 
 ### Community 1278 - "Community 1278"
 Cohesion: 1.0
-Nodes (1): Hash the values of the given fields from state for cache comparison.
+Nodes (1): Create a clean structure for document description generation,     excluding unn
 
 ### Community 1279 - "Community 1279"
 Cohesion: 1.0
-Nodes (1): Return list of node names whose inputs haven't changed and whose output     alre
+Nodes (1): Load the configuration, merging user options with default values.
 
 ### Community 1280 - "Community 1280"
 Cohesion: 1.0
-Nodes (1): Return updated cache dict: keep existing hashes for skipped nodes,     compute f
+Nodes (1): Builds a PageIndex tree for a short PDF (<PAGE_THRESHOLD pages).      Returns
 
 ### Community 1281 - "Community 1281"
 Cohesion: 1.0
-Nodes (1): Run the full LangGraph agent pipeline.     Nodes whose inputs are unchanged and
+Nodes (1): Returns the best available embeddings — OpenAI first, then HuggingFace.
 
 ### Community 1282 - "Community 1282"
 Cohesion: 1.0
-Nodes (1): Regenerate a single section — always bypasses cache.     After running, updates
+Nodes (1): Chunk text and embed into an in-memory FAISS store.
 
 ### Community 1283 - "Community 1283"
 Cohesion: 1.0
-Nodes (1): Invoke LLM with LangChain tools bound, handling tool-calling loop.
+Nodes (1): Process one or more Streamlit UploadedFile objects.      Returns (RetrievalCon
 
 ### Community 1284 - "Community 1284"
 Cohesion: 1.0
-Nodes (1): Factory: wrap a subagent function with error handling and cache skip support.
+Nodes (1): Hash the values of the given fields from state for cache comparison.
 
 ### Community 1285 - "Community 1285"
 Cohesion: 1.0
-Nodes (1): Join barrier — waits for research branch AND analysis branch.     Emits warning
+Nodes (1): Return list of node names whose inputs haven't changed and whose output     alre
 
 ### Community 1286 - "Community 1286"
 Cohesion: 1.0
-Nodes (1): Join barrier — waits for conclusion branch AND pl_overview branch.     Emits wa
+Nodes (1): Return updated cache dict: keep existing hashes for skipped nodes,     compute f
 
 ### Community 1287 - "Community 1287"
 Cohesion: 1.0
-Nodes (1): Run the full agent workflow with parallel branches.      Args:         state_
+Nodes (1): Run the full LangGraph agent pipeline.     Nodes whose inputs are unchanged and
 
 ### Community 1288 - "Community 1288"
 Cohesion: 1.0
-Nodes (1): Run agents with real-time streaming.      Yields (node_name, accumulated_state
+Nodes (1): Regenerate a single section — always bypasses cache.     After running, updates
 
 ### Community 1289 - "Community 1289"
 Cohesion: 1.0
-Nodes (1): Run a single agent node for regeneration (e.g., from the UI).
+Nodes (1): Invoke LLM with LangChain tools bound, handling tool-calling loop.
 
 ### Community 1290 - "Community 1290"
 Cohesion: 1.0
-Nodes (1): Generate the executive summary from transaction summary packets.
+Nodes (1): Factory: wrap a subagent function with error handling and cache skip support.
 
 ### Community 1291 - "Community 1291"
 Cohesion: 1.0
@@ -894,370 +900,392 @@ Nodes (1): Run a single agent node for regeneration (e.g., from the UI).
 
 ### Community 1296 - "Community 1296"
 Cohesion: 1.0
-Nodes (1): Strip trailing conversational offers from LLM output.
+Nodes (1): Generate the executive summary from transaction summary packets.
 
 ### Community 1297 - "Community 1297"
 Cohesion: 1.0
-Nodes (1): Invoke LLM without tools and return text content.
+Nodes (1): Join barrier — waits for research branch AND analysis branch.     Emits warning
 
 ### Community 1298 - "Community 1298"
 Cohesion: 1.0
-Nodes (1): Invoke LLM with LangChain tools bound, handling tool-calling loop.
+Nodes (1): Join barrier — waits for conclusion branch AND pl_overview branch.     Emits wa
 
 ### Community 1299 - "Community 1299"
 Cohesion: 1.0
-Nodes (1): Add text that may contain multiple paragraphs, parsing **bold** markdown.
+Nodes (1): Run the full agent workflow with parallel branches.      Args:         state_
 
 ### Community 1300 - "Community 1300"
 Cohesion: 1.0
-Nodes (1): Add footnote-style source references after a section's body text.      Renders
+Nodes (1): Run agents with real-time streaming.      Yields (node_name, accumulated_state
 
 ### Community 1301 - "Community 1301"
 Cohesion: 1.0
-Nodes (1): Create a formatted table.
+Nodes (1): Run a single agent node for regeneration (e.g., from the UI).
 
 ### Community 1302 - "Community 1302"
 Cohesion: 1.0
-Nodes (1): Generate the complete Transfer Pricing Local File document.          Args:
+Nodes (1): Strip trailing conversational offers from LLM output.
 
 ### Community 1303 - "Community 1303"
 Cohesion: 1.0
-Nodes (1): Get an LLM instance based on provider preference.      Priority:       1. Explic
+Nodes (1): Invoke LLM without tools and return text content.
 
 ### Community 1304 - "Community 1304"
 Cohesion: 1.0
-Nodes (1): Invoke LLM without tools and return text content.
+Nodes (1): Invoke LLM with LangChain tools bound, handling tool-calling loop.
 
 ### Community 1305 - "Community 1305"
 Cohesion: 1.0
-Nodes (1): Invoke LLM with LangChain tools bound, handling tool-calling loop.
+Nodes (1): Add text that may contain multiple paragraphs, parsing **bold** markdown.
 
 ### Community 1306 - "Community 1306"
 Cohesion: 1.0
-Nodes (1): Hash the values of the given fields from state for cache comparison.
+Nodes (1): Add footnote-style source references after a section's body text.      Renders
 
 ### Community 1307 - "Community 1307"
 Cohesion: 1.0
-Nodes (1): Return list of node names whose inputs haven't changed and whose output     alre
+Nodes (1): Create a formatted table.
 
 ### Community 1308 - "Community 1308"
 Cohesion: 1.0
-Nodes (1): Return updated cache dict: keep existing hashes for skipped nodes,     compute f
+Nodes (1): Generate the complete Transfer Pricing Local File document.          Args:
 
 ### Community 1309 - "Community 1309"
 Cohesion: 1.0
-Nodes (1): Run the full LangGraph agent pipeline.     Nodes whose inputs are unchanged and
+Nodes (1): Get an LLM instance based on provider preference.      Priority:       1. Explic
 
 ### Community 1310 - "Community 1310"
 Cohesion: 1.0
-Nodes (1): Regenerate a single section — always bypasses cache.     After running, updates
+Nodes (1): Invoke LLM without tools and return text content.
 
 ### Community 1311 - "Community 1311"
 Cohesion: 1.0
-Nodes (1): Factory: wrap a subagent function with error handling and cache skip support.
+Nodes (1): Invoke LLM with LangChain tools bound, handling tool-calling loop.
 
 ### Community 1312 - "Community 1312"
 Cohesion: 1.0
-Nodes (1): Join barrier — waits for research branch AND analysis branch.     Emits warning
+Nodes (1): Hash the values of the given fields from state for cache comparison.
 
 ### Community 1313 - "Community 1313"
 Cohesion: 1.0
-Nodes (1): Join barrier — waits for conclusion branch AND pl_overview branch.     Emits wa
+Nodes (1): Return list of node names whose inputs haven't changed and whose output     alre
 
 ### Community 1314 - "Community 1314"
 Cohesion: 1.0
-Nodes (1): Run the full agent workflow with parallel branches.      Args:         state_
+Nodes (1): Return updated cache dict: keep existing hashes for skipped nodes,     compute f
 
 ### Community 1315 - "Community 1315"
 Cohesion: 1.0
-Nodes (1): Run agents with real-time streaming.      Yields (node_name, accumulated_state
+Nodes (1): Run the full LangGraph agent pipeline.     Nodes whose inputs are unchanged and
 
 ### Community 1316 - "Community 1316"
 Cohesion: 1.0
-Nodes (1): Run a single agent node for regeneration (e.g., from the UI).
+Nodes (1): Regenerate a single section — always bypasses cache.     After running, updates
 
 ### Community 1317 - "Community 1317"
 Cohesion: 1.0
-Nodes (1): Generate the conclusion section.
+Nodes (1): Factory: wrap a subagent function with error handling and cache skip support.
 
 ### Community 1318 - "Community 1318"
 Cohesion: 1.0
-Nodes (1): Generate bullet-point commentary on the P/L table data using the LLM.
+Nodes (1): Join barrier — waits for research branch AND analysis branch.     Emits warning
 
 ### Community 1319 - "Community 1319"
 Cohesion: 1.0
-Nodes (1): Research global industry analysis based on company's products/sector.
+Nodes (1): Join barrier — waits for conclusion branch AND pl_overview branch.     Emits wa
 
 ### Community 1320 - "Community 1320"
 Cohesion: 1.0
-Nodes (1): Research Indonesian industry analysis.
+Nodes (1): Run the full agent workflow with parallel branches.      Args:         state_
 
 ### Community 1321 - "Community 1321"
 Cohesion: 1.0
-Nodes (1): Research the competitive business environment.
+Nodes (1): Run agents with real-time streaming.      Yields (node_name, accumulated_state
 
 ### Community 1322 - "Community 1322"
 Cohesion: 1.0
-Nodes (1): Research economic/business efficiency factors for the company's location.
+Nodes (1): Run a single agent node for regeneration (e.g., from the UI).
 
 ### Community 1323 - "Community 1323"
 Cohesion: 1.0
-Nodes (1): Research Indonesian government regulations that affect the company's industry.
+Nodes (1): Generate the conclusion section.
 
 ### Community 1324 - "Community 1324"
 Cohesion: 1.0
-Nodes (1): Research each comparable company using Tavily and generate a business     descr
+Nodes (1): Generate bullet-point commentary on the P/L table data using the LLM.
 
 ### Community 1325 - "Community 1325"
 Cohesion: 1.0
-Nodes (1): Determine and justify the business characterization based on functional analysis
+Nodes (1): Research global industry analysis based on company's products/sector.
 
 ### Community 1326 - "Community 1326"
 Cohesion: 1.0
-Nodes (1): Generate the Supply Chain Management narrative based on form inputs.
+Nodes (1): Research Indonesian industry analysis.
 
 ### Community 1327 - "Community 1327"
 Cohesion: 1.0
-Nodes (1): Get an LLM instance based on provider preference.      Priority:       1. Exp
+Nodes (1): Research the competitive business environment.
 
 ### Community 1328 - "Community 1328"
 Cohesion: 1.0
-Nodes (1): Return a Tavily client. Warns if API key is missing.
+Nodes (1): Research economic/business efficiency factors for the company's location.
 
 ### Community 1329 - "Community 1329"
 Cohesion: 1.0
-Nodes (1): Sanitize a single Tavily search result for safe embedding in an LLM prompt.
+Nodes (1): Research Indonesian government regulations that affect the company's industry.
 
 ### Community 1330 - "Community 1330"
 Cohesion: 1.0
-Nodes (1): Return a sanitized list of search result dicts safe for prompt embedding.
+Nodes (1): Research each comparable company using Tavily and generate a business     descr
 
 ### Community 1331 - "Community 1331"
 Cohesion: 1.0
-Nodes (1): Search the web using Tavily and return structured results.
+Nodes (1): Determine and justify the business characterization based on functional analysis
 
 ### Community 1332 - "Community 1332"
 Cohesion: 1.0
-Nodes (1): Research the competitive business environment.
+Nodes (1): Generate the Supply Chain Management narrative based on form inputs.
 
 ### Community 1333 - "Community 1333"
 Cohesion: 1.0
-Nodes (1): Research economic/business efficiency factors for the company's location.
+Nodes (1): Get an LLM instance based on provider preference.      Priority:       1. Exp
 
 ### Community 1334 - "Community 1334"
 Cohesion: 1.0
-Nodes (1): Research Indonesian government regulations that affect the company's industry.
+Nodes (1): Return a Tavily client. Warns if API key is missing.
 
 ### Community 1335 - "Community 1335"
 Cohesion: 1.0
-Nodes (1): Research each comparable company using Tavily and generate a business     descr
+Nodes (1): Sanitize a single Tavily search result for safe embedding in an LLM prompt.
 
 ### Community 1336 - "Community 1336"
 Cohesion: 1.0
-Nodes (1): Generate the executive summary based on all completed analysis.
+Nodes (1): Return a sanitized list of search result dicts safe for prompt embedding.
 
 ### Community 1337 - "Community 1337"
 Cohesion: 1.0
-Nodes (1): Generate the comparability analysis narrative section.
+Nodes (1): Search the web using Tavily and return structured results.
 
 ### Community 1338 - "Community 1338"
 Cohesion: 1.0
-Nodes (1): Generate justification for why each method was selected or rejected.
+Nodes (1): Research the competitive business environment.
 
 ### Community 1339 - "Community 1339"
 Cohesion: 1.0
-Nodes (1): Generate rationale for PLI selection.
+Nodes (1): Research economic/business efficiency factors for the company's location.
 
 ### Community 1340 - "Community 1340"
 Cohesion: 1.0
-Nodes (1): Join barrier — waits for research branch AND analysis branch.     Emits warning
+Nodes (1): Research Indonesian government regulations that affect the company's industry.
 
 ### Community 1341 - "Community 1341"
 Cohesion: 1.0
-Nodes (1): Join barrier — waits for conclusion branch AND pl_overview branch.     Emits wa
+Nodes (1): Research each comparable company using Tavily and generate a business     descr
 
 ### Community 1342 - "Community 1342"
 Cohesion: 1.0
-Nodes (1): Run the full agent workflow with parallel branches.      Args:         state_
+Nodes (1): Generate the executive summary based on all completed analysis.
 
 ### Community 1343 - "Community 1343"
 Cohesion: 1.0
-Nodes (1): Run agents with real-time streaming.      Yields (node_name, accumulated_state
+Nodes (1): Generate the comparability analysis narrative section.
 
 ### Community 1344 - "Community 1344"
 Cohesion: 1.0
-Nodes (1): Run a single agent node for regeneration (e.g., from the UI).
+Nodes (1): Generate justification for why each method was selected or rejected.
 
 ### Community 1345 - "Community 1345"
 Cohesion: 1.0
-Nodes (1): pdfplumber (PDF Text Extraction)
+Nodes (1): Generate rationale for PLI selection.
 
 ### Community 1346 - "Community 1346"
+Cohesion: 1.0
+Nodes (1): Join barrier — waits for research branch AND analysis branch.     Emits warning
+
+### Community 1347 - "Community 1347"
+Cohesion: 1.0
+Nodes (1): Join barrier — waits for conclusion branch AND pl_overview branch.     Emits wa
+
+### Community 1348 - "Community 1348"
+Cohesion: 1.0
+Nodes (1): Run the full agent workflow with parallel branches.      Args:         state_
+
+### Community 1349 - "Community 1349"
+Cohesion: 1.0
+Nodes (1): Run agents with real-time streaming.      Yields (node_name, accumulated_state
+
+### Community 1350 - "Community 1350"
+Cohesion: 1.0
+Nodes (1): Run a single agent node for regeneration (e.g., from the UI).
+
+### Community 1351 - "Community 1351"
+Cohesion: 1.0
+Nodes (1): pdfplumber (PDF Text Extraction)
+
+### Community 1352 - "Community 1352"
 Cohesion: 1.0
 Nodes (1): PageIndex CHANGELOG
 
 ## Knowledge Gaps
-- **252 isolated node(s):** `Encode a PlantUML diagram string to its URL-safe token.`, `Meta`, `Key-value store for admin-managed API settings (LLM provider, keys, etc.).`, `Migration`, `Migration` (+247 more)
+- **258 isolated node(s):** `Encode a PlantUML diagram string to its URL-safe token.`, `Meta`, `Key-value store for admin-managed API settings (LLM provider, keys, etc.).`, `Migration`, `Migration` (+253 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **Thin community `Community 60`** (7 nodes): `cn()`, `getCommonPinningStyles()`, `getPinningClasses()`, `insertArrayAfterKey()`, `isValidCssVariableName()`, `shouldIgnoreRowClickTarget()`, `data-table.tsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 68`** (6 nodes): `GitHubDispatchActionHandler`, `.buildActionConfig()`, `.getDefaultValues()`, `.renderForm()`, `.validateFormData()`, `GitHubDispatchActionHandler.tsx`
+- **Thin community `Community 68`** (6 nodes): `multi-select-combobox.tsx`, `handleClickOutside()`, `handleInputBlur()`, `handleInputFocus()`, `handleItemRemove()`, `renderItem()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 69`** (6 nodes): `SlackActionHandler.ts`, `SlackActionHandler`, `.buildActionConfig()`, `.getDefaultValues()`, `.renderForm()`, `.validateFormData()`
+- **Thin community `Community 70`** (6 nodes): `GitHubDispatchActionHandler`, `.buildActionConfig()`, `.getDefaultValues()`, `.renderForm()`, `.validateFormData()`, `GitHubDispatchActionHandler.tsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 71`** (6 nodes): `handleAddWidget()`, `handleCloneDashboard()`, `handleDeleteWidget()`, `handleSaveFilters()`, `handleSelectWidget()`, `index.tsx`
+- **Thin community `Community 71`** (6 nodes): `SlackActionHandler.ts`, `SlackActionHandler`, `.buildActionConfig()`, `.getDefaultValues()`, `.renderForm()`, `.validateFormData()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 72`** (6 nodes): `TestRouter.ts`, `TestRouter`, `.asPath()`, `.constructor()`, `.getParams()`, `.getURLString()`
+- **Thin community `Community 73`** (6 nodes): `handleAddWidget()`, `handleCloneDashboard()`, `handleDeleteWidget()`, `handleSaveFilters()`, `handleSelectWidget()`, `index.tsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 73`** (5 nodes): `applyCodeMirrorSearchQuery()`, `cn()`, `setActiveSearchMarkCodeMirrorRange()`, `unsetActiveSearchMarkCodeMirrorRange()`, `CodeMirrorEditor.tsx`
+- **Thin community `Community 74`** (6 nodes): `TestRouter.ts`, `TestRouter`, `.asPath()`, `.constructor()`, `.getParams()`, `.getURLString()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 76`** (5 nodes): `TracePanelNavigation.tsx`, `SearchContext.tsx`, `SearchProvider()`, `useSearch()`, `TracePanelNavigation()`
+- **Thin community `Community 76`** (5 nodes): `applyCodeMirrorSearchQuery()`, `cn()`, `setActiveSearchMarkCodeMirrorRange()`, `unsetActiveSearchMarkCodeMirrorRange()`, `CodeMirrorEditor.tsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 77`** (5 nodes): `resizable-image.tsx`, `resizable-image.utils.ts`, `customLoader()`, `ImageErrorDisplay()`, `buildResizableImageSrc()`
+- **Thin community `Community 78`** (5 nodes): `MobileDrawer.tsx`, `SupportDrawerProvider.tsx`, `MobileDrawer()`, `SupportDrawerProvider()`, `useSupportDrawer()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 81`** (5 nodes): `MobileDrawer.tsx`, `SupportDrawerProvider.tsx`, `MobileDrawer()`, `SupportDrawerProvider()`, `useSupportDrawer()`
+- **Thin community `Community 80`** (5 nodes): `TracePanelNavigation.tsx`, `SearchContext.tsx`, `SearchProvider()`, `useSearch()`, `TracePanelNavigation()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 82`** (5 nodes): `getFileExtensionFromContentType()`, `getBucketPath()`, `getMediaId()`, `getFileExtensionFromContentType.ts`, `index.ts`
+- **Thin community `Community 81`** (5 nodes): `resizable-image.tsx`, `resizable-image.utils.ts`, `customLoader()`, `ImageErrorDisplay()`, `buildResizableImageSrc()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 84`** (5 nodes): `MockLLMCompletionError`, `.constructor()`, `.getEvaluatorBlockReason()`, `.shouldBlockConfig()`, `fetchLLMCompletionTimeout.test.ts`
+- **Thin community `Community 85`** (5 nodes): `getFileExtensionFromContentType()`, `getBucketPath()`, `getMediaId()`, `getFileExtensionFromContentType.ts`, `index.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 86`** (4 nodes): `createPrismaInstance()`, `PrismaClientSingleton`, `.getInstance()`, `db.ts`
+- **Thin community `Community 86`** (5 nodes): `MockLLMCompletionError`, `.constructor()`, `.getEvaluatorBlockReason()`, `.shouldBlockConfig()`, `fetchLLMCompletionTimeout.test.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 87`** (4 nodes): `handleAddFilter()`, `handleFilterChange()`, `handleRemoveFilter()`, `key-value-filter-builder.tsx`
+- **Thin community `Community 88`** (4 nodes): `createPrismaInstance()`, `PrismaClientSingleton`, `.getInstance()`, `db.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 88`** (4 nodes): `usePeekEvalTemplateData.ts`, `peek-evaluator-template-detail.tsx`, `PeekViewEvaluatorTemplateDetail()`, `usePeekEvalTemplateData()`
+- **Thin community `Community 89`** (4 nodes): `handleAddFilter()`, `handleFilterChange()`, `handleRemoveFilter()`, `key-value-filter-builder.tsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 91`** (4 nodes): `TraceLayoutDesktop.tsx`, `TraceLayoutDesktop()`, `useDesktopLayoutContext()`, `useLayoutContext()`
+- **Thin community `Community 90`** (4 nodes): `usePeekEvalTemplateData.ts`, `peek-evaluator-template-detail.tsx`, `PeekViewEvaluatorTemplateDetail()`, `usePeekEvalTemplateData()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 92`** (4 nodes): `TraceLayoutMobile.tsx`, `TraceLayoutMobile()`, `useLayoutContext()`, `useMobileLayoutContext()`
+- **Thin community `Community 93`** (4 nodes): `TraceLayoutDesktop.tsx`, `TraceLayoutDesktop()`, `useDesktopLayoutContext()`, `useLayoutContext()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 94`** (4 nodes): `JSONTableViewRowInner()`, `JSONTableViewRow.tsx`, `useClickWithoutSelection.ts`, `useClickWithoutSelection()`
+- **Thin community `Community 94`** (4 nodes): `TraceLayoutMobile.tsx`, `TraceLayoutMobile()`, `useLayoutContext()`, `useMobileLayoutContext()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 96`** (4 nodes): `slider.tsx`, `handleInputBlur()`, `handleInputChange()`, `handleKeyDown()`
+- **Thin community `Community 97`** (4 nodes): `slider.tsx`, `handleInputBlur()`, `handleInputChange()`, `handleKeyDown()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 97`** (4 nodes): `useMonospaceCharWidth.ts`, `useMultiSectionTreeState.ts`, `useMonospaceCharWidth()`, `useMultiSectionTreeState()`
+- **Thin community `Community 98`** (4 nodes): `useMonospaceCharWidth.ts`, `useMultiSectionTreeState.ts`, `useMonospaceCharWidth()`, `useMultiSectionTreeState()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 102`** (4 nodes): `FeatureFlagToggle()`, `isAdminOrExperimentalFeatures()`, `isWhitelistedForFeature()`, `FeatureFlagToggle.tsx`
+- **Thin community `Community 103`** (4 nodes): `FeatureFlagToggle()`, `isAdminOrExperimentalFeatures()`, `isWhitelistedForFeature()`, `FeatureFlagToggle.tsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 104`** (4 nodes): `utils.ts`, `getDefaultModelParams()`, `getLangfuseClient()`, `parseFiltersFromCompletion()`
+- **Thin community `Community 105`** (4 nodes): `utils.ts`, `getDefaultModelParams()`, `getLangfuseClient()`, `parseFiltersFromCompletion()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 105`** (4 nodes): `ResetPlaygroundButton.tsx`, `usePersistedWindowIds.ts`, `ResetPlaygroundButton()`, `usePersistedWindowIds()`
+- **Thin community `Community 106`** (4 nodes): `ResetPlaygroundButton.tsx`, `usePersistedWindowIds.ts`, `ResetPlaygroundButton()`, `usePersistedWindowIds()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 107`** (4 nodes): `plainRouter.ts`, `deriveOrganizationFromProject()`, `getFullName()`, `splitTopic()`
+- **Thin community `Community 108`** (4 nodes): `plainRouter.ts`, `deriveOrganizationFromProject()`, `getFullName()`, `splitTopic()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 108`** (4 nodes): `handleCopy()`, `handleDelete()`, `handleEdit()`, `DashboardWidget.tsx`
+- **Thin community `Community 109`** (4 nodes): `handleCopy()`, `handleDelete()`, `handleEdit()`, `DashboardWidget.tsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 109`** (4 nodes): `useExperimentNameValidation.ts`, `useUniqueNameValidation.tsx`, `useExperimentNameValidation()`, `useUniqueNameValidation()`
+- **Thin community `Community 110`** (4 nodes): `JSONTableViewRowInner()`, `JSONTableViewRow.tsx`, `useClickWithoutSelection.ts`, `useClickWithoutSelection()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 110`** (4 nodes): `shutdown.ts`, `isSigtermReceived()`, `setSigtermReceived()`, `shutdown()`
+- **Thin community `Community 111`** (4 nodes): `useExperimentNameValidation.ts`, `useUniqueNameValidation.tsx`, `useExperimentNameValidation()`, `useUniqueNameValidation()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 111`** (4 nodes): `types.ts`, `isNotNullOrUndefined()`, `isString()`, `isUndefinedOrNull()`
+- **Thin community `Community 112`** (4 nodes): `shutdown.ts`, `isSigtermReceived()`, `setSigtermReceived()`, `shutdown()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 115`** (3 nodes): `AppConfig`, `ApiConfig`, `apps.py`
+- **Thin community `Community 113`** (4 nodes): `types.ts`, `isNotNullOrUndefined()`, `isString()`, `isUndefinedOrNull()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 117`** (3 nodes): `ApiError`, `.constructor()`, `ApiError.ts`
+- **Thin community `Community 117`** (3 nodes): `AppConfig`, `ApiConfig`, `apps.py`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 118`** (3 nodes): `BaseError`, `.constructor()`, `BaseError.ts`
+- **Thin community `Community 119`** (3 nodes): `ApiError`, `.constructor()`, `ApiError.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 119`** (3 nodes): `LangfuseConflictError`, `.constructor()`, `ConflictError.ts`
+- **Thin community `Community 120`** (3 nodes): `BaseError`, `.constructor()`, `BaseError.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 120`** (3 nodes): `ForbiddenError`, `.constructor()`, `ForbiddenError.ts`
+- **Thin community `Community 121`** (3 nodes): `LangfuseConflictError`, `.constructor()`, `ConflictError.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 121`** (3 nodes): `InternalServerError`, `.constructor()`, `InternalServerError.ts`
+- **Thin community `Community 122`** (3 nodes): `ForbiddenError`, `.constructor()`, `ForbiddenError.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 122`** (3 nodes): `InvalidRequestError`, `.constructor()`, `InvalidRequestError.ts`
+- **Thin community `Community 123`** (3 nodes): `InternalServerError`, `.constructor()`, `InternalServerError.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 123`** (3 nodes): `MethodNotAllowedError.ts`, `MethodNotAllowedError`, `.constructor()`
+- **Thin community `Community 124`** (3 nodes): `InvalidRequestError`, `.constructor()`, `InvalidRequestError.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 124`** (3 nodes): `NotFoundError.ts`, `LangfuseNotFoundError`, `.constructor()`
+- **Thin community `Community 125`** (3 nodes): `MethodNotAllowedError.ts`, `MethodNotAllowedError`, `.constructor()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 125`** (3 nodes): `NotImplementedError.ts`, `NotImplementedError`, `.constructor()`
+- **Thin community `Community 126`** (3 nodes): `NotFoundError.ts`, `LangfuseNotFoundError`, `.constructor()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 126`** (3 nodes): `ServiceUnavailableError.ts`, `ServiceUnavailableError`, `.constructor()`
+- **Thin community `Community 127`** (3 nodes): `NotImplementedError.ts`, `NotImplementedError`, `.constructor()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 127`** (3 nodes): `UnauthorizedError.ts`, `UnauthorizedError`, `.constructor()`
+- **Thin community `Community 128`** (3 nodes): `ServiceUnavailableError.ts`, `ServiceUnavailableError`, `.constructor()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 131`** (3 nodes): `LocalIsoDate.tsx`, `formatLocalIsoDate()`, `LocalIsoDate()`
+- **Thin community `Community 129`** (3 nodes): `UnauthorizedError.ts`, `UnauthorizedError`, `.constructor()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 133`** (3 nodes): `session-detail-presets.ts`, `getSessionDetailDefaultPreset()`, `getSessionDetailPresetToApply()`
+- **Thin community `Community 133`** (3 nodes): `LocalIsoDate.tsx`, `formatLocalIsoDate()`, `LocalIsoDate()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 134`** (3 nodes): `peek.tsx`, `createPeekEventHandler()`, `TablePeekViewComponent()`
+- **Thin community `Community 135`** (3 nodes): `peek.tsx`, `createPeekEventHandler()`, `TablePeekViewComponent()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 139`** (3 nodes): `rowCount.ts`, `countJsonRows()`, `exceedsRowThreshold()`
+- **Thin community `Community 140`** (3 nodes): `rowCount.ts`, `countJsonRows()`, `exceedsRowThreshold()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 147`** (3 nodes): `ColoredVariable()`, `getVariableColor()`, `evaluation-prompt-preview.tsx`
+- **Thin community `Community 148`** (3 nodes): `ColoredVariable()`, `getVariableColor()`, `evaluation-prompt-preview.tsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 156`** (3 nodes): `createOrFetchDatasetRun()`, `isUniqueConstraintError()`, `dataset-runs.ts`
+- **Thin community `Community 151`** (3 nodes): `session-detail-presets.ts`, `getSessionDetailDefaultPreset()`, `getSessionDetailPresetToApply()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 160`** (3 nodes): `formatBigNumber()`, `stripTrailingDecimalZeros()`, `BigNumber.tsx`
+- **Thin community `Community 158`** (3 nodes): `createOrFetchDatasetRun()`, `isUniqueConstraintError()`, `dataset-runs.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 175`** (2 nodes): `Migration`, `0001_initial.py`
+- **Thin community `Community 162`** (3 nodes): `formatBigNumber()`, `stripTrailingDecimalZeros()`, `BigNumber.tsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 176`** (2 nodes): `Migration`, `0002_systemsetting.py`
+- **Thin community `Community 177`** (2 nodes): `Migration`, `0001_initial.py`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 452`** (2 nodes): `fix_header_border.py ==================== Restores the blue separator line (w:`, `fix_header_border.py`
+- **Thin community `Community 178`** (2 nodes): `Migration`, `0002_systemsetting.py`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 453`** (2 nodes): `Quick test: end-to-end template export with pl_overview_text`, `test_pl_export.py`
+- **Thin community `Community 454`** (2 nodes): `fix_header_border.py ==================== Restores the blue separator line (w:`, `fix_header_border.py`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 454`** (2 nodes): `Backward-compatibility re-exports.  All logic has been split into focused suba`, `nodes.py`
+- **Thin community `Community 455`** (2 nodes): `Quick test: end-to-end template export with pl_overview_text`, `test_pl_export.py`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 455`** (2 nodes): `Template sections for Transfer Pricing Local File documentation. These sections`, `sections.py`
+- **Thin community `Community 456`** (2 nodes): `Backward-compatibility re-exports.  All logic has been split into focused suba`, `nodes.py`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 456`** (2 nodes): `dummy_data.py ============= Realistic dummy data for testing the TP Local File`, `dummy_data.py`
+- **Thin community `Community 457`** (2 nodes): `Template sections for Transfer Pricing Local File documentation. These sections`, `sections.py`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 457`** (2 nodes): `Groq LLM API (llama-3.3-70b-versatile)`, `OpenAI LLM API (GPT-4o)`
+- **Thin community `Community 458`** (2 nodes): `dummy_data.py ============= Realistic dummy data for testing the TP Local File`, `dummy_data.py`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1265`** (1 nodes): `Strip markdown fences and parse JSON. Returns None on failure.`
+- **Thin community `Community 459`** (2 nodes): `Groq LLM API (llama-3.3-70b-versatile)`, `OpenAI LLM API (GPT-4o)`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1266`** (1 nodes): `DFS over the PageIndex tree collecting leaf node 'text' values.`
+- **Thin community `Community 1267`** (1 nodes): `DFS over the PageIndex tree collecting leaf node 'text' values.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1267`** (1 nodes): `Strategy:       1. Flatten tree into a concise summary (title + summary per nod`
+- **Thin community `Community 1268`** (1 nodes): `Strategy:       1. Flatten tree into a concise summary (title + summary per nod`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1268`** (1 nodes): `Run extraction for all form field groups.      `context` must be a RetrievalCo`
+- **Thin community `Community 1269`** (1 nodes): `Run extraction for all form field groups.      `context` must be a RetrievalCo`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1269`** (1 nodes): `Returns a human-readable summary of what was found vs. not found.`
+- **Thin community `Community 1270`** (1 nodes): `Returns a human-readable summary of what was found vs. not found.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1270`** (1 nodes): `Removes the first section between <physical_index_X> and <physical_index_X> tags`
+- **Thin community `Community 1271`** (1 nodes): `Strip markdown fences and parse JSON. Returns None on failure.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1271`** (1 nodes): `Validates and truncates physical indices that exceed the actual document length.`
+- **Thin community `Community 1272`** (1 nodes): `DFS over the PageIndex tree collecting leaf node 'text' values.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1272`** (1 nodes): `Create a clean structure for document description generation,     excluding unn`
+- **Thin community `Community 1273`** (1 nodes): `Strategy:       1. Flatten tree into a concise summary (title + summary per nod`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1273`** (1 nodes): `Load the configuration, merging user options with default values.`
+- **Thin community `Community 1274`** (1 nodes): `Run extraction for all form field groups.      `context` must be a RetrievalCo`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1274`** (1 nodes): `Builds a PageIndex tree for a short PDF (<PAGE_THRESHOLD pages).      Returns`
+- **Thin community `Community 1275`** (1 nodes): `Returns a human-readable summary of what was found vs. not found.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1275`** (1 nodes): `Returns the best available embeddings — OpenAI first, then HuggingFace.`
+- **Thin community `Community 1276`** (1 nodes): `Removes the first section between <physical_index_X> and <physical_index_X> tags`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1276`** (1 nodes): `Chunk text and embed into an in-memory FAISS store.`
+- **Thin community `Community 1277`** (1 nodes): `Validates and truncates physical indices that exceed the actual document length.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1277`** (1 nodes): `Process one or more Streamlit UploadedFile objects.      Returns (RetrievalCon`
+- **Thin community `Community 1278`** (1 nodes): `Create a clean structure for document description generation,     excluding unn`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1278`** (1 nodes): `Hash the values of the given fields from state for cache comparison.`
+- **Thin community `Community 1279`** (1 nodes): `Load the configuration, merging user options with default values.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1279`** (1 nodes): `Return list of node names whose inputs haven't changed and whose output     alre`
+- **Thin community `Community 1280`** (1 nodes): `Builds a PageIndex tree for a short PDF (<PAGE_THRESHOLD pages).      Returns`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1280`** (1 nodes): `Return updated cache dict: keep existing hashes for skipped nodes,     compute f`
+- **Thin community `Community 1281`** (1 nodes): `Returns the best available embeddings — OpenAI first, then HuggingFace.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1281`** (1 nodes): `Run the full LangGraph agent pipeline.     Nodes whose inputs are unchanged and`
+- **Thin community `Community 1282`** (1 nodes): `Chunk text and embed into an in-memory FAISS store.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1282`** (1 nodes): `Regenerate a single section — always bypasses cache.     After running, updates`
+- **Thin community `Community 1283`** (1 nodes): `Process one or more Streamlit UploadedFile objects.      Returns (RetrievalCon`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1283`** (1 nodes): `Invoke LLM with LangChain tools bound, handling tool-calling loop.`
+- **Thin community `Community 1284`** (1 nodes): `Hash the values of the given fields from state for cache comparison.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1284`** (1 nodes): `Factory: wrap a subagent function with error handling and cache skip support.`
+- **Thin community `Community 1285`** (1 nodes): `Return list of node names whose inputs haven't changed and whose output     alre`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1285`** (1 nodes): `Join barrier — waits for research branch AND analysis branch.     Emits warning`
+- **Thin community `Community 1286`** (1 nodes): `Return updated cache dict: keep existing hashes for skipped nodes,     compute f`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1286`** (1 nodes): `Join barrier — waits for conclusion branch AND pl_overview branch.     Emits wa`
+- **Thin community `Community 1287`** (1 nodes): `Run the full LangGraph agent pipeline.     Nodes whose inputs are unchanged and`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1287`** (1 nodes): `Run the full agent workflow with parallel branches.      Args:         state_`
+- **Thin community `Community 1288`** (1 nodes): `Regenerate a single section — always bypasses cache.     After running, updates`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1288`** (1 nodes): `Run agents with real-time streaming.      Yields (node_name, accumulated_state`
+- **Thin community `Community 1289`** (1 nodes): `Invoke LLM with LangChain tools bound, handling tool-calling loop.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1289`** (1 nodes): `Run a single agent node for regeneration (e.g., from the UI).`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1290`** (1 nodes): `Generate the executive summary from transaction summary packets.`
+- **Thin community `Community 1290`** (1 nodes): `Factory: wrap a subagent function with error handling and cache skip support.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 - **Thin community `Community 1291`** (1 nodes): `Join barrier — waits for research branch AND analysis branch.     Emits warning`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
@@ -1269,117 +1297,129 @@ Nodes (1): PageIndex CHANGELOG
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 - **Thin community `Community 1295`** (1 nodes): `Run a single agent node for regeneration (e.g., from the UI).`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1296`** (1 nodes): `Strip trailing conversational offers from LLM output.`
+- **Thin community `Community 1296`** (1 nodes): `Generate the executive summary from transaction summary packets.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1297`** (1 nodes): `Invoke LLM without tools and return text content.`
+- **Thin community `Community 1297`** (1 nodes): `Join barrier — waits for research branch AND analysis branch.     Emits warning`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1298`** (1 nodes): `Invoke LLM with LangChain tools bound, handling tool-calling loop.`
+- **Thin community `Community 1298`** (1 nodes): `Join barrier — waits for conclusion branch AND pl_overview branch.     Emits wa`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1299`** (1 nodes): `Add text that may contain multiple paragraphs, parsing **bold** markdown.`
+- **Thin community `Community 1299`** (1 nodes): `Run the full agent workflow with parallel branches.      Args:         state_`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1300`** (1 nodes): `Add footnote-style source references after a section's body text.      Renders`
+- **Thin community `Community 1300`** (1 nodes): `Run agents with real-time streaming.      Yields (node_name, accumulated_state`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1301`** (1 nodes): `Create a formatted table.`
+- **Thin community `Community 1301`** (1 nodes): `Run a single agent node for regeneration (e.g., from the UI).`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1302`** (1 nodes): `Generate the complete Transfer Pricing Local File document.          Args:`
+- **Thin community `Community 1302`** (1 nodes): `Strip trailing conversational offers from LLM output.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1303`** (1 nodes): `Get an LLM instance based on provider preference.      Priority:       1. Explic`
+- **Thin community `Community 1303`** (1 nodes): `Invoke LLM without tools and return text content.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1304`** (1 nodes): `Invoke LLM without tools and return text content.`
+- **Thin community `Community 1304`** (1 nodes): `Invoke LLM with LangChain tools bound, handling tool-calling loop.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1305`** (1 nodes): `Invoke LLM with LangChain tools bound, handling tool-calling loop.`
+- **Thin community `Community 1305`** (1 nodes): `Add text that may contain multiple paragraphs, parsing **bold** markdown.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1306`** (1 nodes): `Hash the values of the given fields from state for cache comparison.`
+- **Thin community `Community 1306`** (1 nodes): `Add footnote-style source references after a section's body text.      Renders`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1307`** (1 nodes): `Return list of node names whose inputs haven't changed and whose output     alre`
+- **Thin community `Community 1307`** (1 nodes): `Create a formatted table.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1308`** (1 nodes): `Return updated cache dict: keep existing hashes for skipped nodes,     compute f`
+- **Thin community `Community 1308`** (1 nodes): `Generate the complete Transfer Pricing Local File document.          Args:`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1309`** (1 nodes): `Run the full LangGraph agent pipeline.     Nodes whose inputs are unchanged and`
+- **Thin community `Community 1309`** (1 nodes): `Get an LLM instance based on provider preference.      Priority:       1. Explic`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1310`** (1 nodes): `Regenerate a single section — always bypasses cache.     After running, updates`
+- **Thin community `Community 1310`** (1 nodes): `Invoke LLM without tools and return text content.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1311`** (1 nodes): `Factory: wrap a subagent function with error handling and cache skip support.`
+- **Thin community `Community 1311`** (1 nodes): `Invoke LLM with LangChain tools bound, handling tool-calling loop.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1312`** (1 nodes): `Join barrier — waits for research branch AND analysis branch.     Emits warning`
+- **Thin community `Community 1312`** (1 nodes): `Hash the values of the given fields from state for cache comparison.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1313`** (1 nodes): `Join barrier — waits for conclusion branch AND pl_overview branch.     Emits wa`
+- **Thin community `Community 1313`** (1 nodes): `Return list of node names whose inputs haven't changed and whose output     alre`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1314`** (1 nodes): `Run the full agent workflow with parallel branches.      Args:         state_`
+- **Thin community `Community 1314`** (1 nodes): `Return updated cache dict: keep existing hashes for skipped nodes,     compute f`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1315`** (1 nodes): `Run agents with real-time streaming.      Yields (node_name, accumulated_state`
+- **Thin community `Community 1315`** (1 nodes): `Run the full LangGraph agent pipeline.     Nodes whose inputs are unchanged and`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1316`** (1 nodes): `Run a single agent node for regeneration (e.g., from the UI).`
+- **Thin community `Community 1316`** (1 nodes): `Regenerate a single section — always bypasses cache.     After running, updates`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1317`** (1 nodes): `Generate the conclusion section.`
+- **Thin community `Community 1317`** (1 nodes): `Factory: wrap a subagent function with error handling and cache skip support.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1318`** (1 nodes): `Generate bullet-point commentary on the P/L table data using the LLM.`
+- **Thin community `Community 1318`** (1 nodes): `Join barrier — waits for research branch AND analysis branch.     Emits warning`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1319`** (1 nodes): `Research global industry analysis based on company's products/sector.`
+- **Thin community `Community 1319`** (1 nodes): `Join barrier — waits for conclusion branch AND pl_overview branch.     Emits wa`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1320`** (1 nodes): `Research Indonesian industry analysis.`
+- **Thin community `Community 1320`** (1 nodes): `Run the full agent workflow with parallel branches.      Args:         state_`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1321`** (1 nodes): `Research the competitive business environment.`
+- **Thin community `Community 1321`** (1 nodes): `Run agents with real-time streaming.      Yields (node_name, accumulated_state`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1322`** (1 nodes): `Research economic/business efficiency factors for the company's location.`
+- **Thin community `Community 1322`** (1 nodes): `Run a single agent node for regeneration (e.g., from the UI).`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1323`** (1 nodes): `Research Indonesian government regulations that affect the company's industry.`
+- **Thin community `Community 1323`** (1 nodes): `Generate the conclusion section.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1324`** (1 nodes): `Research each comparable company using Tavily and generate a business     descr`
+- **Thin community `Community 1324`** (1 nodes): `Generate bullet-point commentary on the P/L table data using the LLM.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1325`** (1 nodes): `Determine and justify the business characterization based on functional analysis`
+- **Thin community `Community 1325`** (1 nodes): `Research global industry analysis based on company's products/sector.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1326`** (1 nodes): `Generate the Supply Chain Management narrative based on form inputs.`
+- **Thin community `Community 1326`** (1 nodes): `Research Indonesian industry analysis.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1327`** (1 nodes): `Get an LLM instance based on provider preference.      Priority:       1. Exp`
+- **Thin community `Community 1327`** (1 nodes): `Research the competitive business environment.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1328`** (1 nodes): `Return a Tavily client. Warns if API key is missing.`
+- **Thin community `Community 1328`** (1 nodes): `Research economic/business efficiency factors for the company's location.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1329`** (1 nodes): `Sanitize a single Tavily search result for safe embedding in an LLM prompt.`
+- **Thin community `Community 1329`** (1 nodes): `Research Indonesian government regulations that affect the company's industry.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1330`** (1 nodes): `Return a sanitized list of search result dicts safe for prompt embedding.`
+- **Thin community `Community 1330`** (1 nodes): `Research each comparable company using Tavily and generate a business     descr`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1331`** (1 nodes): `Search the web using Tavily and return structured results.`
+- **Thin community `Community 1331`** (1 nodes): `Determine and justify the business characterization based on functional analysis`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1332`** (1 nodes): `Research the competitive business environment.`
+- **Thin community `Community 1332`** (1 nodes): `Generate the Supply Chain Management narrative based on form inputs.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1333`** (1 nodes): `Research economic/business efficiency factors for the company's location.`
+- **Thin community `Community 1333`** (1 nodes): `Get an LLM instance based on provider preference.      Priority:       1. Exp`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1334`** (1 nodes): `Research Indonesian government regulations that affect the company's industry.`
+- **Thin community `Community 1334`** (1 nodes): `Return a Tavily client. Warns if API key is missing.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1335`** (1 nodes): `Research each comparable company using Tavily and generate a business     descr`
+- **Thin community `Community 1335`** (1 nodes): `Sanitize a single Tavily search result for safe embedding in an LLM prompt.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1336`** (1 nodes): `Generate the executive summary based on all completed analysis.`
+- **Thin community `Community 1336`** (1 nodes): `Return a sanitized list of search result dicts safe for prompt embedding.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1337`** (1 nodes): `Generate the comparability analysis narrative section.`
+- **Thin community `Community 1337`** (1 nodes): `Search the web using Tavily and return structured results.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1338`** (1 nodes): `Generate justification for why each method was selected or rejected.`
+- **Thin community `Community 1338`** (1 nodes): `Research the competitive business environment.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1339`** (1 nodes): `Generate rationale for PLI selection.`
+- **Thin community `Community 1339`** (1 nodes): `Research economic/business efficiency factors for the company's location.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1340`** (1 nodes): `Join barrier — waits for research branch AND analysis branch.     Emits warning`
+- **Thin community `Community 1340`** (1 nodes): `Research Indonesian government regulations that affect the company's industry.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1341`** (1 nodes): `Join barrier — waits for conclusion branch AND pl_overview branch.     Emits wa`
+- **Thin community `Community 1341`** (1 nodes): `Research each comparable company using Tavily and generate a business     descr`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1342`** (1 nodes): `Run the full agent workflow with parallel branches.      Args:         state_`
+- **Thin community `Community 1342`** (1 nodes): `Generate the executive summary based on all completed analysis.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1343`** (1 nodes): `Run agents with real-time streaming.      Yields (node_name, accumulated_state`
+- **Thin community `Community 1343`** (1 nodes): `Generate the comparability analysis narrative section.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1344`** (1 nodes): `Run a single agent node for regeneration (e.g., from the UI).`
+- **Thin community `Community 1344`** (1 nodes): `Generate justification for why each method was selected or rejected.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1345`** (1 nodes): `pdfplumber (PDF Text Extraction)`
+- **Thin community `Community 1345`** (1 nodes): `Generate rationale for PLI selection.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 1346`** (1 nodes): `PageIndex CHANGELOG`
+- **Thin community `Community 1346`** (1 nodes): `Join barrier — waits for research branch AND analysis branch.     Emits warning`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 1347`** (1 nodes): `Join barrier — waits for conclusion branch AND pl_overview branch.     Emits wa`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 1348`** (1 nodes): `Run the full agent workflow with parallel branches.      Args:         state_`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 1349`** (1 nodes): `Run agents with real-time streaming.      Yields (node_name, accumulated_state`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 1350`** (1 nodes): `Run a single agent node for regeneration (e.g., from the UI).`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 1351`** (1 nodes): `pdfplumber (PDF Text Extraction)`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 1352`** (1 nodes): `PageIndex CHANGELOG`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `handler()` connect `Community 5` to `Community 0`, `Community 1`, `Community 3`, `Community 4`, `Community 6`, `Community 9`?**
+- **Why does `handler()` connect `Community 8` to `Community 0`, `Community 1`, `Community 3`, `Community 4`, `Community 5`, `Community 6`?**
   _High betweenness centrality (0.013) - this node is a cross-community bridge._
-- **Why does `usePostHogClientCapture()` connect `Community 3` to `Community 16`, `Community 0`?**
+- **Why does `usePostHogClientCapture()` connect `Community 5` to `Community 16`, `Community 0`, `Community 21`?**
   _High betweenness centrality (0.012) - this node is a cross-community bridge._
-- **Why does `isPresent()` connect `Community 19` to `Community 0`?**
+- **Why does `isPresent()` connect `Community 11` to `Community 13`?**
   _High betweenness centrality (0.010) - this node is a cross-community bridge._
 - **Are the 68 inferred relationships involving `createFilterFromFilterState()` (e.g. with `deriveFilters()` and `.filter()`) actually correct?**
   _`createFilterFromFilterState()` has 68 INFERRED edges - model-reasoned connections that need verification._

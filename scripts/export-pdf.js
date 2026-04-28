@@ -98,7 +98,9 @@ function buildHtml(markdownContent) {
       page-break-after: avoid;
     }
 
-    /* ── Mermaid diagrams — fit to page width ──────────────────────── */
+    /* ── Mermaid diagrams ──────────────────────────────────────────── */
+    /* Let Mermaid's own useMaxWidth control SVG width.                */
+    /* Forcing width:100% on sequence diagrams makes them very tall.  */
     .mermaid {
       display: block;
       width: 100%;
@@ -109,9 +111,7 @@ function buildHtml(markdownContent) {
     }
     .mermaid svg {
       display: block;
-      width: 100% !important;
-      max-width: 100% !important;
-      height: auto !important;
+      max-width: 100%;
     }
 
     /* ── Tables ────────────────────────────────────────────────────── */
@@ -301,8 +301,9 @@ function buildHtml(markdownContent) {
       const { width, height } = svg.getBoundingClientRect();
       if (height > MAX_H) {
         const scale = MAX_H / height;
-        svg.style.width  = Math.round(width * scale) + "px";
-        svg.style.height = MAX_H + "px";
+        // Use setProperty with 'important' so it overrides any !important CSS rules
+        svg.style.setProperty("width",  Math.round(width * scale) + "px", "important");
+        svg.style.setProperty("height", MAX_H + "px", "important");
       }
     });
   });

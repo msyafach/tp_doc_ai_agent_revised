@@ -28,35 +28,14 @@ Traditionally a tax consultant spends **weeks** manually researching, writing, a
 ## Architecture Overview
 
 ```mermaid
-graph TD
-    Browser["🌐 Browser\nReact 18 + TypeScript\nZustand · React Query"]
-
-    subgraph Docker["Docker Compose Network (tp_net)"]
-        Frontend["⚛️ Frontend :3000\nVite dev server"]
-        Backend["🐍 Backend :8000\nDjango REST API\nGunicorn · DRF · simplejwt"]
-        Worker["⚙️ Celery Worker\nAsync AI task executor"]
-        Redis["🔴 Redis :6379\nBroker + Result backend"]
-        DB["🐘 PostgreSQL :5432\nProject state as JSONB"]
-    end
-
-    subgraph AI["AI Layer (inside Worker)"]
-        LangGraph["🔗 LangGraph\nParallel StateGraph"]
-        Groq["⚡ Groq API\nllama-3.3-70b"]
-        OpenAI["🤖 OpenAI API\nGPT-4o (optional)"]
-        Tavily["🔍 Tavily Search\nWeb research"]
-    end
-
-    Browser -->|HTTP REST / JWT| Frontend
-    Frontend -->|/api/*| Backend
-    Backend -->|ORM| DB
-    Backend -->|Enqueue task| Redis
+graph LR
+    Browser([Browser]) -->|JWT / REST| Backend
+    Backend -->|ORM| DB[(PostgreSQL)]
+    Backend -->|Enqueue| Redis[(Redis)]
     Redis -->|Dequeue| Worker
-    Worker -->|Read/write state| DB
-    Worker --> LangGraph
-    LangGraph --> Groq
-    LangGraph --> OpenAI
-    LangGraph --> Tavily
-    Frontend -->|Poll /api/tasks/id| Backend
+    Worker -->|LangGraph| AI([Groq / OpenAI / Tavily])
+    Worker --> DB
+    Backend -->|Poll task| Browser
 ```
 
 ### Services

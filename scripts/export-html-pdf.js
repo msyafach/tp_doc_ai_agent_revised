@@ -40,6 +40,19 @@ const OUTPUT_PATH = path.resolve(__dirname, "../TP Local File Generator — READ
   // Let any deferred rendering (fonts, lazy images) settle
   await new Promise((r) => setTimeout(r, 1500));
 
+  // Inject print-friendly CSS to prevent orphaned headings and broken blocks
+  await page.addStyleTag({ content: `
+    h1, h2, h3, h4, h5, h6 {
+      page-break-after: avoid !important;
+      break-after:      avoid !important;
+    }
+    pre, table, figure, blockquote {
+      page-break-inside: avoid !important;
+      break-inside:      avoid !important;
+    }
+    p, li { orphans: 3; widows: 3; }
+  ` });
+
   // Scale down any SVG taller than one usable page height
   await page.evaluate(() => {
     const MAX_H = 680;

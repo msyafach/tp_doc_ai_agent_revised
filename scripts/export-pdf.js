@@ -19,10 +19,25 @@ const path = require("path");
 const README_PATH = path.resolve(__dirname, "../README.md");
 const OUTPUT_PATH = path.resolve(__dirname, "../README.pdf");
 
+// ── Brand palette ─────────────────────────────────────────────────────────────
+const BRAND = {
+  green:       "#13A538",
+  greenLight:  "#d6f0de",  // pastel tint
+  blue:        "#0095D6",
+  blueLight:   "#cce9f6",  // pastel tint
+  grey:        "#757574",
+  greyLight:   "#efefef",  // pastel tint
+  white:       "#ffffff",
+  text:        "#2d2d2d",
+};
+
 // ── HTML template ─────────────────────────────────────────────────────────────
 
 function buildHtml(markdownContent) {
-  const body = marked.parse(markdownContent);
+  // Strip per-diagram %%{init:...}%% overrides so the global mermaid.initialize()
+  // brand theme applies uniformly to every diagram.
+  const cleaned = markdownContent.replace(/^%%\{init:.*\}%%\n?/gm, "");
+  const body = marked.parse(cleaned);
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -44,7 +59,8 @@ function buildHtml(markdownContent) {
                    "Helvetica Neue", Arial, sans-serif;
       font-size: 11pt;
       line-height: 1.65;
-      color: #111;
+      color: ${BRAND.text};
+      background: ${BRAND.white};
       max-width: 100%;
       margin: 0;
       padding: 0;
@@ -53,27 +69,31 @@ function buildHtml(markdownContent) {
     /* ── Headings ──────────────────────────────────────────────────── */
     h1 {
       font-size: 22pt;
-      border-bottom: 3px solid #000;
+      color: ${BRAND.green};
+      border-bottom: 3px solid ${BRAND.green};
       padding-bottom: 6px;
       margin-top: 0;
       page-break-before: avoid;
     }
     h2 {
       font-size: 16pt;
-      border-bottom: 2px solid #333;
+      color: ${BRAND.blue};
+      border-bottom: 2px solid ${BRAND.blue};
       padding-bottom: 4px;
       margin-top: 28px;
       page-break-after: avoid;
     }
     h3 {
       font-size: 13pt;
-      border-bottom: 1px solid #aaa;
+      color: ${BRAND.grey};
+      border-bottom: 1px solid #c8c8c8;
       padding-bottom: 2px;
       margin-top: 20px;
       page-break-after: avoid;
     }
     h4 {
       font-size: 11.5pt;
+      color: ${BRAND.green};
       margin-top: 16px;
       page-break-after: avoid;
     }
@@ -103,23 +123,24 @@ function buildHtml(markdownContent) {
       page-break-inside: avoid;
     }
     th {
-      background: #e8e8e8;
+      background: ${BRAND.green};
+      color: ${BRAND.white};
       font-weight: 600;
       text-align: left;
       padding: 6px 10px;
-      border: 1px solid #bbb;
+      border: 1px solid #0e8a2e;
     }
     td {
       padding: 5px 10px;
-      border: 1px solid #bbb;
+      border: 1px solid #d0d0d0;
       vertical-align: top;
     }
-    tr:nth-child(even) td { background: #f7f7f7; }
+    tr:nth-child(even) td { background: ${BRAND.greenLight}; }
 
     /* ── Code blocks ───────────────────────────────────────────────── */
     pre {
-      background: #f4f4f4;
-      border: 1px solid #ddd;
+      background: ${BRAND.blueLight};
+      border: 1px solid #a8d8f0;
       border-radius: 4px;
       padding: 10px 14px;
       font-size: 8.5pt;
@@ -132,23 +153,25 @@ function buildHtml(markdownContent) {
     code {
       font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
       font-size: 8.5pt;
-      background: #f0f0f0;
+      background: ${BRAND.blueLight};
+      color: #006fa3;
       padding: 1px 4px;
       border-radius: 3px;
     }
     pre code {
       background: none;
+      color: inherit;
       padding: 0;
       font-size: inherit;
     }
 
     /* ── Blockquotes ───────────────────────────────────────────────── */
     blockquote {
-      border-left: 4px solid #999;
+      border-left: 4px solid ${BRAND.blue};
       margin: 10px 0;
       padding: 4px 14px;
-      color: #444;
-      background: #fafafa;
+      color: #555;
+      background: ${BRAND.blueLight};
     }
 
     /* ── Lists ─────────────────────────────────────────────────────── */
@@ -158,12 +181,12 @@ function buildHtml(markdownContent) {
     /* ── Horizontal rule ───────────────────────────────────────────── */
     hr {
       border: none;
-      border-top: 1px solid #ccc;
+      border-top: 2px solid ${BRAND.greenLight};
       margin: 20px 0;
     }
 
     /* ── Links ─────────────────────────────────────────────────────── */
-    a { color: #222; text-decoration: underline; }
+    a { color: ${BRAND.blue}; text-decoration: underline; }
 
     /* ── Page break hints ──────────────────────────────────────────── */
     h2 { page-break-before: auto; }
@@ -182,14 +205,50 @@ function buildHtml(markdownContent) {
       el.closest("pre").replaceWith(div);
     });
 
-    // Initialise Mermaid — useMaxWidth ensures diagrams scale to container
+    // Initialise Mermaid with brand palette (base theme + custom variables)
     mermaid.initialize({
       startOnLoad: true,
-      theme: "neutral",
-      flowchart:   { useMaxWidth: true, htmlLabels: true },
-      sequence:    { useMaxWidth: true },
-      gantt:       { useMaxWidth: true },
-      journey:     { useMaxWidth: true },
+      theme: "base",
+      themeVariables: {
+        fontSize:             "11px",
+        primaryColor:         "${BRAND.greenLight}",
+        primaryBorderColor:   "${BRAND.green}",
+        primaryTextColor:     "${BRAND.text}",
+        secondaryColor:       "${BRAND.blueLight}",
+        secondaryBorderColor: "${BRAND.blue}",
+        tertiaryColor:        "${BRAND.greyLight}",
+        tertiaryBorderColor:  "${BRAND.grey}",
+        lineColor:            "${BRAND.grey}",
+        edgeLabelBackground:  "${BRAND.white}",
+        clusterBkg:           "${BRAND.blueLight}",
+        clusterBorder:        "${BRAND.blue}",
+        // Sequence diagram actors
+        actorBkg:             "${BRAND.greenLight}",
+        actorBorder:          "${BRAND.green}",
+        actorTextColor:       "${BRAND.text}",
+        actorLineColor:       "${BRAND.grey}",
+        // Sequence notes
+        noteBkgColor:         "${BRAND.blueLight}",
+        noteTextColor:        "${BRAND.text}",
+        noteBorderColor:      "${BRAND.blue}",
+        // Sequence activations
+        activationBkgColor:   "${BRAND.greenLight}",
+        activationBorderColor:"${BRAND.green}",
+        // Section labels
+        labelBoxBkgColor:     "${BRAND.greenLight}",
+        labelBoxBorderColor:  "${BRAND.green}",
+        labelTextColor:       "${BRAND.text}",
+        // Loop / alt boxes
+        loopTextColor:        "${BRAND.text}",
+        signalColor:          "${BRAND.grey}",
+        signalTextColor:      "${BRAND.text}",
+      },
+      flowchart: { useMaxWidth: true, htmlLabels: true,
+                   nodeSpacing: 35, rankSpacing: 50 },
+      sequence:  { useMaxWidth: true, mirrorActors: false,
+                   messageMargin: 20, width: 120, height: 28 },
+      gantt:     { useMaxWidth: true },
+      journey:   { useMaxWidth: true },
     });
   </script>
 </body>

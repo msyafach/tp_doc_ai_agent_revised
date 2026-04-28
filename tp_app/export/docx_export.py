@@ -689,7 +689,9 @@ def generate_tp_document(state: dict, output_path: str) -> str:
     biz_env = state.get("business_environment_overview", "")
     if biz_env:
         add_multiline_text(doc, biz_env)
-    
+    _biz_env_sources = state.get("business_environment_sources", [])
+    _add_section_sources(doc, _biz_env_sources, start_num=1)
+
     doc.add_page_break()
     
     # ════════════════════════════════════════════════════════════════

@@ -6,23 +6,23 @@ Traditionally a tax consultant spends **weeks** manually researching, writing, a
 
 ---
 
-## Mengapa Bernama "TP Local File"?
+## Why "TP Local File"?
 
-> Bagi developer baru yang belum familiar dengan regulasi perpajakan Indonesia, nama ini mungkin terasa asing. Berikut penjelasannya.
+> For developers unfamiliar with Indonesian tax regulations, the name may seem unusual. Here is the context.
 
-**Transfer Pricing (TP)** adalah penetapan harga transaksi antar perusahaan yang memiliki hubungan istimewa (afiliasi) — misalnya induk dan anak perusahaan, atau sesama anak perusahaan dalam satu grup multinasional.
+**Transfer Pricing (TP)** refers to the pricing of transactions between related parties (affiliates) — for example, between a parent company and its subsidiaries, or between sister companies within the same multinational group.
 
-Berdasarkan **PMK-213/2016** (Peraturan Menteri Keuangan), perusahaan Indonesia yang melakukan transaksi afiliasi di atas ambang batas tertentu **wajib** menyiapkan 3 dokumen transfer pricing:
+Under **PMK-213/2016** (Indonesian Ministry of Finance Regulation), Indonesian companies that conduct affiliated transactions above a certain threshold are **legally required** to prepare three transfer pricing documents:
 
-| # | Dokumen | Nama Bahasa Indonesia | Isi |
-|---|---------|----------------------|-----|
-| 1 | **Master File** | Dokumen Induk | Gambaran umum grup multinasional: struktur, bisnis global, kebijakan TP grup |
-| 2 | **Local File** | Dokumen Lokal | Detail transaksi afiliasi entitas Indonesia: analisis fungsional, metode TP, data keuangan |
-| 3 | **CbCR** | Laporan per Negara | Data keuangan agregat per negara (hanya untuk grup dengan omzet > IDR 11 triliun) |
+| # | Document | Indonesian Name | Contents |
+|---|----------|----------------|----------|
+| 1 | **Master File** | Dokumen Induk | Overview of the multinational group: global structure, business, and group-wide TP policies |
+| 2 | **Local File** | Dokumen Lokal | Details of the Indonesian entity's affiliated transactions: functional analysis, TP method, financial data |
+| 3 | **CbCR** | Laporan per Negara | Aggregated financial data by country (only for groups with revenue > IDR 11 trillion) |
 
-**Aplikasi ini secara spesifik menghasilkan dokumen nomor 2 — Local File (Dokumen Lokal).** Itulah mengapa namanya "TP Local File Generator".
+**This application specifically generates document #2 — the Local File (Dokumen Lokal).** That is why it is called "TP Local File Generator".
 
-Nama ini dipilih secara sengaja agar konsultan pajak yang menjadi pengguna utama langsung memahami dokumen apa yang dihasilkan, tanpa ambiguitas.
+The name was chosen deliberately so that tax consultants — the primary users — immediately understand which document the tool produces, without ambiguity.
 
 ---
 

@@ -407,25 +407,23 @@ tp_local_file_generator/
 
 ```mermaid
 %%{init: {"theme": "neutral"}}%%
-flowchart TD
-    A([🏠 Landing Page]) --> B([🔑 Login])
-    B --> C([📋 Project Dashboard])
-    C -->|New project| D([📁 Step 0: Upload Documents\noptional — PDF · DOCX · XLSX · TXT])
-    C -->|Open existing| S1
-    D -->|AI auto-extracts data| S1
+flowchart LR
+    A([Landing]) --> B([Login])
+    B --> C([Dashboard])
+    C -->|New| D([Step 0\nUpload Docs])
+    C -->|Existing| S1
+    D --> S1
 
-    S1([Step 1: Company Identity]) --> S2([Step 2: Ownership & Management])
-    S2 --> S3([Step 3: Affiliated Parties])
-    S3 --> S4([Step 4: Business Activities])
-    S4 --> S5([Step 5: Transactions])
-    S5 --> S6([Step 6: Financial Data])
-    S6 --> S7([Step 7: Comparable Companies])
-    S7 --> S8([Step 8: TP Method & PLI])
-    S8 --> S9([Step 9: Non-Financial Events])
-    S9 --> S10
-
-    S10([⚡ Step 10: Run AI Agents\n5–10 min · LangGraph parallel pipeline\nReview & edit each section]) --> S11
-    S11([📄 Step 11: Export\nDownload TP_Company_FY.docx])
+    S1([Step 1\nCompany]) --> S2([Step 2\nOwnership])
+    S2 --> S3([Step 3\nAffiliates])
+    S3 --> S4([Step 4\nBusiness])
+    S4 --> S5([Step 5\nTransactions])
+    S5 --> S6([Step 6\nFinancials])
+    S6 --> S7([Step 7\nComparables])
+    S7 --> S8([Step 8\nTP Method])
+    S8 --> S9([Step 9\nNon-Financial])
+    S9 --> S10([Step 10\nRun AI Agents])
+    S10 --> S11([Step 11\nExport DOCX])
 ```
 
 ---

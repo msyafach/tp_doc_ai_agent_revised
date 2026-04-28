@@ -4,7 +4,8 @@
   "private": true,
   "description": "One-time utility scripts for the TP Local File Generator project",
   "scripts": {
-    "export-pdf": "node export-pdf.js"
+    "export-pdf": "node export-pdf.js",
+    "export-html-pdf": "node export-html-pdf.js"
   },
   "dependencies": {
     "marked": "^13.0.0",

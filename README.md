@@ -433,33 +433,31 @@ flowchart LR
 Authentication uses **JWT (JSON Web Tokens)** via `djangorestframework-simplejwt`.
 
 ```mermaid
-%%{init: {"theme": "neutral", "themeVariables": {"fontSize": "11px"}, "flowchart": {"nodeSpacing": 28, "rankSpacing": 42}}}%%
-graph LR
-    subgraph L1["① Login"]
-        U1([User]) -->|"username + password"| F1[Frontend]
-        F1 -->|"POST /api/auth/login/"| B1[Backend]
-        B1 -->|"Validate"| DB1[(PostgreSQL)]
-        DB1 -->|"User object"| B1
-        B1 -->|"access 15m<br/>refresh 1d"| F1
-        F1 -->|"Store + Redirect"| D1([Dashboard])
-    end
+%%{init: {"theme": "neutral", "themeVariables": {"fontSize": "10px"}, "sequence": {"useMaxWidth": true, "mirrorActors": false, "messageMargin": 18, "noteMargin": 5, "width": 110, "height": 26}}}%%
+sequenceDiagram
+    participant U as User
+    participant F as Frontend
+    participant B as Backend
 
-    subgraph L2["② Authenticated Request"]
-        F2[Frontend] -->|"GET /api/projects/<br/>Bearer {access}"| B2[Backend]
-        B2 -->|"200 OK"| F2
-    end
+    U->>F: username + password
+    F->>B: POST /api/auth/login/
+    B-->>F: access(15m) + refresh(1d)
+    F->>F: Store in localStorage
+    F-->>U: Redirect → Dashboard
 
-    subgraph L3["③ Token Refresh"]
-        F3[Frontend] -->|"401 Unauthorized"| R3[Detected]
-        R3 -->|"POST /api/auth/refresh/<br/>{refresh}"| B3[Backend]
-        B3 -->|"New access token"| F3
-    end
+    Note over F,B: Normal requests
+    F->>B: GET /api/* + Bearer {access}
+    B-->>F: 200 OK
 
-    subgraph L4["④ Logout / Inactivity"]
-        F4[Frontend] -->|"POST /api/auth/logout/<br/>{refresh}"| B4[Backend]
-        B4 -->|"Blacklist token"| DB4[(PostgreSQL)]
-        F4 -->|"Clear storage"| E4([Landing])
-    end
+    Note over F,B: Token expiry → auto-refresh
+    B-->>F: 401 Unauthorized
+    F->>B: POST /api/auth/refresh/ {refresh}
+    B-->>F: New access token
+
+    Note over F,B: Logout / 15-min inactivity
+    F->>B: POST /api/auth/logout/ {refresh}
+    B-->>F: Token blacklisted
+    F->>F: Clear storage → Landing
 ```
 
 **Token settings:**

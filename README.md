@@ -937,6 +937,7 @@ The following items are concrete gaps identified in the current codebase. They a
 | 9 | Celery task has no hard timeout | `docker-compose.yml` | Add `--time-limit=600 --soft-time-limit=540` to the Celery worker command so hung tasks are killed |
 | 10 | Prompts hardcoded in agent files | `tp_app/agents/` | Move prompts to a YAML/JSON registry so they can be edited without touching Python code |
 | 11 | Intermediate research results not cached | `tp_app/agents/agent_service.py` | Cache Tavily search results in Redis with a TTL (e.g. 1 hour) so re-runs of the same company skip the web search |
+| 12 | Tavily sources placed inline, not at page bottom | `tp_app/export/docx_export.py` — `_add_section_sources()` (line ~277) | Sources are currently appended immediately after the last paragraph of each section. Move them to true Word **page footnotes** using `python-docx`'s `add_footnote()` API (or the `docx` XML `<w:footnote>` element directly) so they appear anchored to the physical bottom of the page — consistent with formal legal/tax document standards |
 
 ---
 

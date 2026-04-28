@@ -128,6 +128,49 @@ Plus at least one API key from each:
 
 ---
 
+### API Keys — How to Get Them
+
+#### Groq (recommended — free tier, no credit card required)
+
+1. Go to [https://console.groq.com](https://console.groq.com)
+2. Click **Sign Up** — register with Google or email
+3. After login, go to **API Keys** in the left sidebar
+4. Click **Create API Key** → give it a name (e.g. `tp-app`)
+5. Copy the key — it starts with `gsk_...`
+6. Paste it into **Admin Settings** in the app (not `.env`)
+
+> Free tier includes generous rate limits sufficient for development and light production use.
+
+---
+
+#### OpenAI (optional, paid)
+
+1. Go to [https://platform.openai.com](https://platform.openai.com)
+2. Click **Sign Up** or **Log In**
+3. Go to **API Keys** → [https://platform.openai.com/api-keys](https://platform.openai.com/api-keys)
+4. Click **Create new secret key** → give it a name
+5. Copy the key — it starts with `sk-...`
+6. Make sure your account has **billing enabled** (add a credit card under Billing)
+7. Paste it into **Admin Settings** in the app
+
+> Recommended model: `gpt-4o-mini` for cost efficiency, `gpt-4o` for higher quality.
+
+---
+
+#### Tavily (required for AI research sections)
+
+Tavily is used by the AI agents to search the web for industry analysis, Indonesian regulations, and comparable company data.
+
+1. Go to [https://app.tavily.com](https://app.tavily.com)
+2. Click **Sign Up** — register with Google or email
+3. After login, your API key is shown on the **dashboard** immediately
+4. Copy the key — it starts with `tvly-...`
+5. Paste it into **Admin Settings** in the app
+
+> Free tier includes 1,000 searches/month. Each full AI pipeline run uses approximately 5–15 Tavily searches.
+
+---
+
 ### Step 1 — Install `uv` (Python package manager)
 
 `uv` is required to manage all Python dependencies in this project. Install it once globally:

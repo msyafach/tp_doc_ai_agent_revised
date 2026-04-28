@@ -433,33 +433,33 @@ flowchart LR
 Authentication uses **JWT (JSON Web Tokens)** via `djangorestframework-simplejwt`.
 
 ```mermaid
-%%{init: {"theme": "neutral", "themeVariables": {"fontSize": "11px"}, "sequence": {"width": 140, "height": 28, "noteMargin": 8, "messageMargin": 30}}}%%
-sequenceDiagram
-    participant U as User
-    participant F as Frontend
-    participant B as Backend
-    participant DB as PostgreSQL
+%%{init: {"theme": "neutral", "themeVariables": {"fontSize": "11px"}, "flowchart": {"nodeSpacing": 28, "rankSpacing": 42}}}%%
+graph LR
+    subgraph L1["① Login"]
+        U1([User]) -->|"username + password"| F1[Frontend]
+        F1 -->|"POST /api/auth/login/"| B1[Backend]
+        B1 -->|"Validate"| DB1[(PostgreSQL)]
+        DB1 -->|"User object"| B1
+        B1 -->|"access 15m<br/>refresh 1d"| F1
+        F1 -->|"Store + Redirect"| D1([Dashboard])
+    end
 
-    U->>F: username + password
-    F->>B: POST /api/auth/login/
-    B->>DB: Validate credentials
-    DB-->>B: User object
-    B-->>F: { access(15m), refresh(1d), user }
-    F->>F: Store tokens in localStorage
-    F-->>U: Redirect to Dashboard
+    subgraph L2["② Authenticated Request"]
+        F2[Frontend] -->|"GET /api/projects/<br/>Bearer {access}"| B2[Backend]
+        B2 -->|"200 OK"| F2
+    end
 
-    Note over F,B: Authenticated requests
-    F->>B: GET /api/projects/ + Bearer {access}
-    B-->>F: 200 OK
+    subgraph L3["③ Token Refresh"]
+        F3[Frontend] -->|"401 Unauthorized"| R3[Detected]
+        R3 -->|"POST /api/auth/refresh/<br/>{refresh}"| B3[Backend]
+        B3 -->|"New access token"| F3
+    end
 
-    Note over F,B: Token expiry & refresh
-    F->>B: POST /api/auth/refresh/ { refresh }
-    B-->>F: New access token
-
-    Note over F,B: Logout / 15-min inactivity
-    F->>B: POST /api/auth/logout/ { refresh }
-    B->>DB: Blacklist token
-    F->>F: Clear storage → Landing
+    subgraph L4["④ Logout / Inactivity"]
+        F4[Frontend] -->|"POST /api/auth/logout/<br/>{refresh}"| B4[Backend]
+        B4 -->|"Blacklist token"| DB4[(PostgreSQL)]
+        F4 -->|"Clear storage"| E4([Landing])
+    end
 ```
 
 **Token settings:**

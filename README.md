@@ -6,6 +6,26 @@ Traditionally a tax consultant spends **weeks** manually researching, writing, a
 
 ---
 
+## Mengapa Bernama "TP Local File"?
+
+> Bagi developer baru yang belum familiar dengan regulasi perpajakan Indonesia, nama ini mungkin terasa asing. Berikut penjelasannya.
+
+**Transfer Pricing (TP)** adalah penetapan harga transaksi antar perusahaan yang memiliki hubungan istimewa (afiliasi) — misalnya induk dan anak perusahaan, atau sesama anak perusahaan dalam satu grup multinasional.
+
+Berdasarkan **PMK-213/2016** (Peraturan Menteri Keuangan), perusahaan Indonesia yang melakukan transaksi afiliasi di atas ambang batas tertentu **wajib** menyiapkan 3 dokumen transfer pricing:
+
+| # | Dokumen | Nama Bahasa Indonesia | Isi |
+|---|---------|----------------------|-----|
+| 1 | **Master File** | Dokumen Induk | Gambaran umum grup multinasional: struktur, bisnis global, kebijakan TP grup |
+| 2 | **Local File** | Dokumen Lokal | Detail transaksi afiliasi entitas Indonesia: analisis fungsional, metode TP, data keuangan |
+| 3 | **CbCR** | Laporan per Negara | Data keuangan agregat per negara (hanya untuk grup dengan omzet > IDR 11 triliun) |
+
+**Aplikasi ini secara spesifik menghasilkan dokumen nomor 2 — Local File (Dokumen Lokal).** Itulah mengapa namanya "TP Local File Generator".
+
+Nama ini dipilih secara sengaja agar konsultan pajak yang menjadi pengguna utama langsung memahami dokumen apa yang dihasilkan, tanpa ambiguitas.
+
+---
+
 ## Table of Contents
 
 - [Architecture Overview](#architecture-overview)

@@ -233,6 +233,21 @@ function buildHtml(markdownContent) {
   // Extra settle time for SVG layout
   await new Promise((r) => setTimeout(r, 1500));
 
+  // Scale down any SVG taller than one usable page height so it doesn't split across pages.
+  // A3 landscape usable height ≈ 297mm − 32mm margins ≈ 265mm → ~1003px at 96dpi.
+  // We cap at 680px to leave room for the section heading and paragraph above the diagram.
+  await page.evaluate(() => {
+    const MAX_H = 680;
+    document.querySelectorAll(".mermaid svg").forEach((svg) => {
+      const { width, height } = svg.getBoundingClientRect();
+      if (height > MAX_H) {
+        const scale = MAX_H / height;
+        svg.style.width  = Math.round(width * scale) + "px";
+        svg.style.height = MAX_H + "px";
+      }
+    });
+  });
+
   console.log("📄  Exporting PDF …");
   await page.pdf({
     path: OUTPUT_PATH,

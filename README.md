@@ -433,35 +433,33 @@ flowchart LR
 Authentication uses **JWT (JSON Web Tokens)** via `djangorestframework-simplejwt`.
 
 ```mermaid
-%%{init: {"theme": "neutral", "themeVariables": {"fontSize": "18px"}, "flowchart": {"nodeSpacing": 60, "rankSpacing": 80}}}%%
+%%{init: {"theme": "neutral", "themeVariables": {"fontSize": "11px"}, "sequence": {"width": 140, "height": 28, "noteMargin": 8, "messageMargin": 30}}}%%
 sequenceDiagram
-    participant U as User / Browser
-    participant F as Frontend (Zustand authStore)
-    participant B as Django Backend
+    participant U as User
+    participant F as Frontend
+    participant B as Backend
     participant DB as PostgreSQL
 
-    U->>F: Enter username + password
+    U->>F: username + password
     F->>B: POST /api/auth/login/
     B->>DB: Validate credentials
     DB-->>B: User object
-    B-->>F: { access (15min), refresh (1day), user }
-    F->>F: Store tokens in memory + localStorage
-    F-->>U: Redirect to Project Dashboard
+    B-->>F: { access(15m), refresh(1d), user }
+    F->>F: Store tokens in localStorage
+    F-->>U: Redirect to Dashboard
 
-    Note over F,B: Subsequent requests
-    F->>B: GET /api/projects/ + Authorization: Bearer {access}
+    Note over F,B: Authenticated requests
+    F->>B: GET /api/projects/ + Bearer {access}
     B-->>F: 200 OK
 
-    Note over F,B: Access token expires after 15 min
-    F->>B: Any request → 401 Unauthorized
+    Note over F,B: Token expiry & refresh
     F->>B: POST /api/auth/refresh/ { refresh }
     B-->>F: New access token
-    F->>B: Retry original request
 
-    Note over F,B: Logout or 15-min inactivity
+    Note over F,B: Logout / 15-min inactivity
     F->>B: POST /api/auth/logout/ { refresh }
-    B->>DB: Blacklist refresh token
-    F->>F: Clear localStorage → redirect to Landing
+    B->>DB: Blacklist token
+    F->>F: Clear storage → Landing
 ```
 
 **Token settings:**
@@ -529,10 +527,10 @@ Text is split into 1,000-character chunks (150-char overlap), embedded using Hug
 The AI generation pipeline in `tp_app/agents/orchestrator.py` uses **LangGraph StateGraph** for parallel execution.
 
 ```mermaid
-%%{init: {"theme": "neutral", "themeVariables": {"fontSize": "18px"}, "flowchart": {"nodeSpacing": 60, "rankSpacing": 80}}}%%
-graph TD
-    START([▶ START]) --> INIT[Initialize State]
-    INIT --> BA & BB
+%%{init: {"theme": "neutral", "themeVariables": {"fontSize": "11px"}, "flowchart": {"nodeSpacing": 30, "rankSpacing": 45}}}%%
+graph LR
+    START([START]) --> INIT[Initialize State]
+    INIT --> A1 & B1
 
     subgraph BA["Branch A — Research (Tavily)"]
         A1[industry_global] --> A2[industry_indonesia] --> A3[business_environment]
@@ -544,17 +542,14 @@ graph TD
 
     A3 --> SYNC
     B2 --> SYNC
-
-    SYNC["⟳ SYNC NODE<br/>Join Branches A + B"] --> BC & BD & BE
+    SYNC["SYNC<br/>Join A+B"] --> C1 & D1 & E1
 
     subgraph BC["Branch C"]
         C1[conclusion]
     end
-
     subgraph BD["Branch D"]
         D1[pl_overview]
     end
-
     subgraph BE["Branch E"]
         E1[transaction_summary]
     end
@@ -562,8 +557,7 @@ graph TD
     C1 --> FINAL
     D1 --> FINAL
     E1 --> FINAL
-
-    FINAL[executive_summary] --> END([⏹ END<br/>Full state ready for export])
+    FINAL[executive_summary] --> END([END])
 ```
 
 Branches A and B run **in parallel**. Branches C, D, and E also run **in parallel** after the sync node. This reduces total generation time by ~60% vs. sequential execution.

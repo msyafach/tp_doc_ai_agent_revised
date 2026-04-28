@@ -48,7 +48,7 @@ The name was chosen deliberately so that tax consultants — the primary users �
 ## Architecture Overview
 
 ```mermaid
-%%{init: {"theme": "neutral"}}%%
+%%{init: {"theme": "neutral", "themeVariables": {"fontSize": "18px"}, "flowchart": {"nodeSpacing": 60, "rankSpacing": 80}}}%%
 graph LR
     Browser([Browser]) -->|JWT / REST| Backend
     Backend -->|ORM| DB[(PostgreSQL)]
@@ -406,7 +406,7 @@ tp_local_file_generator/
 ## User Flow
 
 ```mermaid
-%%{init: {"theme": "neutral"}}%%
+%%{init: {"theme": "neutral", "themeVariables": {"fontSize": "18px"}, "flowchart": {"nodeSpacing": 60, "rankSpacing": 80}}}%%
 flowchart LR
     A([Landing]) --> B([Login])
     B --> C([Dashboard])
@@ -433,7 +433,7 @@ flowchart LR
 Authentication uses **JWT (JSON Web Tokens)** via `djangorestframework-simplejwt`.
 
 ```mermaid
-%%{init: {"theme": "neutral"}}%%
+%%{init: {"theme": "neutral", "themeVariables": {"fontSize": "18px"}, "flowchart": {"nodeSpacing": 60, "rankSpacing": 80}}}%%
 sequenceDiagram
     participant U as User / Browser
     participant F as Frontend (Zustand authStore)
@@ -485,7 +485,7 @@ sequenceDiagram
 When a user uploads a prior TP document in Step 0, the system automatically extracts structured data (company name, shareholders, financials, etc.) using a **2-tier retrieval strategy** defined in `tp_app/utils/document_processor.py`.
 
 ```mermaid
-%%{init: {"theme": "neutral"}}%%
+%%{init: {"theme": "neutral", "themeVariables": {"fontSize": "18px"}, "flowchart": {"nodeSpacing": 60, "rankSpacing": 80}}}%%
 flowchart LR
     UP([Upload]) --> Q{Single PDF\n≤ 50 pages\n+ OpenAI key?}
     Q -->|Yes| PI
@@ -529,7 +529,7 @@ Text is split into 1,000-character chunks (150-char overlap), embedded using Hug
 The AI generation pipeline in `tp_app/agents/orchestrator.py` uses **LangGraph StateGraph** for parallel execution.
 
 ```mermaid
-%%{init: {"theme": "neutral"}}%%
+%%{init: {"theme": "neutral", "themeVariables": {"fontSize": "18px"}, "flowchart": {"nodeSpacing": 60, "rankSpacing": 80}}}%%
 graph TD
     START([▶ START]) --> INIT[Initialize State]
     INIT --> BA & BB
@@ -762,7 +762,7 @@ git commit -m "feat: short description of what and why"
 Defined in `.github/workflows/ci-cd.yml`, triggered on push to `main` or PR to `main`.
 
 ```mermaid
-%%{init: {"theme": "neutral"}}%%
+%%{init: {"theme": "neutral", "themeVariables": {"fontSize": "18px"}, "flowchart": {"nodeSpacing": 60, "rankSpacing": 80}}}%%
 flowchart TD
     PUSH([Push / PR to main]) --> TEST
 

@@ -789,28 +789,28 @@ flowchart TD
 
 ### GitHub Secrets Setup
 
-CI/CD pipeline menulis `.env` langsung dari GitHub Secrets saat deploy. Berikut cara mengisinya:
+The CI/CD pipeline writes `.env` directly from GitHub Secrets on every deploy. Follow these steps to configure them.
 
-#### Langkah 1 — Buka halaman Secrets di GitHub
+#### Step 1 — Open Secrets in GitHub
 
-1. Buka repository di GitHub
-2. Klik **Settings** (tab paling kanan)
-3. Di sidebar kiri, klik **Secrets and variables** → **Actions**
-4. Klik **New repository secret** untuk setiap secret di bawah
+1. Open the repository on GitHub
+2. Click **Settings** (top right tab)
+3. In the left sidebar, click **Secrets and variables** → **Actions**
+4. Click **New repository secret** for each secret below
 
 ---
 
-#### Langkah 2 — Isi semua secrets berikut
+#### Step 2 — Add all required secrets
 
-| Secret | Contoh nilai | Keterangan |
-|--------|-------------|------------|
-| `SECRET_KEY` | `s3cr3t-random-50-chars...` | Django secret key — generate dengan perintah di bawah |
-| `ALLOWED_HOSTS` | `yourdomain.com,www.yourdomain.com` | Domain server production, pisahkan dengan koma |
-| `POSTGRES_DB` | `tp_db` | Nama database PostgreSQL |
-| `POSTGRES_USER` | `tp_user` | Username database PostgreSQL |
-| `POSTGRES_PASSWORD` | `str0ng-db-p4ssword!` | Password database — gunakan password yang kuat |
+| Secret | Example value | Description |
+|--------|---------------|-------------|
+| `SECRET_KEY` | `s3cr3t-random-50-chars...` | Django secret key — generate with the command below |
+| `ALLOWED_HOSTS` | `yourdomain.com,www.yourdomain.com` | Production server domain(s), comma-separated |
+| `POSTGRES_DB` | `tp_db` | PostgreSQL database name |
+| `POSTGRES_USER` | `tp_user` | PostgreSQL database username |
+| `POSTGRES_PASSWORD` | `str0ng-db-p4ssword!` | PostgreSQL database password — use a strong password |
 
-**Generate `SECRET_KEY` yang aman:**
+**Generate a secure `SECRET_KEY`:**
 
 ```bash
 python -c "import secrets; print(secrets.token_urlsafe(50))"
@@ -818,33 +818,33 @@ python -c "import secrets; print(secrets.token_urlsafe(50))"
 
 ---
 
-#### Langkah 3 — Buat `production` environment dan set protection rule
+#### Step 3 — Create the `production` environment with protection rules
 
-Pipeline deploy menggunakan environment bernama `production` yang memerlukan approval manual sebelum deploy berjalan.
+The deploy job uses an environment named `production` that requires manual approval before a deploy runs.
 
-1. Di GitHub repository, klik **Settings** → **Environments**
-2. Klik **New environment** → beri nama `production`
-3. Centang **Required reviewers** → tambahkan username reviewer (misal: diri sendiri)
-4. Klik **Save protection rules**
+1. In the GitHub repository, click **Settings** → **Environments**
+2. Click **New environment** → name it `production`
+3. Enable **Required reviewers** → add your GitHub username as a reviewer
+4. Click **Save protection rules**
 
-> Setiap push ke `main` akan meminta approval dari reviewer sebelum deploy ke EC2 dijalankan.
+> Every push to `main` will wait for reviewer approval before deploying to EC2.
 
 ---
 
-#### Ringkasan secrets yang dibutuhkan
+#### Summary checklist
 
 ```
 Repository → Settings → Secrets and variables → Actions
 
-✅ SECRET_KEY         → django secret key (50 char random)
-✅ ALLOWED_HOSTS      → domain production
+✅ SECRET_KEY         → Django secret key (50-char random string)
+✅ ALLOWED_HOSTS      → Production domain
 ✅ POSTGRES_DB        → tp_db
 ✅ POSTGRES_USER      → tp_user
-✅ POSTGRES_PASSWORD  → password database
+✅ POSTGRES_PASSWORD  → Database password
 
 Repository → Settings → Environments
 
-✅ production         → required reviewers aktif
+✅ production         → Required reviewers enabled
 ```
 
 ---

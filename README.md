@@ -829,28 +829,6 @@ Pipeline deploy menggunakan environment bernama `production` yang memerlukan app
 
 ---
 
-#### Langkah 4 — Pastikan self-hosted runner terdaftar (EC2)
-
-Deploy job berjalan di EC2 via self-hosted runner. Pastikan runner sudah terpasang di server:
-
-1. Di GitHub, klik **Settings** → **Actions** → **Runners**
-2. Klik **New self-hosted runner** → pilih OS Linux
-3. Ikuti perintah instalasi yang ditampilkan GitHub di dalam EC2:
-
-```bash
-# Di dalam EC2 — jalankan perintah yang diberikan GitHub, contoh:
-mkdir actions-runner && cd actions-runner
-curl -o actions-runner-linux-x64-2.x.x.tar.gz -L https://github.com/actions/runner/releases/...
-tar xzf ./actions-runner-linux-x64-2.x.x.tar.gz
-./config.sh --url https://github.com/<org>/<repo> --token <TOKEN>
-sudo ./svc.sh install
-sudo ./svc.sh start
-```
-
-4. Setelah runner aktif, statusnya berubah menjadi **Idle** di halaman Runners
-
----
-
 #### Ringkasan secrets yang dibutuhkan
 
 ```

@@ -29,8 +29,8 @@ const OUTPUT_PATH = path.resolve(__dirname, "../TP Local File Generator — READ
 
   const page = await browser.newPage();
 
-  // A3 landscape: 420mm × 297mm → at 96 dpi ≈ 1587 × 1123 px
-  await page.setViewport({ width: 1587, height: 1123, deviceScaleFactor: 1 });
+  // A4 portrait: 210mm × 297mm → at 96 dpi ≈ 794 × 1123 px
+  await page.setViewport({ width: 794, height: 1123, deviceScaleFactor: 1 });
 
   // Use file:// URL so Puppeteer can access _files/ assets (CSS, images, fonts)
   const fileUrl = pathToFileURL(HTML_PATH).href;
@@ -56,10 +56,10 @@ const OUTPUT_PATH = path.resolve(__dirname, "../TP Local File Generator — READ
   console.log("📄  Exporting PDF …");
   await page.pdf({
     path: OUTPUT_PATH,
-    format: "A3",
-    landscape: true,
+    format: "A4",
+    landscape: false,
     printBackground: true,
-    margin: { top: "16mm", right: "18mm", bottom: "16mm", left: "18mm" },
+    margin: { top: "14mm", right: "14mm", bottom: "14mm", left: "14mm" },
   });
 
   await browser.close();

@@ -410,20 +410,20 @@ tp_local_file_generator/
 flowchart LR
     A([Landing]) --> B([Login])
     B --> C([Dashboard])
-    C -->|New| D([Step 0\nUpload Docs])
+    C -->|New| D([Step 0<br/>Upload Docs])
     C -->|Existing| S1
     D --> S1
 
-    S1([Step 1\nCompany]) --> S2([Step 2\nOwnership])
-    S2 --> S3([Step 3\nAffiliates])
-    S3 --> S4([Step 4\nBusiness])
-    S4 --> S5([Step 5\nTransactions])
-    S5 --> S6([Step 6\nFinancials])
-    S6 --> S7([Step 7\nComparables])
-    S7 --> S8([Step 8\nTP Method])
-    S8 --> S9([Step 9\nNon-Financial])
-    S9 --> S10([Step 10\nRun AI Agents])
-    S10 --> S11([Step 11\nExport DOCX])
+    S1([Step 1<br/>Company]) --> S2([Step 2<br/>Ownership])
+    S2 --> S3([Step 3<br/>Affiliates])
+    S3 --> S4([Step 4<br/>Business])
+    S4 --> S5([Step 5<br/>Transactions])
+    S5 --> S6([Step 6<br/>Financials])
+    S6 --> S7([Step 7<br/>Comparables])
+    S7 --> S8([Step 8<br/>TP Method])
+    S8 --> S9([Step 9<br/>Non-Financial])
+    S9 --> S10([Step 10<br/>Run AI Agents])
+    S10 --> S11([Step 11<br/>Export DOCX])
 ```
 
 ---
@@ -487,21 +487,21 @@ When a user uploads a prior TP document in Step 0, the system automatically extr
 ```mermaid
 %%{init: {"theme": "neutral", "themeVariables": {"fontSize": "18px"}, "flowchart": {"nodeSpacing": 60, "rankSpacing": 80}}}%%
 flowchart LR
-    UP([Upload]) --> Q{Single PDF\n≤ 50 pages\n+ OpenAI key?}
+    UP([Upload]) --> Q{Single PDF<br/>≤ 50 pages<br/>+ OpenAI key?}
     Q -->|Yes| PI
     Q -->|No| VR
 
     subgraph PI["Tier 1 — PageIndex"]
-        P1[Build tree\nfrom TOC] --> P2[LLM selects\nrelevant branches]
-        P2 --> P3[Collect leaf text\ntrim to 16K tokens]
+        P1[Build tree<br/>from TOC] --> P2[LLM selects<br/>relevant branches]
+        P2 --> P3[Collect leaf text<br/>trim to 16K tokens]
     end
 
     subgraph VR["Tier 2 — Vector RAG"]
-        V1[Chunk text\n1,000 chars] --> V2[Embed + FAISS]
+        V1[Chunk text<br/>1,000 chars] --> V2[Embed + FAISS]
         V2 --> V3[Top-8 chunks]
     end
 
-    P3 --> OUT([LLM extracts\nstructured JSON])
+    P3 --> OUT([LLM extracts<br/>structured JSON])
     V3 --> OUT
 ```
 
@@ -545,7 +545,7 @@ graph TD
     A3 --> SYNC
     B2 --> SYNC
 
-    SYNC["⟳ SYNC NODE\nJoin Branches A + B"] --> BC & BD & BE
+    SYNC["⟳ SYNC NODE<br/>Join Branches A + B"] --> BC & BD & BE
 
     subgraph BC["Branch C"]
         C1[conclusion]
@@ -563,7 +563,7 @@ graph TD
     D1 --> FINAL
     E1 --> FINAL
 
-    FINAL[executive_summary] --> END([⏹ END\nFull state ready for export])
+    FINAL[executive_summary] --> END([⏹ END<br/>Full state ready for export])
 ```
 
 Branches A and B run **in parallel**. Branches C, D, and E also run **in parallel** after the sync node. This reduces total generation time by ~60% vs. sequential execution.
@@ -774,12 +774,12 @@ flowchart TD
 
     TEST -->|Tests pass + push to main only| GATE
 
-    GATE["🔒 production environment\napproval required"] --> DEPLOY
+    GATE["🔒 production environment<br/>approval required"] --> DEPLOY
 
     subgraph DEPLOY["🚀 Deploy Job (self-hosted EC2)"]
         D1[Checkout code] --> D2[Write .env from GitHub Secrets]
-        D2 --> D3[docker compose up -d --build\n--renew-anon-volumes]
-        D3 --> D4[Poll until backend ready\nmanage.py check --deploy]
+        D2 --> D3[docker compose up -d --build<br/>--renew-anon-volumes]
+        D3 --> D4[Poll until backend ready<br/>manage.py check --deploy]
         D4 --> D5[Verify all containers healthy]
         D5 --> D6[Prune old Docker images]
     end

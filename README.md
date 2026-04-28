@@ -28,6 +28,7 @@ Traditionally a tax consultant spends **weeks** manually researching, writing, a
 ## Architecture Overview
 
 ```mermaid
+%%{init: {"theme": "neutral"}}%%
 graph LR
     Browser([Browser]) -->|JWT / REST| Backend
     Backend -->|ORM| DB[(PostgreSQL)]
@@ -385,6 +386,7 @@ tp_local_file_generator/
 ## User Flow
 
 ```mermaid
+%%{init: {"theme": "neutral"}}%%
 flowchart TD
     A([🏠 Landing Page]) --> B([🔑 Login])
     B --> C([📋 Project Dashboard])
@@ -413,6 +415,7 @@ flowchart TD
 Authentication uses **JWT (JSON Web Tokens)** via `djangorestframework-simplejwt`.
 
 ```mermaid
+%%{init: {"theme": "neutral"}}%%
 sequenceDiagram
     participant U as User / Browser
     participant F as Frontend (Zustand authStore)
@@ -466,6 +469,7 @@ When a user uploads a prior TP document in Step 0, the system automatically extr
 ### Tier selection
 
 ```mermaid
+%%{init: {"theme": "neutral"}}%%
 flowchart TD
     UP([Uploaded files]) --> Q1{Single PDF?}
     Q1 -->|No - multiple files\nor non-PDF| VR
@@ -487,6 +491,7 @@ PageIndex organizes the document as a **hierarchical tree** and lets the LLM nav
 **Phase 1 — Index building** (`page_index_main` from the `pageindex` library):
 
 ```mermaid
+%%{init: {"theme": "neutral"}}%%
 flowchart LR
     PDF([PDF file]) --> TOC{Has TOC?}
     TOC -->|Yes| PARSE[Parse TOC structure]
@@ -502,6 +507,7 @@ flowchart LR
 **Phase 2 — Query retrieval** (`_query_page_index` in `extraction_agent.py`):
 
 ```mermaid
+%%{init: {"theme": "neutral"}}%%
 flowchart TD
     Q([Query: 'Extract shareholder info']) --> L0
 
@@ -532,6 +538,7 @@ This is **true hierarchical traversal**: at each level the LLM only reads short 
 ### Tier 2 — Vector RAG (for long or non-PDF documents)
 
 ```mermaid
+%%{init: {"theme": "neutral"}}%%
 flowchart LR
     DOC([Document text]) --> SPLIT["Chunk: 1,000 chars\n150 char overlap"]
     SPLIT --> EMBED["Embed chunks\nHuggingFace all-MiniLM-L6-v2\nor OpenAI text-embedding-3-small"]
@@ -547,6 +554,7 @@ flowchart LR
 The AI generation pipeline in `tp_app/agents/orchestrator.py` uses **LangGraph StateGraph** for parallel execution.
 
 ```mermaid
+%%{init: {"theme": "neutral"}}%%
 graph TD
     START([▶ START]) --> INIT[Initialize State]
     INIT --> BA & BB
@@ -779,6 +787,7 @@ git commit -m "feat: short description of what and why"
 Defined in `.github/workflows/ci-cd.yml`, triggered on push to `main` or PR to `main`.
 
 ```mermaid
+%%{init: {"theme": "neutral"}}%%
 flowchart TD
     PUSH([Push / PR to main]) --> TEST
 

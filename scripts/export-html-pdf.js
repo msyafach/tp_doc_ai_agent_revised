@@ -44,16 +44,33 @@ const OUTPUT_PATH = path.resolve(__dirname, "../TP Local File Generator — READ
   // Let any deferred rendering (fonts, lazy images) settle
   await new Promise((r) => setTimeout(r, 1500));
 
-  // Inject print-friendly CSS to prevent orphaned headings and broken blocks
+  // Inject CSS to:
+  // 1. Collapse slide/section fixed heights so content flows naturally
+  // 2. Prevent orphaned headings and broken blocks
   await page.addStyleTag({ content: `
+    /* Remove slide/presentation fixed sizing — make sections flow */
+    section, .slide, [class*="slide"], [class*="page"] {
+      height: auto !important;
+      min-height: 0 !important;
+      max-height: none !important;
+      overflow: visible !important;
+      display: block !important;
+      page-break-inside: auto !important;
+      break-inside: auto !important;
+    }
+
+    /* Keep headings with following content */
     h1, h2, h3, h4, h5, h6 {
       page-break-after: avoid !important;
       break-after:      avoid !important;
     }
+
+    /* Keep blocks intact */
     pre, table, figure, blockquote {
       page-break-inside: avoid !important;
       break-inside:      avoid !important;
     }
+
     p, li { orphans: 3; widows: 3; }
   ` });
 

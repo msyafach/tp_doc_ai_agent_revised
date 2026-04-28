@@ -29,7 +29,7 @@ from pathlib import Path
 from typing import Any, Optional
 
 # ── Thresholds ─────────────────────────────────────────────────────────────────
-PAGE_THRESHOLD = 20          # Use PageIndex if number of pages < this value
+PAGE_THRESHOLD = 50          # Use PageIndex if number of pages < this value
 
 # ── Supported non-PDF types (loaded as plain text) ────────────────────────────
 NON_PDF_EXTENSIONS = {".docx", ".xlsx", ".txt"}

@@ -801,12 +801,84 @@ flowchart TD
     end
 ```
 
-**Required GitHub Secrets for deployment:**
+### GitHub Secrets — Setup Guide
 
-| Secret               | Description                   |
-|----------------------|-------------------------------|
-| `SECRET_KEY`         | Django secret key             |
-| `ALLOWED_HOSTS`      | Comma-separated allowed hosts |
-| `POSTGRES_DB`        | Database name                 |
-| `POSTGRES_USER`      | Database user                 |
-| `POSTGRES_PASSWORD`  | Database password             |
+CI/CD pipeline menulis `.env` langsung dari GitHub Secrets saat deploy. Berikut cara mengisinya:
+
+#### Langkah 1 — Buka halaman Secrets di GitHub
+
+1. Buka repository di GitHub
+2. Klik **Settings** (tab paling kanan)
+3. Di sidebar kiri, klik **Secrets and variables** → **Actions**
+4. Klik **New repository secret** untuk setiap secret di bawah
+
+---
+
+#### Langkah 2 — Isi semua secrets berikut
+
+| Secret | Contoh nilai | Keterangan |
+|--------|-------------|------------|
+| `SECRET_KEY` | `s3cr3t-random-50-chars...` | Django secret key — generate dengan perintah di bawah |
+| `ALLOWED_HOSTS` | `yourdomain.com,www.yourdomain.com` | Domain server production, pisahkan dengan koma |
+| `POSTGRES_DB` | `tp_db` | Nama database PostgreSQL |
+| `POSTGRES_USER` | `tp_user` | Username database PostgreSQL |
+| `POSTGRES_PASSWORD` | `str0ng-db-p4ssword!` | Password database — gunakan password yang kuat |
+
+**Generate `SECRET_KEY` yang aman:**
+
+```bash
+python -c "import secrets; print(secrets.token_urlsafe(50))"
+```
+
+---
+
+#### Langkah 3 — Buat `production` environment dan set protection rule
+
+Pipeline deploy menggunakan environment bernama `production` yang memerlukan approval manual sebelum deploy berjalan.
+
+1. Di GitHub repository, klik **Settings** → **Environments**
+2. Klik **New environment** → beri nama `production`
+3. Centang **Required reviewers** → tambahkan username reviewer (misal: diri sendiri)
+4. Klik **Save protection rules**
+
+> Setiap push ke `main` akan meminta approval dari reviewer sebelum deploy ke EC2 dijalankan.
+
+---
+
+#### Langkah 4 — Pastikan self-hosted runner terdaftar (EC2)
+
+Deploy job berjalan di EC2 via self-hosted runner. Pastikan runner sudah terpasang di server:
+
+1. Di GitHub, klik **Settings** → **Actions** → **Runners**
+2. Klik **New self-hosted runner** → pilih OS Linux
+3. Ikuti perintah instalasi yang ditampilkan GitHub di dalam EC2:
+
+```bash
+# Di dalam EC2 — jalankan perintah yang diberikan GitHub, contoh:
+mkdir actions-runner && cd actions-runner
+curl -o actions-runner-linux-x64-2.x.x.tar.gz -L https://github.com/actions/runner/releases/...
+tar xzf ./actions-runner-linux-x64-2.x.x.tar.gz
+./config.sh --url https://github.com/<org>/<repo> --token <TOKEN>
+sudo ./svc.sh install
+sudo ./svc.sh start
+```
+
+4. Setelah runner aktif, statusnya berubah menjadi **Idle** di halaman Runners
+
+---
+
+#### Ringkasan secrets yang dibutuhkan
+
+```
+Repository → Settings → Secrets and variables → Actions
+
+✅ SECRET_KEY         → django secret key (50 char random)
+✅ ALLOWED_HOSTS      → domain production
+✅ POSTGRES_DB        → tp_db
+✅ POSTGRES_USER      → tp_user
+✅ POSTGRES_PASSWORD  → password database
+
+Repository → Settings → Environments
+
+✅ production         → required reviewers aktif
+```

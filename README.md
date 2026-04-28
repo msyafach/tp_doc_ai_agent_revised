@@ -486,86 +486,43 @@ sequenceDiagram
 
 When a user uploads a prior TP document in Step 0, the system automatically extracts structured data (company name, shareholders, financials, etc.) using a **2-tier retrieval strategy** defined in `tp_app/utils/document_processor.py`.
 
-### Tier selection
-
 ```mermaid
 %%{init: {"theme": "neutral"}}%%
-flowchart TD
-    UP([Uploaded files]) --> Q1{Single PDF?}
-    Q1 -->|No - multiple files\nor non-PDF| VR
-    Q1 -->|Yes| Q2{Pages < 50\nAND OpenAI key?}
-    Q2 -->|No| VR
-    Q2 -->|Yes| PI
+flowchart LR
+    UP([Upload]) --> Q{Single PDF\n≤ 50 pages\n+ OpenAI key?}
+    Q -->|Yes| PI
+    Q -->|No| VR
 
-    PI["🌳 Tier 1: PageIndex\nVectorless hierarchical retrieval\nLLM navigates document tree"]
-    VR["🔢 Tier 2: Vector RAG\nFAISS + embeddings\nChunk similarity search"]
+    subgraph PI["Tier 1 — PageIndex"]
+        P1[Build tree\nfrom TOC] --> P2[LLM selects\nrelevant branches]
+        P2 --> P3[Collect leaf text\ntrim to 16K tokens]
+    end
 
-    PI --> EX([Structured JSON extraction])
-    VR --> EX
+    subgraph VR["Tier 2 — Vector RAG"]
+        V1[Chunk text\n1,000 chars] --> V2[Embed + FAISS]
+        V2 --> V3[Top-8 chunks]
+    end
+
+    P3 --> OUT([LLM extracts\nstructured JSON])
+    V3 --> OUT
 ```
 
 ### Tier 1 — PageIndex (vectorless, for PDFs ≤ 50 pages)
 
-PageIndex organizes the document as a **hierarchical tree** and lets the LLM navigate it like a human reading a table of contents — no vector embeddings needed.
-
-**Phase 1 — Index building** (`page_index_main` from the `pageindex` library):
-
-```mermaid
-%%{init: {"theme": "neutral"}}%%
-flowchart LR
-    PDF([PDF file]) --> TOC{Has TOC?}
-    TOC -->|Yes| PARSE[Parse TOC structure]
-    TOC -->|No| GEN[LLM generates structure]
-    PARSE --> TREE
-    GEN --> TREE
-
-    TREE["🌲 Hierarchical Tree\nRoot → Chapters → Sections → Pages"]
-    TREE --> SUM[LLM writes summary\nper node]
-    SUM --> IDX([Index ready\ntitle · summary · text per node])
-```
-
-**Phase 2 — Query retrieval** (`_query_page_index` in `extraction_agent.py`):
-
-```mermaid
-%%{init: {"theme": "neutral"}}%%
-flowchart TD
-    Q([Query: 'Extract shareholder info']) --> L0
-
-    L0["Level 0 — Show chapter summaries to LLM\n[0] Company Overview\n[1] Ownership Structure ✓\n[2] Financials\n[3] Transactions"]
-    L0 -->|LLM picks relevant branches| L1
-
-    L1["Level 1 — Show sub-section summaries\n[1.0] Share Capital ✓\n[1.1] Shareholders List ✓\n[1.2] Board of Directors"]
-    L1 -->|LLM drills down| L2
-
-    L2["Level 2 — Collect full text\nfrom selected leaf nodes"]
-    L2 --> TRIM["Trim to 16,000 token budget"]
-    TRIM --> EXT["LLM extracts structured JSON\n{ shareholders: [...] }"]
-```
-
-This is **true hierarchical traversal**: at each level the LLM only reads short summaries and picks which branches to explore. Full page text is only read for the final selected nodes — mimicking how a human expert skips irrelevant chapters entirely.
+PageIndex builds a **hierarchical tree** from the document's table of contents, then lets the LLM navigate level by level — reading only summaries at each level until it reaches the relevant leaf nodes. Full text is only read at the final selected nodes, mimicking how a human expert skips irrelevant chapters.
 
 **Comparison with traditional RAG:**
 
-| Aspect              | Vector RAG                    | PageIndex                           |
-|---------------------|-------------------------------|-------------------------------------|
-| Search method       | Embedding cosine similarity   | LLM reasoning over tree structure   |
-| Storage needed      | Vector database               | None                                |
-| Retrieval style     | One-shot similarity match     | Multi-level hierarchical traversal  |
-| Explainability      | Low (distance scores only)    | High (traceable path through tree)  |
-| Best for            | Long / unstructured documents | Structured docs with TOC (≤ 50 pg)  |
-| Token efficiency    | Fixed k chunks regardless     | Only relevant branches read in full |
+| Aspect          | Vector RAG                  | PageIndex                          |
+|-----------------|-----------------------------|------------------------------------|
+| Search method   | Embedding cosine similarity | LLM reasoning over tree structure  |
+| Storage needed  | Vector database             | None                               |
+| Retrieval style | One-shot similarity match   | Multi-level hierarchical traversal |
+| Best for        | Long / unstructured docs    | Structured docs with TOC (≤ 50 pg) |
 
 ### Tier 2 — Vector RAG (for long or non-PDF documents)
 
-```mermaid
-%%{init: {"theme": "neutral"}}%%
-flowchart LR
-    DOC([Document text]) --> SPLIT["Chunk: 1,000 chars\n150 char overlap"]
-    SPLIT --> EMBED["Embed chunks\nHuggingFace all-MiniLM-L6-v2\nor OpenAI text-embedding-3-small"]
-    EMBED --> FAISS[(FAISS\nin-memory store)]
-    Q2([Query]) --> FAISS
-    FAISS -->|Top-8 chunks| LLM["LLM extracts\nstructured JSON"]
-```
+Text is split into 1,000-character chunks (150-char overlap), embedded using HuggingFace `all-MiniLM-L6-v2` (local, free) or OpenAI `text-embedding-3-small`, stored in FAISS, and top-8 chunks are retrieved per query.
 
 ---
 

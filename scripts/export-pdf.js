@@ -112,6 +112,7 @@ function buildHtml(markdownContent) {
     .mermaid svg {
       display: block;
       max-width: 100%;
+      margin: 0 auto;
     }
 
     /* ── Tables ────────────────────────────────────────────────────── */

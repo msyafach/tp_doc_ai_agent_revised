@@ -114,31 +114,108 @@ graph LR
 
 ### Prerequisites
 
-- Docker & Docker Compose
-- Groq **or** OpenAI API key (for LLM)
-- Tavily API key (for AI research sections)
+| Tool | Version | Install |
+|------|---------|---------|
+| Docker & Docker Compose | latest | https://docs.docker.com/get-docker/ |
+| Python | ≥ 3.11 | https://www.python.org/downloads/ |
+| Node.js | ≥ 20 | https://nodejs.org/ |
+| uv | latest | see below |
+| Git | latest | https://git-scm.com/ |
 
-### 1. Clone and configure
+Plus at least one API key from each:
+- **LLM**: Groq (free tier) or OpenAI
+- **Web search**: Tavily
+
+---
+
+### Step 1 — Install `uv` (Python package manager)
+
+`uv` is required to manage all Python dependencies in this project. Install it once globally:
+
+**macOS / Linux:**
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+**Windows (PowerShell):**
+```powershell
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+Verify:
+```bash
+uv --version
+```
+
+---
+
+### Step 2 — Clone the repository
 
 ```bash
 git clone <repo-url>
 cd tp_local_file_generator
-cp .env.example .env   # edit with your values
 ```
 
-### 2. Start all services
+---
+
+### Step 3 — Configure environment variables
+
+```bash
+cp .env.example .env
+```
+
+Open `.env` and fill in the required values (see [Environment Variables](#environment-variables) section for reference). At minimum set `SECRET_KEY`, `POSTGRES_PASSWORD`.
+
+---
+
+### Step 4 — Install Python dependencies (tp_app)
+
+`tp_app/` is the AI agent module. Install its dependencies with `uv`:
+
+```bash
+cd tp_app
+uv sync
+cd ..
+```
+
+This reads `tp_app/pyproject.toml` and installs everything into an isolated `.venv` inside `tp_app/`.
+
+---
+
+### Step 5 — Install frontend dependencies
+
+```bash
+cd frontend
+npm install
+cd ..
+```
+
+---
+
+### Step 6 — Build and start all services
 
 ```bash
 docker compose up --build
 ```
 
-### 3. Create a superuser (first time only)
+This builds and starts: `db` (PostgreSQL), `redis`, `backend` (Django), `worker` (Celery), `frontend` (React/Vite).
+
+> First build takes ~3–5 minutes. Subsequent starts with `docker compose up -d` are fast.
+
+---
+
+### Step 7 — Run database migrations & create superuser (first time only)
+
+Wait for the backend to be healthy (watch logs with `docker compose logs -f backend`), then:
 
 ```bash
+docker compose exec backend python manage.py migrate
 docker compose exec backend python manage.py createsuperuser
 ```
 
-### 4. Open the app
+---
+
+### Step 8 — Open the app
 
 | Service        | URL                          |
 |----------------|------------------------------|
@@ -146,9 +223,40 @@ docker compose exec backend python manage.py createsuperuser
 | Django API     | http://localhost:8000/api/   |
 | Django Admin   | http://localhost:8000/admin/ |
 
-### 5. Configure API keys
+---
 
-Log in as admin → **Admin Settings** → enter your LLM provider, LLM API key, and Tavily API key. These are stored in the database and shared across all users — no need to put them in `.env`.
+### Step 9 — Configure API keys
+
+Log in as the superuser you just created → **Admin Settings** → enter:
+- LLM Provider (Groq or OpenAI)
+- LLM API Key
+- Tavily API Key
+
+These are stored in the database and shared across all users — no need to put them in `.env`.
+
+---
+
+### Quick reference (after initial setup)
+
+```bash
+# Start all services (background)
+docker compose up -d
+
+# Stop all services
+docker compose down
+
+# Rebuild after code changes
+docker compose up -d --build backend worker
+
+# View backend logs
+docker compose logs -f backend
+
+# View worker (AI agent) logs
+docker compose logs -f worker
+
+# Run Django management commands
+docker compose exec backend python manage.py <command>
+```
 
 ---
 

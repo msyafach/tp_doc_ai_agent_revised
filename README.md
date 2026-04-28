@@ -41,7 +41,7 @@ The name was chosen deliberately so that tax consultants — the primary users �
 - [CLAUDE.md — AI Assistant Instructions](#claudemd--ai-assistant-instructions)
 - [Graphify — Codebase Knowledge Graph](#graphify--codebase-knowledge-graph)
 - [Development Guide](#development-guide)
-- [CI/CD Pipeline](#cicd-pipeline)
+- [Deployment](#deployment)
 
 ---
 
@@ -757,7 +757,9 @@ git commit -m "feat: short description of what and why"
 
 ---
 
-## CI/CD Pipeline
+## Deployment
+
+### CI/CD Pipeline
 
 Defined in `.github/workflows/ci-cd.yml`, triggered on push to `main` or PR to `main`.
 
@@ -785,7 +787,7 @@ flowchart TD
     end
 ```
 
-### GitHub Secrets — Setup Guide
+### GitHub Secrets Setup
 
 CI/CD pipeline menulis `.env` langsung dari GitHub Secrets saat deploy. Berikut cara mengisinya:
 
@@ -843,4 +845,71 @@ Repository → Settings → Secrets and variables → Actions
 Repository → Settings → Environments
 
 ✅ production         → required reviewers aktif
+```
+
+---
+
+### Production Server (EC2)
+
+The application runs on an AWS EC2 instance managed by RSM. The self-hosted GitHub Actions runner is already installed and active on this server — no setup required.
+
+#### Instance Details
+
+| Property        | Value                                                        |
+|-----------------|--------------------------------------------------------------|
+| Instance ID     | `i-0630a274e5494a46d`                                        |
+| Name            | RSM-TP-App                                                   |
+| Instance type   | `t3.medium` (2 vCPU, 4 GB RAM)                              |
+| Region          | `ap-southeast-3` (Jakarta)                                   |
+| Public IP       | `16.79.87.235` (Elastic IP — static, will not change)        |
+| Private IP      | `172.31.46.27`                                               |
+| Public DNS      | `ec2-16-79-87-235.ap-southeast-3.compute.amazonaws.com`      |
+| VPC             | `rsm-vpc`                                                    |
+| Subnet          | `rsm-private-default-subnet-2`                               |
+| Status          | Running                                                      |
+
+#### Access URLs (Production)
+
+| Service        | URL                                   |
+|----------------|---------------------------------------|
+| Frontend       | http://16.79.87.235:3000              |
+| Django API     | http://16.79.87.235:8000/api/         |
+| Django Admin   | http://16.79.87.235:8000/admin/       |
+
+#### Useful commands on the server
+
+```bash
+# Check running containers
+docker ps
+
+# View live logs
+docker compose logs -f backend
+docker compose logs -f worker
+
+# Restart all services
+docker compose restart
+
+# Rebuild and restart after a manual change
+docker compose up -d --build
+
+# Check disk usage
+df -h
+
+# Check memory usage
+free -h
+```
+
+#### GitHub Actions Runner
+
+The self-hosted runner is installed as a system service on the EC2 instance and starts automatically on reboot. To check its status:
+
+```bash
+# On the EC2 instance
+sudo systemctl status actions.runner.*
+```
+
+If the runner shows as **Offline** in GitHub → Settings → Actions → Runners, SSH into the instance and run:
+
+```bash
+sudo systemctl restart actions.runner.*
 ```

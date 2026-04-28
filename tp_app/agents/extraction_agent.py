@@ -14,16 +14,10 @@ from __future__ import annotations
 import json
 import os
 import re
-import sys
 from pathlib import Path
 from typing import Any, Optional
 
 from langchain.prompts import PromptTemplate
-
-# ── Make the cloned PageIndex importable ──────────────────────────────────────
-_PI_ROOT = Path(__file__).resolve().parent.parent / "PageIndex"
-if str(_PI_ROOT) not in sys.path:
-    sys.path.insert(0, str(_PI_ROOT))
 
 
 # ══════════════════════════════════════════════════════════════════════════════

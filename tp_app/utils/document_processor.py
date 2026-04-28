@@ -5,7 +5,7 @@ document_processor.py
 
   Tier 1 — PageIndex  (<  PAGE_THRESHOLD pages)
       Builds a hierarchical TOC tree from the PDF using the open-source
-      PageIndex library (cloned at ./PageIndex).  Retrieval is done via
+      PageIndex library (pip install pageindex).  Retrieval is done via
       LLM reasoning over the tree nodes — no embeddings needed.
 
   Tier 2 — Vector RAG (>= PAGE_THRESHOLD pages)
@@ -20,7 +20,6 @@ Maximum file size enforced by the caller (app.py): 20 MB
 from __future__ import annotations
 
 import os
-import sys
 import io
 import json
 import tempfile
@@ -28,11 +27,6 @@ import re
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Optional
-
-# ── Add the cloned PageIndex repo to sys.path ──────────────────────────────────
-_PI_ROOT = Path(__file__).resolve().parent.parent / "PageIndex"
-if str(_PI_ROOT) not in sys.path:
-    sys.path.insert(0, str(_PI_ROOT))
 
 # ── Thresholds ─────────────────────────────────────────────────────────────────
 PAGE_THRESHOLD = 20          # Use PageIndex if number of pages < this value

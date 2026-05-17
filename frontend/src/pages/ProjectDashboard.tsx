@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { PlusCircle, FolderOpen, Trash2, Clock, LogOut, Shield } from "lucide-react";
+import { PlusCircle, FolderOpen, Trash2, Clock, LogOut, Shield, Scale } from "lucide-react";
 import { listProjects, createProject, getProject, deleteProject } from "../api/projects";
 import { useProjectStore } from "../store/projectStore";
 import type { ProjectListItem } from "../types";
@@ -11,9 +11,10 @@ interface Props {
   username: string;
   onAdminClick: () => void;
   onBackToLanding: () => void;
+  onTPDisputesClick: () => void;
 }
 
-export function ProjectDashboard({ onProjectSelected, onLogout, isAdmin, username, onAdminClick, onBackToLanding }: Props) {
+export function ProjectDashboard({ onProjectSelected, onLogout, isAdmin, username, onAdminClick, onBackToLanding, onTPDisputesClick }: Props) {
   const { setProjectId, setFullState } = useProjectStore();
   const [projects, setProjects] = useState<ProjectListItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -102,6 +103,12 @@ export function ProjectDashboard({ onProjectSelected, onLogout, isAdmin, usernam
               <Shield className="w-3.5 h-3.5" /> Admin
             </button>
           )}
+          <button
+            onClick={onTPDisputesClick}
+            className="flex items-center gap-1.5 text-xs font-semibold text-brand-green bg-brand-green/10 px-3 py-1.5 rounded-full border border-brand-green/20 hover:bg-brand-green/20 transition-all"
+          >
+            <Scale className="w-3.5 h-3.5" /> Putusan TP
+          </button>
           <button
             onClick={onLogout}
             className="flex items-center gap-1.5 text-xs font-semibold text-red-500 bg-red-50 px-3 py-1.5 rounded-full border border-red-100 hover:bg-red-100 transition-all"

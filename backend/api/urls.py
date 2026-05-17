@@ -34,4 +34,8 @@ urlpatterns = [
 
     # ── DOCX export ───────────────────────────────────────────────────────────
     path("projects/<uuid:pk>/export-docx/", views.export_docx, name="export-docx"),
+
+    # ── TP Disputes ───────────────────────────────────────────────────────────
+    path("tp-disputes/", views.tp_disputes_list, name="tp-disputes-list"),
+    path("tp-disputes/<int:pk>/", views.tp_dispute_detail, name="tp-dispute-detail"),
 ]

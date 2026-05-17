@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Project, AgentTask
+from .models import Project, AgentTask, TPDispute
 
 
 class AgentTaskSerializer(serializers.ModelSerializer):
@@ -25,3 +25,14 @@ class ProjectListSerializer(serializers.ModelSerializer):
         model = Project
         fields = ["id", "name", "created_at", "updated_at"]
         read_only_fields = fields
+
+
+class TPDisputeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TPDispute
+        fields = [
+            "id", "name", "verdict_number", "verdict", "dispute",
+            "legal_basis", "djp", "taxpayer", "assembly_decision",
+            "created_at", "updated_at",
+        ]
+        read_only_fields = ["id", "created_at", "updated_at"]

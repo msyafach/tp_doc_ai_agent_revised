@@ -6,6 +6,7 @@ import { LoginPage } from './pages/LoginPage';
 import { ProjectDashboard } from './pages/ProjectDashboard';
 import { LandingPage } from './pages/LandingPage';
 import { AdminUsersPage } from './pages/AdminUsersPage';
+import { TPDisputesPage } from './pages/TPDisputesPage';
 import { Step0Upload } from './pages/Step0Upload';
 import { Step1CompanyIdentity } from './pages/Step1CompanyIdentity';
 import { Step2Ownership } from './pages/Step2Ownership';
@@ -37,7 +38,7 @@ const STEP_COMPONENTS = [
 const TOTAL_STEPS = STEP_COMPONENTS.length;
 const INACTIVITY_MS = 15 * 60 * 1000;
 
-type View = "loading" | "login" | "landing" | "dashboard" | "wizard" | "admin";
+type View = "loading" | "login" | "landing" | "dashboard" | "wizard" | "admin" | "tp_disputes";
 
 function AppInner() {
   const {
@@ -255,6 +256,17 @@ function AppInner() {
         username={user?.username ?? ""}
         onAdminClick={() => setView("admin")}
         onBackToLanding={() => setView("landing")}
+        onTPDisputesClick={() => setView("tp_disputes")}
+      />
+    );
+  }
+
+  if (view === "tp_disputes") {
+    return (
+      <TPDisputesPage
+        onLogout={handleLogout}
+        onBack={() => setView("dashboard")}
+        username={user?.username ?? ""}
       />
     );
   }

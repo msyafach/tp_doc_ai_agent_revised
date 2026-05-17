@@ -14,8 +14,10 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError
 
-from .models import Project, AgentTask, SystemSetting
-from .serializers import ProjectSerializer, ProjectListSerializer, AgentTaskSerializer
+from .models import Project, AgentTask, SystemSetting, TPDispute
+from .serializers import (
+    ProjectSerializer, ProjectListSerializer, AgentTaskSerializer, TPDisputeSerializer,
+)
 
 User = get_user_model()
 
@@ -475,4 +477,46 @@ def admin_user_detail(request, pk):
     except User.DoesNotExist:
         return Response({"detail": "User not found."}, status=404)
     user.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+# ─── TP Disputes ──────────────────────────────────────────────────────────────
+
+@api_view(["GET", "POST"])
+def tp_disputes_list(request):
+    if request.method == "GET":
+        qs = TPDispute.objects.all()
+        return Response(TPDisputeSerializer(qs, many=True).data)
+
+    # POST — create; silently skip if verdict_number already exists.
+    serializer = TPDisputeSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    verdict_number = serializer.validated_data["verdict_number"]
+    obj, created = TPDispute.objects.get_or_create(
+        verdict_number=verdict_number,
+        defaults={k: v for k, v in serializer.validated_data.items() if k != "verdict_number"},
+    )
+    return Response(
+        TPDisputeSerializer(obj).data,
+        status=status.HTTP_201_CREATED if created else status.HTTP_200_OK,
+    )
+
+
+@api_view(["GET", "PATCH", "DELETE"])
+def tp_dispute_detail(request, pk):
+    try:
+        obj = TPDispute.objects.get(pk=pk)
+    except TPDispute.DoesNotExist:
+        return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == "GET":
+        return Response(TPDisputeSerializer(obj).data)
+
+    if request.method == "PATCH":
+        serializer = TPDisputeSerializer(obj, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+    obj.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)

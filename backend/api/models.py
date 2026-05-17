@@ -80,3 +80,22 @@ class AgentTask(models.Model):
 
     def __str__(self):
         return f"{self.task_type} / {self.status} ({self.project_id})"
+
+
+class TPDispute(models.Model):
+    name = models.CharField(max_length=255, blank=True, default="")
+    verdict_number = models.CharField(max_length=255, unique=True)
+    verdict = models.TextField(blank=True, default="")
+    dispute = models.TextField(blank=True, default="")
+    legal_basis = models.TextField(blank=True, default="")
+    djp = models.TextField(blank=True, default="")
+    taxpayer = models.TextField(blank=True, default="")
+    assembly_decision = models.TextField(blank=True, default="")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return self.verdict_number

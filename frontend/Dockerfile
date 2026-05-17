@@ -2,7 +2,9 @@
 FROM node:20-alpine AS dev
 WORKDIR /app
 COPY package*.json ./
-RUN npm install
+# Workaround npm optional-deps bug (rollup ARM64 musl): drop lockfile so npm
+# resolves platform-specific optional deps fresh for the container arch.
+RUN rm -f package-lock.json && npm install
 COPY . .
 EXPOSE 3000
 CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]

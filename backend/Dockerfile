@@ -15,7 +15,7 @@ WORKDIR /app
 
 # Install Python dependencies
 COPY backend/requirements.txt /app/requirements.txt
-RUN pip install --no-cache-dir -r /app/requirements.txt
+RUN pip install --no-cache-dir --timeout 180 --retries 10 -r /app/requirements.txt
 
 # Copy backend source
 COPY backend/ /app/backend/

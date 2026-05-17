@@ -31,7 +31,7 @@ export function TPDisputesPage({ onLogout, onBack, username }: Props) {
   const [uploading, setUploading] = useState(false);
   const [page, setPage] = useState(1);
 
-  const PAGE_SIZE = 20;
+  const PAGE_SIZE = 10;
   const totalPages = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
   const safePage = Math.min(page, totalPages);
   const pageRows = rows.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);

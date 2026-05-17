@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Info, Pencil, Trash2, LogOut, ChevronLeft, Scale, X, Save, Loader2, Upload, Plus, FileSpreadsheet } from "lucide-react";
+import { Info, Pencil, Trash2, LogOut, ChevronLeft, Scale, X, Save, Loader2, Upload, Plus, FileSpreadsheet, ChevronRight } from "lucide-react";
 import {
   listTPDisputes, updateTPDispute, deleteTPDispute, uploadTPDisputes,
   type TPDispute, type TPDisputeInput, type TPDisputeUploadResult,
@@ -29,6 +29,16 @@ export function TPDisputesPage({ onLogout, onBack, username }: Props) {
   const [editing, setEditing] = useState<TPDispute | null>(null);
   const [deleting, setDeleting] = useState<TPDispute | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [page, setPage] = useState(1);
+
+  const PAGE_SIZE = 20;
+  const totalPages = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
+  const safePage = Math.min(page, totalPages);
+  const pageRows = rows.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
+
+  useEffect(() => {
+    if (page > totalPages) setPage(totalPages);
+  }, [totalPages, page]);
 
   const refresh = async () => {
     setLoading(true);
@@ -124,7 +134,7 @@ export function TPDisputesPage({ onLogout, onBack, username }: Props) {
                 </tr>
               </thead>
               <tbody>
-                {rows.map((r) => (
+                {pageRows.map((r) => (
                   <tr key={r.id} className="border-b border-gray-100 hover:bg-gray-50/50 transition-colors">
                     <td className="px-6 py-4 font-mono text-xs text-gray-700">{r.verdict_number}</td>
                     <td className="px-6 py-4 text-gray-800 font-medium">{r.name || "—"}</td>
@@ -149,6 +159,39 @@ export function TPDisputesPage({ onLogout, onBack, username }: Props) {
             </table>
           )}
         </div>
+
+        {rows.length > PAGE_SIZE && (
+          <div className="mt-5 flex items-center justify-between text-xs">
+            <span className="text-gray-500">
+              Menampilkan{" "}
+              <span className="font-semibold text-gray-700">{(safePage - 1) * PAGE_SIZE + 1}</span>
+              {"–"}
+              <span className="font-semibold text-gray-700">{Math.min(safePage * PAGE_SIZE, rows.length)}</span>
+              {" dari "}
+              <span className="font-semibold text-gray-700">{rows.length}</span>
+              {" data"}
+            </span>
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                disabled={safePage === 1}
+                className="flex items-center gap-1 px-3 py-1.5 font-semibold text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                <ChevronLeft className="w-3.5 h-3.5" /> Prev
+              </button>
+              <span className="px-3 py-1.5 font-semibold text-gray-700">
+                {safePage} / {totalPages}
+              </span>
+              <button
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                disabled={safePage === totalPages}
+                className="flex items-center gap-1 px-3 py-1.5 font-semibold text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                Next <ChevronRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
+        )}
       </main>
 
       {uploading && (

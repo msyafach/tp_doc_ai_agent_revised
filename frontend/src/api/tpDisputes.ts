@@ -34,3 +34,18 @@ export async function updateTPDispute(id: number, input: Partial<TPDisputeInput>
 export async function deleteTPDispute(id: number): Promise<void> {
   await api.delete(`/tp-disputes/${id}/`);
 }
+
+export interface TPDisputeUploadResult {
+  created: number;
+  skipped: number;
+  errors: string[];
+}
+
+export async function uploadTPDisputes(file: File): Promise<TPDisputeUploadResult> {
+  const form = new FormData();
+  form.append("file", file);
+  const { data } = await api.post<TPDisputeUploadResult>("/tp-disputes/upload/", form, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+  return data;
+}

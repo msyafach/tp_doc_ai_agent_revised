@@ -502,6 +502,113 @@ def tp_disputes_list(request):
     )
 
 
+@api_view(["POST"])
+@parser_classes([MultiPartParser])
+def tp_disputes_upload(request):
+    """
+    Bulk-import TPDispute rows from an uploaded .xlsx or .csv file.
+    Duplicate verdict_number rows (vs. DB or within the file) are skipped.
+
+    Returns: {"created": N, "skipped": M, "errors": [...]}
+    """
+    upload = request.FILES.get("file")
+    if not upload:
+        return Response({"detail": "No file uploaded (expected field 'file')."}, status=400)
+
+    filename = (upload.name or "").lower()
+    try:
+        if filename.endswith(".csv"):
+            rows = _parse_csv(upload)
+        elif filename.endswith(".xlsx") or filename.endswith(".xlsm"):
+            rows = _parse_xlsx(upload)
+        else:
+            return Response(
+                {"detail": "Unsupported file type. Upload .xlsx or .csv."},
+                status=400,
+            )
+    except Exception as exc:
+        logger.exception("Failed to parse TP disputes upload")
+        return Response({"detail": f"Failed to parse file: {exc}"}, status=400)
+
+    # Header → model field mapping (accepts English and Indonesian labels).
+    header_map = {
+        "verdict_number": "verdict_number", "no. putusan": "verdict_number",
+        "no putusan": "verdict_number", "nomor putusan": "verdict_number",
+        "name": "name", "nama": "name",
+        "verdict": "verdict", "amar putusan": "verdict",
+        "dispute": "dispute", "pokok sengketa": "dispute",
+        "legal_basis": "legal_basis", "dasar hukum": "legal_basis",
+        "djp": "djp", "menurut djp": "djp",
+        "taxpayer": "taxpayer", "menurut wajib pajak": "taxpayer", "wajib pajak": "taxpayer",
+        "assembly_decision": "assembly_decision",
+        "keputusan majelis": "assembly_decision",
+    }
+
+    if not rows:
+        return Response({"created": 0, "skipped": 0, "errors": ["File is empty."]})
+
+    raw_headers = [str(h).strip() for h in rows[0]]
+    normalized = [header_map.get(h.lower(), None) for h in raw_headers]
+    if "verdict_number" not in normalized:
+        return Response(
+            {"detail": "Required column 'verdict_number' (or 'No. Putusan') not found."},
+            status=400,
+        )
+
+    errors: list[str] = []
+    candidates: dict[str, dict] = {}  # verdict_number → row dict (last-wins within file)
+
+    for row_idx, raw in enumerate(rows[1:], start=2):
+        record: dict[str, str] = {}
+        for col_idx, field in enumerate(normalized):
+            if not field or col_idx >= len(raw):
+                continue
+            value = raw[col_idx]
+            record[field] = "" if value is None else str(value).strip()
+
+        verdict_number = record.get("verdict_number", "")
+        if not verdict_number:
+            errors.append(f"Row {row_idx}: missing verdict_number, skipped.")
+            continue
+        candidates[verdict_number] = record
+
+    if not candidates:
+        return Response({"created": 0, "skipped": 0, "errors": errors})
+
+    existing = set(
+        TPDispute.objects.filter(verdict_number__in=candidates.keys())
+        .values_list("verdict_number", flat=True)
+    )
+    to_create = [
+        TPDispute(**record)
+        for vn, record in candidates.items()
+        if vn not in existing
+    ]
+
+    TPDispute.objects.bulk_create(to_create, ignore_conflicts=True)
+
+    return Response({
+        "created": len(to_create),
+        "skipped": len(candidates) - len(to_create),
+        "errors": errors,
+    })
+
+
+def _parse_csv(upload) -> list[list]:
+    import csv, io
+    raw = upload.read()
+    text = raw.decode("utf-8-sig", errors="replace")
+    reader = csv.reader(io.StringIO(text))
+    return [row for row in reader]
+
+
+def _parse_xlsx(upload) -> list[list]:
+    from openpyxl import load_workbook
+    wb = load_workbook(upload, read_only=True, data_only=True)
+    ws = wb.active
+    return [list(row) for row in ws.iter_rows(values_only=True)]
+
+
 @api_view(["GET", "PATCH", "DELETE"])
 def tp_dispute_detail(request, pk):
     try:

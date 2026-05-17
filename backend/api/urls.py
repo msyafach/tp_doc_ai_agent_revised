@@ -37,5 +37,6 @@ urlpatterns = [
 
     # ── TP Disputes ───────────────────────────────────────────────────────────
     path("tp-disputes/", views.tp_disputes_list, name="tp-disputes-list"),
+    path("tp-disputes/upload/", views.tp_disputes_upload, name="tp-disputes-upload"),
     path("tp-disputes/<int:pk>/", views.tp_dispute_detail, name="tp-dispute-detail"),
 ]

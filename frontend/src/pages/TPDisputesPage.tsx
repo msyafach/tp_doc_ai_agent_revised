@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Info, Pencil, Trash2, LogOut, ChevronLeft, Scale, X, Save, Loader2 } from "lucide-react";
+import { Info, Pencil, Trash2, LogOut, ChevronLeft, Scale, X, Save, Loader2, Upload, Plus, FileSpreadsheet } from "lucide-react";
 import {
-  listTPDisputes, updateTPDispute, deleteTPDispute,
-  type TPDispute, type TPDisputeInput,
+  listTPDisputes, updateTPDispute, deleteTPDispute, uploadTPDisputes,
+  type TPDispute, type TPDisputeInput, type TPDisputeUploadResult,
 } from "../api/tpDisputes";
 
 interface Props {
@@ -28,6 +28,7 @@ export function TPDisputesPage({ onLogout, onBack, username }: Props) {
   const [viewing, setViewing] = useState<TPDispute | null>(null);
   const [editing, setEditing] = useState<TPDispute | null>(null);
   const [deleting, setDeleting] = useState<TPDispute | null>(null);
+  const [uploading, setUploading] = useState(false);
 
   const refresh = async () => {
     setLoading(true);
@@ -93,6 +94,15 @@ export function TPDisputesPage({ onLogout, onBack, username }: Props) {
 
       {/* Content */}
       <main className="flex-1 px-8 py-10 max-w-7xl w-full mx-auto">
+        <div className="mb-5 flex justify-end">
+          <button
+            onClick={() => setUploading(true)}
+            className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold bg-brand-green text-white rounded-lg hover:bg-brand-dark shadow-md shadow-brand-green/20 transition-all active:scale-95"
+          >
+            <Plus className="w-4 h-4" /> Tambah
+          </button>
+        </div>
+
         <div className="bg-white rounded-2xl border border-gray-100 shadow-xl shadow-gray-200/40 overflow-hidden">
           {loading ? (
             <div className="flex items-center justify-center py-20 text-gray-400 text-sm">
@@ -140,6 +150,13 @@ export function TPDisputesPage({ onLogout, onBack, username }: Props) {
           )}
         </div>
       </main>
+
+      {uploading && (
+        <UploadDialog
+          onClose={() => setUploading(false)}
+          onDone={() => { setUploading(false); refresh(); }}
+        />
+      )}
 
       {viewing && <DetailDialog row={viewing} onClose={() => setViewing(null)} />}
       {editing && (
@@ -328,6 +345,142 @@ function EditDialog({
           );
         })}
       </div>
+    </DialogShell>
+  );
+}
+
+function UploadDialog({
+  onClose, onDone,
+}: {
+  onClose: () => void;
+  onDone: () => void;
+}) {
+  const [file, setFile] = useState<File | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [result, setResult] = useState<TPDisputeUploadResult | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [dragOver, setDragOver] = useState(false);
+
+  const pickFile = (f: File | undefined | null) => {
+    if (!f) return;
+    const lower = f.name.toLowerCase();
+    if (!lower.endsWith(".xlsx") && !lower.endsWith(".xlsm") && !lower.endsWith(".csv")) {
+      setError("Format tidak didukung. Gunakan .xlsx atau .csv.");
+      return;
+    }
+    setError(null);
+    setFile(f);
+  };
+
+  const handleUpload = async () => {
+    if (!file) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const res = await uploadTPDisputes(file);
+      setResult(res);
+    } catch (e: any) {
+      setError(e?.response?.data?.detail || "Upload gagal.");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  if (result) {
+    return (
+      <DialogShell
+        title="Upload Selesai"
+        onClose={onDone}
+        footer={
+          <button onClick={onDone} className="px-4 py-2 text-sm font-semibold bg-brand-green text-white rounded-lg hover:bg-brand-dark">
+            Tutup
+          </button>
+        }
+      >
+        <div className="space-y-3">
+          <div className="flex items-center justify-between p-3 rounded-lg bg-green-50 border border-green-100">
+            <span className="text-sm font-medium text-green-800">Berhasil ditambahkan</span>
+            <span className="text-lg font-bold text-green-700">{result.created}</span>
+          </div>
+          <div className="flex items-center justify-between p-3 rounded-lg bg-amber-50 border border-amber-100">
+            <span className="text-sm font-medium text-amber-800">Dilewati (duplikat No. Putusan)</span>
+            <span className="text-lg font-bold text-amber-700">{result.skipped}</span>
+          </div>
+          {result.errors.length > 0 && (
+            <div className="p-3 rounded-lg bg-red-50 border border-red-100">
+              <p className="text-xs font-bold text-red-700 uppercase tracking-wider mb-2">Peringatan</p>
+              <ul className="text-xs text-red-700 space-y-1 list-disc list-inside">
+                {result.errors.slice(0, 10).map((e, i) => <li key={i}>{e}</li>)}
+                {result.errors.length > 10 && <li>…dan {result.errors.length - 10} lainnya</li>}
+              </ul>
+            </div>
+          )}
+        </div>
+      </DialogShell>
+    );
+  }
+
+  return (
+    <DialogShell
+      title="Tambah dari Excel / CSV"
+      onClose={onClose}
+      footer={
+        <>
+          <button onClick={onClose} className="px-4 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-100 rounded-lg">
+            Batal
+          </button>
+          <button
+            onClick={handleUpload}
+            disabled={!file || busy}
+            className="flex items-center gap-2 px-4 py-2 text-sm font-semibold bg-brand-green text-white rounded-lg hover:bg-brand-dark disabled:opacity-50"
+          >
+            {busy ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+            Upload
+          </button>
+        </>
+      }
+    >
+      <p className="text-sm text-gray-600 mb-4">
+        Upload file <span className="font-semibold">.xlsx</span> atau <span className="font-semibold">.csv</span>.
+        Baris dengan <span className="font-mono text-xs bg-gray-100 px-1.5 py-0.5 rounded">verdict_number</span> yang sama dengan data existing akan dilewati secara otomatis.
+      </p>
+
+      <label
+        onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+        onDragLeave={() => setDragOver(false)}
+        onDrop={(e) => {
+          e.preventDefault();
+          setDragOver(false);
+          pickFile(e.dataTransfer.files?.[0]);
+        }}
+        className={`flex flex-col items-center justify-center border-2 border-dashed rounded-xl py-10 px-4 cursor-pointer transition-colors ${
+          dragOver ? "border-brand-green bg-brand-green/5" : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
+        }`}
+      >
+        <FileSpreadsheet className="w-10 h-10 text-gray-400 mb-2" />
+        <span className="text-sm font-medium text-gray-700">
+          {file ? file.name : "Klik atau drop file di sini"}
+        </span>
+        <span className="text-xs text-gray-400 mt-1">.xlsx, .xlsm, atau .csv</span>
+        <input
+          type="file"
+          accept=".xlsx,.xlsm,.csv"
+          className="hidden"
+          onChange={(e) => pickFile(e.target.files?.[0])}
+        />
+      </label>
+
+      <details className="mt-5 text-xs text-gray-500">
+        <summary className="cursor-pointer font-semibold hover:text-gray-700">Format kolom yang diharapkan</summary>
+        <div className="mt-2 leading-relaxed">
+          Baris pertama harus berisi header kolom. Kolom <code className="bg-gray-100 px-1 rounded">verdict_number</code> (atau <code className="bg-gray-100 px-1 rounded">No. Putusan</code>) wajib ada.
+          Kolom lain yang dikenali: <code>name</code>/Nama, <code>verdict</code>/Amar Putusan, <code>dispute</code>/Pokok Sengketa, <code>legal_basis</code>/Dasar Hukum, <code>djp</code>/Menurut DJP, <code>taxpayer</code>/Menurut Wajib Pajak, <code>assembly_decision</code>/Keputusan Majelis.
+        </div>
+      </details>
+
+      {error && (
+        <div className="mt-4 p-3 rounded-lg bg-red-50 border border-red-100 text-sm text-red-700">{error}</div>
+      )}
     </DialogShell>
   );
 }
